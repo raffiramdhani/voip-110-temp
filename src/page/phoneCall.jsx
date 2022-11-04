@@ -150,7 +150,7 @@ export default function phoneCall() {
 
     var outCall = session
       .createCall({
-        callee: reqExten.callto,
+        callee: "605" + reqExten.callto,
         visibleName: reqExten.exten,
         localVideoDisplay: localVideo.current,
         remoteVideoDisplay: remoteVideo.current,
@@ -181,7 +181,7 @@ export default function phoneCall() {
     console.log(outCall);
     currentCall.current = outCall;
   };
-  
+
   const onDialPadPressed = (dtmf) => {
     dtmfSound.play();
     currentCall.current.sendDTMF(dtmf);
@@ -201,7 +201,23 @@ export default function phoneCall() {
   };
 
   const endCall = () => {
-    console.log("endCall");
+    const toMatch = [
+      /Android/i,
+      /webOS/i,
+      /iPhone/i,
+      /iPad/i,
+      /iPod/i,
+      /BlackBerry/i,
+      /Windows Phone/i,
+    ];
+    const isMobile = toMatch.some((toMatchItem) => {
+      return navigator.userAgent.match(toMatchItem);
+    });
+    if (isMobile) {
+      window.location = "sapaPegadaian://rating?type=Call";
+    } else {
+      window.location.reload();
+    }
   };
 
   const isCalling = statusCall === CALL_STATUS.ESTABLISHED;
