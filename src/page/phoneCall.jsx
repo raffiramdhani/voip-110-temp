@@ -188,12 +188,15 @@ export default function phoneCall() {
   };
 
   const toggleMute = () => {
-    setIsMuted(!isMuted);
-    if (isMuted) {
+    const change = !isMuted
+    if (change) {
       currentCall.current.muteAudio();
-    } else {
+    }
+    if (!change) {
       currentCall.current.unmuteAudio();
     }
+    setIsMuted(!change);
+
   };
 
   const handleHangup = () => {
