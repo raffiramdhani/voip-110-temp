@@ -195,7 +195,7 @@ export default function phoneCall() {
     if (!change) {
       currentCall.current.unmuteAudio();
     }
-    setIsMuted(!change);
+    setIsMuted(prev => change);
 
   };
 
