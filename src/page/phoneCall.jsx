@@ -32,6 +32,7 @@ export default function phoneCall() {
 
   useEffect(() => {
     initFlashphoner();
+    console.log("1.0.0")
   }, []);
 
   // STEP 1
