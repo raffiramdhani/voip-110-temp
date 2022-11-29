@@ -151,7 +151,7 @@ export default function phoneCall() {
 
     var outCall = session
       .createCall({
-        callee: "605" + reqExten.callto,
+        callee: reqExten.callto,
         visibleName: reqExten.exten,
         localVideoDisplay: localVideo.current,
         remoteVideoDisplay: remoteVideo.current,
