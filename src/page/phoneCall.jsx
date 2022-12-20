@@ -32,7 +32,7 @@ export default function phoneCall() {
 
   useEffect(() => {
     initFlashphoner();
-    console.log("1.0.0")
+    console.log("1.0.0");
   }, []);
 
   // STEP 1
@@ -189,15 +189,14 @@ export default function phoneCall() {
   };
 
   const toggleMute = () => {
-    const change = !isMuted
+    const change = !isMuted;
     if (change) {
       currentCall.current.muteAudio();
     }
     if (!change) {
       currentCall.current.unmuteAudio();
     }
-    setIsMuted(prev => change);
-
+    setIsMuted((prev) => change);
   };
 
   const handleHangup = () => {
@@ -218,7 +217,11 @@ export default function phoneCall() {
       return navigator.userAgent.match(toMatchItem);
     });
     if (isMobile) {
-      window.location = "sapaPegadaian://rating?type=Call";
+      if (env.VITE_APP_HREF_URL) {
+        window.location = env.VITE_APP_HREF_URL;
+      } else {
+        window.location.reload();
+      }
     } else {
       window.location.reload();
     }

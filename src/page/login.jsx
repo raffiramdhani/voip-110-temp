@@ -11,7 +11,7 @@ import {
 
 import ContactSupportIcon from "@mui/icons-material/ContactSupport";
 import PhoneInTalkIcon from "@mui/icons-material/PhoneInTalk";
-import TermsCond from '@/components/Modals/TermsCond'
+import TermsCond from "@/components/Modals/TermsCond";
 
 import useRouteStore from "@/store/routeStore";
 import useProfileStore from "@/store/profileStore";
