@@ -17,7 +17,7 @@ export default function App() {
 
   let showCallPage = route.ui.openCallUI;
 
-  if (type === "web") {
+  if (type === "mobile") {
     showCallPage = true;
   }
 
@@ -58,7 +58,7 @@ export default function App() {
     >
       <Fade in={showCallPage}>
         <Box width="100%" height="100%">
-          {type !== "web" && (
+          {type !== "mobile" && (
             <Box
               sx={{
                 position: "absolute",
