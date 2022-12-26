@@ -229,99 +229,113 @@ export default function phoneCall() {
 
   const isCalling = statusCall === CALL_STATUS.ESTABLISHED;
   return (
-    <Box maxWidth="350px">
-      {/* PROFILE AGNET PIC  */}
-      <Box display="flex" justifyContent="center" alignItems="center" mb="20px">
+    <Box
+      width="100%"
+      height="100%"
+      bgcolor="#FFF"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+    >
+      <Box maxWidth="350px"       >
+        {/* PROFILE AGNET PIC  */}
         <Box
-          bgcolor={env.VITE_APP_MAIN_COLOR}
           display="flex"
-          alignItems="center"
           justifyContent="center"
-          width="70px"
-          height="70px"
-          borderRadius="100%"
+          alignItems="center"
+          mb="20px"
         >
-          <SupportAgentIcon sx={{ fontSize: "50px", color: "#fff" }} />
+          <Box
+            bgcolor={env.VITE_APP_MAIN_COLOR}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            width="70px"
+            height="70px"
+            borderRadius="100%"
+          >
+            <SupportAgentIcon sx={{ fontSize: "50px", color: "#fff" }} />
+          </Box>
         </Box>
-      </Box>
-      <Box textAlign="center">
-        <Typography fontSize="9px" color="#c4c4c4">
-          status
-        </Typography>
-        <Typography sx={{ textTransform: "capitalize" }}>
-          {statusCall?.toLowerCase()}
-        </Typography>
-      </Box>
-      {/* MUTE HANGUP BUTTON  */}
-      <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ my: 2 }}>
-        <Grid item xs={6}>
-          <Button
-            onClick={() => toggleMute()}
-            fullWidth
-            variant={isMuted ? "contained" : "outlined"}
-            startIcon={isMuted ? <MicOffIcon /> : <MicIcon />}
-            color={isMuted ? "error" : "primary"}
-            disabled={!isCalling}
-          >
-            {isMuted ? "Unmute" : "Mute"}
-          </Button>
-        </Grid>
-        <Grid item xs={6}>
-          <Button
-            onClick={() => handleHangup()}
-            fullWidth
-            color="error"
-            variant="outlined"
-            startIcon={<PhoneDisabledIcon />}
-            disabled={!isCalling}
-          >
-            Hangup
-          </Button>
-        </Grid>
-      </Grid>
-      {/* DIAL PAD  */}
-      <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }}>
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, "*", 0, "#"].map((d, i) => (
-          <Grid
-            onClick={() => {
-              if (isCalling) {
-                onDialPadPressed(d);
-              }
-            }}
-            key={i}
-            item
-            xs={4}
-          >
-            <Paper
-              sx={{
-                "&:hover": { bgcolor: "#f4f4f4" },
-                "&:focus": { bgcolor: "#f4f4f4" },
-                padding: "10px",
-                bgcolor: isCalling ? "#fff" : "#f4f4f4",
-                cursor: isCalling ? "pointer" : "not-allowed",
-              }}
+        <Box textAlign="center">
+          <Typography fontSize="9px" color="#c4c4c4">
+            status
+          </Typography>
+          <Typography sx={{ textTransform: "capitalize" }}>
+            {statusCall?.toLowerCase()}
+          </Typography>
+        </Box>
+        {/* MUTE HANGUP BUTTON  */}
+        <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ my: 2 }}>
+          <Grid item xs={6}>
+            <Button
+              onClick={() => toggleMute()}
+              fullWidth
+              variant={isMuted ? "contained" : "outlined"}
+              startIcon={isMuted ? <MicOffIcon /> : <MicIcon />}
+              color={isMuted ? "error" : "primary"}
+              disabled={!isCalling}
             >
-              {d}
-            </Paper>
+              {isMuted ? "Unmute" : "Mute"}
+            </Button>
           </Grid>
-        ))}
-      </Grid>
-      {/* END CALL BUTTON  */}
-      <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ my: 2 }}>
-        <Grid item xs={12}>
-          <Button onClick={() => endCall()} fullWidth variant="outlined">
-            End Call
-          </Button>
+          <Grid item xs={6}>
+            <Button
+              onClick={() => handleHangup()}
+              fullWidth
+              color="error"
+              variant="outlined"
+              startIcon={<PhoneDisabledIcon />}
+              disabled={!isCalling}
+            >
+              Hangup
+            </Button>
+          </Grid>
         </Grid>
-      </Grid>
-      <Box>
-        <Typography fontSize={9} color="#c4c4c4">
-          Statu register: {statusRegiter}
-        </Typography>
-      </Box>
-      <Box display="none">
-        <div id="remoteVideo" ref={remoteVideo}></div>
-        <div id="localVideo" ref={localVideo}></div>
+        {/* DIAL PAD  */}
+        <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }}>
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, "*", 0, "#"].map((d, i) => (
+            <Grid
+              onClick={() => {
+                if (isCalling) {
+                  onDialPadPressed(d);
+                }
+              }}
+              key={i}
+              item
+              xs={4}
+            >
+              <Paper
+                sx={{
+                  "&:hover": { bgcolor: "#f4f4f4" },
+                  "&:focus": { bgcolor: "#f4f4f4" },
+                  padding: "10px",
+                  bgcolor: isCalling ? "#fff" : "#f4f4f4",
+                  cursor: isCalling ? "pointer" : "not-allowed",
+                }}
+              >
+                {d}
+              </Paper>
+            </Grid>
+          ))}
+        </Grid>
+        {/* END CALL BUTTON  */}
+        <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ my: 2 }}>
+          <Grid item xs={12}>
+            <Button onClick={() => endCall()} fullWidth variant="outlined">
+              End Call
+            </Button>
+          </Grid>
+        </Grid>
+        <Box>
+          <Typography fontSize={9} color="#c4c4c4">
+            Statu register: {statusRegiter}
+          </Typography>
+        </Box>
+        <Box display="none">
+          <div id="remoteVideo" ref={remoteVideo}></div>
+          <div id="localVideo" ref={localVideo}></div>
+        </Box>
       </Box>
     </Box>
   );

@@ -1,19 +1,53 @@
 import React, { useEffect, useState } from "react";
-import { Box, } from "@mui/material";
+import { Box, Fade } from "@mui/material";
+import useRouteStore from "@/store/routeStore";
 
-import Pages from './page'
+import Pages from "./page";
+import Button from "./page/button";
+
+import CloseIcon from "@mui/icons-material/Close";
 
 export default function App() {
+  const route = useRouteStore((state) => state);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+
+  const url_string = window.location.href;
+  const url_params = new URL(url_string);
+  const type = url_params.searchParams.get("type");
+
+  let showCallPage = route.ui.openCallUI;
+
+  if (type === "web") {
+    showCallPage = true;
+  }
+
   // LISTEN HEIGHT WINDOW
   useEffect(() => {
+    // window.addEventListener("message", (e) => console.log(e));
     function handleResize() {
       setWindowHeight(window.innerHeight);
     }
 
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      // window.removeEventListener("message", (e) => console.log(e));
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
+
+  const setOpenCall = () => {
+    if (!route.ui.openCallUI) {
+      route.setOpenIframe(true);
+      window.parent.postMessage("show", "*");
+    }
+  };
+
+  const setCloseCall = () => {
+    if (route.ui.openCallUI) {
+      route.setOpenIframe(false);
+      window.parent.postMessage("hide", "*");
+    }
+  };
 
   return (
     <Box
@@ -22,7 +56,30 @@ export default function App() {
       alignItems="center"
       height={windowHeight}
     >
-      <Pages />
+      <Fade in={showCallPage}>
+        <Box width="100%" height="100%">
+          {type !== "web" && (
+            <Box
+              sx={{
+                position: "absolute",
+                top: "5px",
+                right: "5px",
+                bgcolor: "#820011",
+                borderRadius: "9px",
+                cursor: "pointer",
+                height: "20px",
+                width: "20px",
+              }}
+              onClick={() => setCloseCall()}
+            >
+              <CloseIcon sx={{ color: "#fff", fontSize: 20 }} />
+            </Box>
+          )}
+
+          <Pages />
+        </Box>
+      </Fade>
+      {!showCallPage && <Button onClick={() => setOpenCall()} />}
     </Box>
   );
 }

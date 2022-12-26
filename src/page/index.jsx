@@ -1,7 +1,7 @@
 import React, { lazy } from "react";
 
-import Login from './login'
-import PhoneCall from './phoneCall'
+import Login from "./login";
+import PhoneCall from "./phoneCall";
 
 import useRouteStore from "@/store/routeStore";
 
