@@ -174,7 +174,7 @@ function widgetApi() {
     });
 
     const license = script.getAttribute("data-license");
-    const widgetUrl = `${urlOriginIframe}/${tenant}/?license=${license}`;
+    const widgetUrl = `${urlOriginIframe}/${tenant}/?type=web&license=${license}`;
 
     iframe.src = widgetUrl;
 
