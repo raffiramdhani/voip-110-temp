@@ -30,6 +30,7 @@ export default function App() {
     }
 
     window.addEventListener("resize", handleResize);
+    handleResize();
     return () => {
       // window.removeEventListener("message", (e) => console.log(e));
       window.removeEventListener("resize", handleResize);
@@ -73,6 +74,7 @@ export default function App() {
               }}
               onClick={() => setCloseCall()}
             >
+              close icon
               <CloseIcon sx={{ color: "#fff", fontSize: 20 }} />
             </Box>
           )}

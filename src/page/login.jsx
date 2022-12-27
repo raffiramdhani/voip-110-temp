@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -7,15 +7,25 @@ import {
   TextField,
   Checkbox,
   CircularProgress,
+  IconButton,
 } from "@mui/material";
+
+import RemoveIcon from "@mui/icons-material/Remove";
+
+import WelcomeIcon from "../assets/welcome-icon.png";
 
 import ContactSupportIcon from "@mui/icons-material/ContactSupport";
 import PhoneInTalkIcon from "@mui/icons-material/PhoneInTalk";
 import TermsCond from "@/components/Modals/TermsCond";
+import StartCall from "@/components/Modals/StartCall";
+
+import FloatingButton from "@/components/FloatingButton";
+import Welcome from "@/components/Welcome";
 
 import useRouteStore from "@/store/routeStore";
 import useProfileStore from "@/store/profileStore";
 import { decrypt } from "@/utils/encrypt";
+import useAuth from "@/store/openingStore";
 
 const env = import.meta.env;
 
@@ -29,6 +39,11 @@ export default function login() {
     email: "",
   });
   const [openModalAgree, setOpenModalAgree] = useState(false);
+  const [openFloating, setOpenFloating] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [type, setType] = useState("");
+
+  const { isOpen, setIsOpen } = useAuth((state) => state);
 
   const handleInput = (e) => {
     e.preventDefault();
@@ -44,6 +59,10 @@ export default function login() {
       profile.setReqExten(data);
       route.push("call");
     }
+  };
+
+  const handleSubmitMobile = () => {
+    route.push("call");
   };
 
   const requestExtension = async () => {
@@ -88,107 +107,188 @@ export default function login() {
 
     return data;
   };
-  return (
-    <Box width="100%" height="100%" bgcolor="#fff">
-      <Box
-        width="100%"
-        padding="15px 20px"
-        display="flex"
-        alignItems="center"
-        gap="10px"
-        bgcolor={env.VITE_APP_MAIN_COLOR}
-      >
-        <Avatar sx={{ bgcolor: "#01A3DE" }}>
-          <ContactSupportIcon />
-        </Avatar>
-        <Box>
-          <Typography fontSize="18px" fontWeight="500" color="#fff">
-            Customer Call Support
-          </Typography>
-          <Typography fontSize="12px" fontWeight="300" color="#fff">
-            Operational hours: 24 hours
-          </Typography>
-        </Box>
-      </Box>
-      <Box>
-        <Box sx={{ padding: "20px" }}>
-          <form onSubmit={(e) => handleSubmit(e)}>
-            <TextField
-              value={form.name}
-              onChange={(e) => handleInput(e)}
-              // disabled={form.isLoadingSetupWebphone}
-              fullWidth
-              required
-              color="info"
-              id="form-name"
-              label="Name"
-              size="small"
-              margin="dense"
-              name="name"
-              sx={styling.TextField}
-            />
-            <TextField
-              value={form.email}
-              onChange={(e) => handleInput(e)}
-              // disabled={form.isLoadingSetupWebphone}
-              fullWidth
-              required
-              color="info"
-              id="form-email"
-              label="Email"
-              name="email"
-              size="small"
-              margin="dense"
-              sx={styling.TextField}
-            />
-            <TextField
-              value={form.phone}
-              onChange={(e) => handleInput(e)}
-              fullWidth
-              required
-              color="info"
-              id="form-phone"
-              label="Phone"
-              name="phone"
-              size="small"
-              margin="dense"
-              type="number"
-              sx={styling.TextField}
-            />
 
-            <Box>
-              <Checkbox required sx={styling.Checkbox} />
-              <Typography
-                component="span"
-                fontSize={12}
-                onClick={() => this.setState({ modalAgree: true })}
-                sx={styling.LabelCheckBox}
+  // LISTEN HEIGHT WINDOW
+  useEffect(() => {
+    // window.addEventListener("message", (e) => console.log(e));
+    function handleResize() {
+      setWindowWidth(window.innerWidth);
+      if (window.innerWidth < 768) {
+        setType("mobile");
+      }
+      if (window.innerWidth >= 768) {
+        setType("web");
+      }
+    }
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => {
+      // window.removeEventListener("message", (e) => console.log(e));
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  return (
+    <Box>
+      {type === "web" ? (
+        <>
+          {openFloating && isOpen === "login" ? (
+            <Box
+              position={`${type === "web" ? "absolute" : ""}`}
+              width={`${type === "web" ? "25%" : "100%"}`}
+              height={`${type === "web" ? "70%" : "100%"}`}
+              bottom="8rem"
+              right="2rem"
+              display="flex"
+              flexDirection="column"
+              boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
+            >
+              <Box
+                padding="12px 15px"
+                display="flex"
+                alignItems="center"
+                bgcolor={color.secondary}
               >
-                Terms & conditions
-              </Typography>
-            </Box>
-            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-              <Button
-                type="submit"
-                sx={{ marginTop: "1em" }}
-                color="primary"
-                variant="outlined"
-                startIcon={<PhoneInTalkIcon />}
-                disabled={loading}
-              >
-                {loading && (
-                  <CircularProgress
-                    size={20}
-                    color="inherit"
-                    sx={{ marginX: "10px" }}
+                <Box
+                  width="100%"
+                  display="flex"
+                  flexDirection="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Box
+                    display="flex"
+                    flexDirection="row"
+                    alignItems="center"
+                    gap={2}
+                  >
+                    <img src={WelcomeIcon} />
+                    <Typography color={color.main}>OMNIX VoIP</Typography>
+                  </Box>
+                  <IconButton
+                    onClick={() => {
+                      setIsOpen("login");
+                      setOpenFloating(false);
+                    }}
+                  >
+                    <RemoveIcon />
+                  </IconButton>
+                </Box>
+              </Box>
+              <Box sx={{ padding: "20px" }}>
+                <Typography className="mb-2">
+                  To start a call, please fill the form before
+                </Typography>
+                <form
+                  style={{ height: `80vh` }}
+                  onSubmit={(e) => handleSubmit(e)}
+                >
+                  <TextField
+                    value={form.name}
+                    onChange={(e) => handleInput(e)}
+                    // disabled={form.isLoadingSetupWebphone}
+                    fullWidth
+                    required
+                    color="info"
+                    id="form-name"
+                    label="Name"
+                    size="small"
+                    margin="dense"
+                    name="name"
+                    sx={styling.TextField}
                   />
-                )}
-                Click to Call
-              </Button>
+                  <TextField
+                    value={form.email}
+                    onChange={(e) => handleInput(e)}
+                    // disabled={form.isLoadingSetupWebphone}
+                    fullWidth
+                    required
+                    color="info"
+                    id="form-email"
+                    label="Email"
+                    name="email"
+                    size="small"
+                    margin="dense"
+                    sx={styling.TextField}
+                  />
+                  <TextField
+                    value={form.phone}
+                    onChange={(e) => handleInput(e)}
+                    fullWidth
+                    required
+                    color="info"
+                    id="form-phone"
+                    label="Phone"
+                    name="phone"
+                    size="small"
+                    margin="dense"
+                    type="number"
+                    sx={styling.TextField}
+                  />
+
+                  <Box>
+                    <Checkbox required sx={styling.Checkbox} />
+                    <Typography component="span" fontSize={12}>
+                      You agree to our friendly
+                    </Typography>
+                    <Typography
+                      component="span"
+                      fontSize={12}
+                      onClick={() => setOpenModalAgree(true)}
+                      color={color.main}
+                    >
+                      Privacy Policy
+                    </Typography>
+                  </Box>
+                  <Box
+                    width="90%"
+                    display="flex"
+                    justifyContent="center"
+                    position={`${type === "web" ? "absolute" : "absolute"}`}
+                    bottom={0}
+                    paddingY="12px"
+                  >
+                    <Button
+                      type="submit"
+                      sx={{
+                        width: "100%",
+                        borderRadius: "10px",
+                        marginTop: "1em",
+                        backgroundColor: `${color.main}`,
+                        color: "white",
+                      }}
+                      variant="contained"
+                      // startIcon={<PhoneInTalkIcon />}
+                      disabled={loading}
+                    >
+                      {loading && (
+                        <CircularProgress
+                          size={20}
+                          color="inherit"
+                          sx={{ marginX: "10px" }}
+                        />
+                      )}
+                      Start Call
+                    </Button>
+                  </Box>
+                </form>
+              </Box>
             </Box>
-          </form>
-        </Box>
-      </Box>
+          ) : openFloating && isOpen === "welcome" ? (
+            <>
+              <Welcome setOpenFloating={setOpenFloating} />
+            </>
+          ) : (
+            <FloatingButton setOpenFloating={setOpenFloating} />
+          )}
+        </>
+      ) : (
+        <>
+          <StartCall handleSubmitMobile={handleSubmitMobile} />
+        </>
+      )}
       <TermsCond
         open={openModalAgree}
         onClose={() => setOpenModalAgree(false)}
@@ -200,7 +300,7 @@ export default function login() {
 const color = {
   textTitle: "#fff",
   main: env.VITE_APP_MAIN_COLOR,
-  secondary: "#1665C0",
+  secondary: "#EBE8FF",
 };
 
 const styling = {
