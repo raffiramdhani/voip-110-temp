@@ -273,6 +273,7 @@ export default function phoneCall() {
   };
 
   const isCalling = statusCall === CALL_STATUS.ESTABLISHED;
+  console.log(statusCall);
   return (
     <Box
       position={`${type === "web" ? "absolute" : ""}`}
@@ -352,6 +353,15 @@ export default function phoneCall() {
               <Typography sx={{ textTransform: "capitalize" }}>
                 Dhimas
               </Typography>
+              <Typography>
+                {statusCall === "waiting"
+                  ? "Calling"
+                  : statusCall === "finish"
+                  ? "Ringing"
+                  : statusCall === "ESTABLISHED"
+                  ? "Connected"
+                  : ""}
+              </Typography>
             </Box>
             {/* MUTE HANGUP BUTTON  */}
             <Grid
@@ -372,7 +382,7 @@ export default function phoneCall() {
                   variant={isMuted ? "contained" : "outlined"}
                   startIcon={isMuted ? <MicOffIcon /> : <MicIcon />}
                   color={isMuted ? "error" : "primary"}
-                  // disabled={!isCalling}
+                  disabled={!isCalling}
                 >
                   <img src={isMuted ? MuteOn : MuteOff} />
                 </IconButton>
@@ -460,10 +470,10 @@ export default function phoneCall() {
             Statu register: {statusRegiter}
           </Typography>
         </Box> */}
-            {/* <Box display="none">
-          <div id="remoteVideo" ref={remoteVideo}></div>
-          <div id="localVideo" ref={localVideo}></div>
-        </Box> */}
+            <Box display="none">
+              <div id="remoteVideo" ref={remoteVideo}></div>
+              <div id="localVideo" ref={localVideo}></div>
+            </Box>
           </Box>
         </>
       )}

@@ -61,8 +61,14 @@ export default function login() {
     }
   };
 
-  const handleSubmitMobile = () => {
-    route.push("call");
+  const handleSubmitMobile = async () => {
+    const data = await requestExtension();
+    console.log(data);
+    if (data) {
+      profile.setProfile(form);
+      profile.setReqExten(data);
+      route.push("call");
+    }
   };
 
   const requestExtension = async () => {
@@ -71,9 +77,9 @@ export default function login() {
     myHeaders.append("Content-Type", "application/json");
 
     var raw = JSON.stringify({
-      username: form.name,
-      email: form.email,
-      phone: form.phone,
+      username: form.name === "" ? "Jane" : form.name,
+      email: form.email === "" ? "jane@gmail.com" : form.email,
+      phone: form.phone === "" ? "081234567899" : form.phone,
       token: env.VITE_APP_EXTEN_TOKEN,
       type: env.VITE_APP_EXTEN_TYPE,
     });
