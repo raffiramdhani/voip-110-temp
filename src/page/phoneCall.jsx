@@ -31,15 +31,19 @@ export default function phoneCall() {
   const [statusCall, setStatusCall] = useState("waiting");
 
   useEffect(() => {
-    initFlashphoner();
-    console.log("1.0.0");
+    initDirecCall()
   }, []);
 
+  const initDirecCall = async () => {
+    const data = await requestExtension();
+    await setReqExten(data);
+    initFlashphoner(data);
+  };
   // STEP 1
-  const initFlashphoner = () => {
+  const initFlashphoner = (data) => {
     try {
       Flashphoner.init();
-      connect();
+      connect(data);
     } catch (error) {
       console.log("ERROR ==>>", error);
     }
@@ -90,9 +94,7 @@ export default function phoneCall() {
   };
 
   // STEP 3
-  const connect = async () => {
-    const data = profile.reqExten;
-    await setReqExten(data);
+  const connect = async (data) => {
 
     if (
       Browser.isSafariWebRTC() &&
@@ -237,7 +239,7 @@ export default function phoneCall() {
       justifyContent="center"
       alignItems="center"
     >
-      <Box maxWidth="350px"       >
+      <Box maxWidth="350px">
         {/* PROFILE AGNET PIC  */}
         <Box
           display="flex"
@@ -320,14 +322,14 @@ export default function phoneCall() {
           ))}
         </Grid>
         {/* END CALL BUTTON  */}
-        <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ my: 2 }}>
+        {/* <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ my: 2 }}>
           <Grid item xs={12}>
             <Button onClick={() => endCall()} fullWidth variant="outlined">
               End Call
             </Button>
           </Grid>
-        </Grid>
-        <Box>
+        </Grid> */}
+        <Box mt="10px">
           <Typography fontSize={9} color="#c4c4c4">
             Statu register: {statusRegiter}
           </Typography>
