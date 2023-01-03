@@ -5,14 +5,14 @@ import PhoneCall from "./phoneCall";
 
 import useRouteStore from "@/store/routeStore";
 
-export default function Page() {
+export default function Page(type) {
   const path = useRouteStore((state) => state.curentRoute);
 
   switch (path) {
     case "call":
       return <PhoneCall />;
     case "login":
-      return <Login />;
+        return <Login />;
     default:
       return <h1>Not Found</h1>;
   }

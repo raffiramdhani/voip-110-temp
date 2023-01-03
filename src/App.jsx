@@ -60,7 +60,7 @@ export default function App() {
     >
       <Fade in={showCallPage}>
         <Box width="100%" height="100%">
-          {type === "web" && (
+          {/* {type === "web" && (
             <Box
               sx={{
                 position: "absolute",
@@ -77,9 +77,9 @@ export default function App() {
               close icon
               <CloseIcon sx={{ color: "#fff", fontSize: 20 }} />
             </Box>
-          )}
+          )} */}
 
-          <Pages />
+          <Pages type={type} />
         </Box>
       </Fade>
       {!showCallPage && <Button onClick={() => setOpenCall()} />}

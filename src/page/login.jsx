@@ -41,9 +41,12 @@ export default function login() {
   const [openModalAgree, setOpenModalAgree] = useState(false);
   const [openFloating, setOpenFloating] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const [type, setType] = useState("");
+  const [msgError, setMsgError] = useState(null);
 
   const { isOpen, setIsOpen } = useAuth((state) => state);
+  const url_string = window.location.href;
+  const url_params = new URL(url_string);
+  const type = url_params.searchParams.get("type");
 
   const handleInput = (e) => {
     e.preventDefault();
@@ -58,12 +61,17 @@ export default function login() {
       profile.setProfile(form);
       profile.setReqExten(data);
       route.push("call");
+    } else {
+      setMsgError("Sorry, failed to call try again later!");
+      setTimeout(() => {
+        setMsgError(null);
+      }, 3000);
     }
+    setLoading(false);
   };
 
   const handleSubmitMobile = async () => {
     const data = await requestExtension();
-    console.log(data);
     if (data) {
       profile.setProfile(form);
       profile.setReqExten(data);
@@ -73,13 +81,14 @@ export default function login() {
 
   const requestExtension = async () => {
     let myHeaders = new Headers();
-    myHeaders.append("Authorization", env.VITE_APP_AUTHORIZATION);
+    myHeaders.append("Authorization", `${env.VITE_APP_AUTHORIZATION}`);
     myHeaders.append("Content-Type", "application/json");
 
     var raw = JSON.stringify({
       username: form.name === "" ? "Jane" : form.name,
       email: form.email === "" ? "jane@gmail.com" : form.email,
       phone: form.phone === "" ? "081234567899" : form.phone,
+      timestamp: new Date(),
       token: env.VITE_APP_EXTEN_TOKEN,
       type: env.VITE_APP_EXTEN_TYPE,
     });
@@ -91,7 +100,7 @@ export default function login() {
       redirect: "follow",
     };
 
-    const data = await fetch(env.VITE_APP_EXTEN_URL, requestOptions)
+    const data = await fetch(`${env.VITE_APP_EXTEN_URL}`, requestOptions)
       .then((res) => res.text())
       .then((res) => {
         const decryptText = decrypt(res);
@@ -120,10 +129,10 @@ export default function login() {
     function handleResize() {
       setWindowWidth(window.innerWidth);
       if (window.innerWidth < 768) {
-        setType("mobile");
+        // setType("mobile");
       }
       if (window.innerWidth >= 768) {
-        setType("web");
+        // setType("web");
       }
     }
 
@@ -251,11 +260,17 @@ export default function login() {
                   <Box
                     width="90%"
                     display="flex"
+                    flexDirection="column"
                     justifyContent="center"
                     position={`${type === "web" ? "absolute" : "absolute"}`}
                     bottom={0}
                     paddingY="12px"
                   >
+                    {msgError ? (
+                      <Typography color="red">{msgError}</Typography>
+                    ) : (
+                      <></>
+                    )}
                     <Button
                       type="submit"
                       sx={{
@@ -287,7 +302,9 @@ export default function login() {
               <Welcome setOpenFloating={setOpenFloating} />
             </>
           ) : (
-            <FloatingButton setOpenFloating={setOpenFloating} />
+            <>
+              <FloatingButton setOpenFloating={setOpenFloating} />
+            </>
           )}
         </>
       ) : (

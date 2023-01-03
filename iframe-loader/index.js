@@ -103,8 +103,7 @@ function widgetApi() {
     widget.appendChild(iframe);
 
     const MainColor = script.getAttribute("main-color");
-    const urlOriginIframes = "https://voip-widget.onx.co.id";
-    const urlOriginIframe = "http://localhost:5173";
+    const urlOriginIframe = "http://localhost:5173/";
     const tenant = script.getAttribute("tenant")
 
     const api = {
@@ -175,7 +174,7 @@ function widgetApi() {
     });
 
     const license = script.getAttribute("data-license");
-    const widgetUrl = `${urlOriginIframe}`;
+    const widgetUrl = `${urlOriginIframe}/${tenant}/?type=web&license=${license}`;
 
     iframe.src = widgetUrl;
 
