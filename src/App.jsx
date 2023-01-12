@@ -79,7 +79,7 @@ export default function App() {
             </Box>
           )} */}
 
-          <Pages type={type} />
+          <Pages type={type} showCallPage={showCallPage} setCloseCall={setCloseCall} setOpenCall={setOpenCall} />
         </Box>
       </Fade>
       {!showCallPage && <Button onClick={() => setOpenCall()} />}

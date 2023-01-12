@@ -3,7 +3,7 @@ import { Box, Grid, TextField, Button, IconButton } from "@mui/material";
 import Delete from "@/assets/delete.png";
 import EndCall from "@/assets/end-call.png";
 import NumPad from "@/styles/AlfaNumerik";
-const Keypad = ({ setIsKeypad, endCall }) => {
+const Keypad = ({ setIsKeypad, endCall, isCalling, onDialPadPressed }) => {
   const [phoneNumber, setPhoneNumber] = React.useState("");
   const deleteNumber = () => {
     const delNum = phoneNumber.substring(0, phoneNumber.length - 1);
@@ -14,8 +14,8 @@ const Keypad = ({ setIsKeypad, endCall }) => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center",
-        marginTop: 1,
+        marginTop: 5,
+        height: "495px"
       }}
     >
       {/* DIAL PAD  */}
@@ -43,11 +43,11 @@ const Keypad = ({ setIsKeypad, endCall }) => {
             display="flex"
             justifyContent="center"
             alignItems="center"
-            // onClick={() => {
-            //   if (isCalling) {
-            //     onDialPadPressed(d);
-            //   }
-            // }}
+            onClick={() => {
+              if (isCalling) {
+                onDialPadPressed(d.number);
+              }
+            }}
             key={i}
             item
             xs={4}
@@ -110,7 +110,7 @@ const Keypad = ({ setIsKeypad, endCall }) => {
                 padding: "22px 15px",
                 backgroundColor: "#FF3B30",
               }}
-              // onClick={() => endCall()}
+              onClick={() => endCall()}
             >
               <img src={EndCall} />
             </IconButton>

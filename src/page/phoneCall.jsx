@@ -51,29 +51,6 @@ export default function phoneCall() {
   const [statusCall, setStatusCall] = useState("waiting");
 
   const [isKeypad, setIsKeypad] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const [type, setType] = useState("");
-
-  // LISTEN HEIGHT WINDOW
-  useEffect(() => {
-    // window.addEventListener("message", (e) => console.log(e));
-    function handleResize() {
-      setWindowWidth(window.innerWidth);
-      if (window.innerWidth < 768) {
-        setType("mobile");
-      }
-      if (window.innerWidth >= 768) {
-        setType("web");
-      }
-    }
-
-    window.addEventListener("resize", handleResize);
-    handleResize();
-    return () => {
-      // window.removeEventListener("message", (e) => console.log(e));
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   useEffect(() => {
     initFlashphoner();
@@ -209,6 +186,7 @@ export default function phoneCall() {
       .on(CALL_STATUS.ESTABLISHED, function (call) {
         console.log("CALL_STATUS ==>> " + CALL_STATUS.ESTABLISHED);
         setStatusCall(CALL_STATUS.ESTABLISHED);
+        handleStart()
       })
       .on(CALL_STATUS.HOLD, function (call) {
         console.log("CALL_STATUS ==>> " + CALL_STATUS.HOLD);
@@ -274,16 +252,54 @@ export default function phoneCall() {
 
   const isCalling = statusCall === CALL_STATUS.ESTABLISHED;
   console.log(statusCall);
+
+  //Stopwatch
+  const [isActive, setIsActive] = useState(false);
+  const [isPaused, setIsPaused] = useState(true);
+  const [time, setTime] = useState(0);
+
+  React.useEffect(() => {
+    let interval = null;
+
+    if (isActive && isPaused === false) {
+      interval = setInterval(() => {
+        setTime((time) => time + 10);
+      }, 10);
+    } else {
+      clearInterval(interval);
+    }
+    return () => {
+      clearInterval(interval);
+    };
+
+    
+  }, [isActive, isPaused]);
+
+  const handleStart = () => {
+    setIsActive(true);
+    setIsPaused(false);
+  };
+
+  const handlePauseResume = () => {
+    setIsPaused(!isPaused);
+  };
+
+  const handleReset = () => {
+    setIsActive(false);
+    setTime(0);
+  };
+
   return (
     <Box
-      position={`${type === "web" ? "absolute" : ""}`}
-      width={`${type === "web" ? "25%" : "100%"}`}
-      height={`${type === "web" ? "70%" : "100vh"}`}
+      // position={`${type === "web" ? "absolute" : ""}`}
+      // width={`${type === "web" ? "25%" : "100%"}`}
+      // height={`${type === "web" ? "70%" : "100vh"}`}
       bottom="8rem"
       right="2rem"
       display="flex"
       flexDirection="column"
       boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
+      backgroundColor="white"
     >
       <Box
         padding="12px 15px"
@@ -311,16 +327,17 @@ export default function phoneCall() {
       </Box>
       {isKeypad ? (
         <>
-          <Keypad setIsKeypad={setIsKeypad} />
+          <Keypad setIsKeypad={setIsKeypad} isCalling={isCalling} endCall={endCall} onDialPadPressed={onDialPadPressed} />
         </>
       ) : (
         <>
           <Box
             width="100%"
+            height="535px"
             bgcolor="#FFF"
             display="flex"
+            position="relative"
             flexDirection="column"
-            justifyContent="center"
           >
             {/* PROFILE AGNET PIC  */}
             <Box
@@ -350,9 +367,9 @@ export default function phoneCall() {
             <Typography sx={{ textTransform: "capitalize" }}>
               {statusCall?.toLowerCase()}
             </Typography> */}
-              <Typography sx={{ textTransform: "capitalize" }}>
+              {/* <Typography sx={{ textTransform: "capitalize" }}>
                 Dhimas
-              </Typography>
+              </Typography> */}
               <Typography>
                 {statusCall === "waiting"
                   ? "Calling"
@@ -362,6 +379,17 @@ export default function phoneCall() {
                   ? "Connected"
                   : ""}
               </Typography>
+              <div style={{display: "flex", flexDirection: "row", justifyContent: "center", margin: "10px 0"}} className="timer">
+                <Typography style={{color: "#3DCB87", fontSize: 18, fontWeight: 600 }} className="digits">
+                  {("0" + Math.floor((time / 60000) % 60)).slice(-2)}:
+                </Typography>
+                <Typography style={{color: "#3DCB87", fontSize: 18, fontWeight: 600 }} className="digits">
+                  {("0" + Math.floor((time / 1000) % 60)).slice(-2)}
+                </Typography>
+                {/* <span className="digits mili-sec">
+                  {("0" + ((time / 10) % 100)).slice(-2)}
+                </span> */}
+              </div>
             </Box>
             {/* MUTE HANGUP BUTTON  */}
             <Grid
@@ -370,8 +398,28 @@ export default function phoneCall() {
               columnSpacing={{ xs: 1 }}
               sx={{ my: 2, paddingX: 3 }}
             >
-              <Grid item xs={4} padding={0} textAlign="center">
+              <Grid item xs={6} padding={0} textAlign="center">
                 <IconButton
+                  sx={{
+                    borderRadius: "50px",
+                    border: "2px solid #9D9FB1",
+                    padding: "15px",
+                  }}
+                  onClick={() => toggleMute()}
+                  fullWidth
+                  // variant={isMuted ? "contained" : "outlined"}
+                  // startIcon={isMuted ? MuteOff : MuteOn}
+                  // color={isMuted ? "error" : "primary"}
+                  disabled={!isCalling}
+                >
+                  <img src={isMuted ? MuteOn : MuteOff} />
+                </IconButton>
+                <Typography color="#9D9FB1" fontSize="16px" marginTop="10px">
+                  Mute
+                </Typography>
+              </Grid>
+              {/* <Grid item xs={6} textAlign="center">/ */}
+              {/* <IconButton
                   sx={{
                     borderRadius: "50px",
                     border: "2px solid #9D9FB1",
@@ -384,32 +432,12 @@ export default function phoneCall() {
                   color={isMuted ? "error" : "primary"}
                   disabled={!isCalling}
                 >
-                  <img src={isMuted ? MuteOn : MuteOff} />
-                </IconButton>
-                <Typography color="#9D9FB1" fontSize="16px" marginTop="10px">
-                  Mute
-                </Typography>
-              </Grid>
-              <Grid item xs={4} textAlign="center">
-                <IconButton
-                  sx={{
-                    borderRadius: "50px",
-                    border: "2px solid #9D9FB1",
-                    padding: "15px",
-                  }}
-                  onClick={() => toggleMute()}
-                  fullWidth
-                  variant={isMuted ? "contained" : "outlined"}
-                  startIcon={isMuted ? <MicOffIcon /> : <MicIcon />}
-                  color={isMuted ? "error" : "primary"}
-                  // disabled={!isCalling}
-                >
                   <img src={SpeakerOff} />
-                </IconButton>
-                <Typography color="#9D9FB1" fontSize="16px" marginTop="10px">
+                </IconButton> */}
+              {/* <Typography color="#9D9FB1" fontSize="16px" marginTop="10px">
                   Speaker
-                </Typography>
-                {/* <Button
+                </Typography> */}
+              {/* <Button
                 onClick={() => handleHangup()}
                 fullWidth
                 color="error"
@@ -419,8 +447,8 @@ export default function phoneCall() {
               >
                 Hangup
               </Button> */}
-              </Grid>
-              <Grid item xs={4} textAlign="center">
+              {/* </Grid> */}
+              <Grid item xs={6} textAlign="center">
                 <IconButton
                   sx={{
                     borderRadius: "50px",
@@ -430,7 +458,7 @@ export default function phoneCall() {
                   onClick={() => setIsKeypad(true)}
                   fullWidth
                   variant={isMuted ? "contained" : "outlined"}
-                  startIcon={isMuted ? <MicOffIcon /> : <MicIcon />}
+                  // startIcon={isMuted ? <MicOffIcon /> : <MicIcon />}
                   color={isMuted ? "error" : "primary"}
                   // disabled={!isCalling}
                 >
@@ -448,8 +476,9 @@ export default function phoneCall() {
                 width: "100%",
                 display: "flex",
                 justifyContent: "center",
-                position: `${type === "web" ? "" : "absolute"}`,
-                bottom: `${type === "web" ? "" : 0}`,
+                backgroundColor: "white",
+                position: "absolute",
+                bottom: 100,
               }}
               textAlign="center"
               marginY="20px"
@@ -470,13 +499,13 @@ export default function phoneCall() {
             Statu register: {statusRegiter}
           </Typography>
         </Box> */}
+          </Box>
+        </>
+      )}
             <Box display="none">
               <div id="remoteVideo" ref={remoteVideo}></div>
               <div id="localVideo" ref={localVideo}></div>
             </Box>
-          </Box>
-        </>
-      )}
     </Box>
   );
 }

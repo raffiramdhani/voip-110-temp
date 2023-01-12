@@ -8,6 +8,7 @@ import {
   Checkbox,
   CircularProgress,
   IconButton,
+  Alert,
 } from "@mui/material";
 
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -21,6 +22,7 @@ import StartCall from "@/components/Modals/StartCall";
 
 import FloatingButton from "@/components/FloatingButton";
 import Welcome from "@/components/Welcome";
+import ReCAPTCHA from "react-google-recaptcha";
 
 import useRouteStore from "@/store/routeStore";
 import useProfileStore from "@/store/profileStore";
@@ -29,7 +31,7 @@ import useAuth from "@/store/openingStore";
 
 const env = import.meta.env;
 
-export default function login() {
+export default function login(props) {
   const route = useRouteStore((state) => state);
   const profile = useProfileStore((state) => state);
   const [loading, setLoading] = useState(false);
@@ -42,11 +44,13 @@ export default function login() {
   const [openFloating, setOpenFloating] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [msgError, setMsgError] = useState(null);
+  const [captcha, setCaptcha] = useState(null);
 
   const { isOpen, setIsOpen } = useAuth((state) => state);
   const url_string = window.location.href;
   const url_params = new URL(url_string);
   const type = url_params.searchParams.get("type");
+  let captchaRef = React.useRef();
 
   const handleInput = (e) => {
     e.preventDefault();
@@ -55,17 +59,21 @@ export default function login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    const data = await requestExtension();
-    if (data) {
-      profile.setProfile(form);
-      profile.setReqExten(data);
-      route.push("call");
+    if (captcha) {
+      setLoading(true);
+      const data = await requestExtension();
+      if (data) {
+        profile.setProfile(form);
+        profile.setReqExten(data);
+        route.push("call");
+      } else {
+        setMsgError("Sorry, failed to call try again later!");
+        setTimeout(() => {
+          setMsgError(null);
+        }, 3000);
+      }
     } else {
-      setMsgError("Sorry, failed to call try again later!");
-      setTimeout(() => {
-        setMsgError(null);
-      }, 3000);
+      setMsgError("Please, checklist captcha!");
     }
     setLoading(false);
   };
@@ -149,11 +157,12 @@ export default function login() {
     <Box>
       {type === "web" ? (
         <>
-          {openFloating && isOpen === "login" ? (
+          {props.props.showCallPage && isOpen === "login" ? (
             <Box
-              position={`${type === "web" ? "absolute" : ""}`}
-              width={`${type === "web" ? "25%" : "100%"}`}
-              height={`${type === "web" ? "70%" : "100%"}`}
+              height="400px"
+              // position="absolute"
+              // width={`${type === "web" ? "25%" : "100%"}`}
+              // height={`${type === "web" ? "70%" : "100%"}`}
               bottom="8rem"
               right="2rem"
               display="flex"
@@ -180,19 +189,22 @@ export default function login() {
                     gap={2}
                   >
                     <img src={WelcomeIcon} />
-                    <Typography color={color.main}>OMNIX VoIP</Typography>
+                    <Typography fontWeight={600} color={color.main}>
+                      OMNIX VoIP
+                    </Typography>
                   </Box>
                   <IconButton
                     onClick={() => {
                       setIsOpen("login");
                       setOpenFloating(false);
+                      props.props.setCloseCall();
                     }}
                   >
                     <RemoveIcon />
                   </IconButton>
                 </Box>
               </Box>
-              <Box sx={{ padding: "20px" }}>
+              <Box sx={{ height: "495px", padding: "20px", backgroundColor: "white" }}>
                 <Typography className="mb-2">
                   To start a call, please fill the form before
                 </Typography>
@@ -200,74 +212,75 @@ export default function login() {
                   style={{ height: `80vh` }}
                   onSubmit={(e) => handleSubmit(e)}
                 >
+                  <Typography marginTop={2}>Fullname</Typography>
                   <TextField
                     value={form.name}
                     onChange={(e) => handleInput(e)}
                     // disabled={form.isLoadingSetupWebphone}
                     fullWidth
+                    placeholder="Enter fullname"
                     required
                     color="info"
                     id="form-name"
-                    label="Name"
+                    // label="Name"
                     size="small"
                     margin="dense"
                     name="name"
                     sx={styling.TextField}
                   />
+                  <Typography marginTop={1}>Email</Typography>
                   <TextField
                     value={form.email}
                     onChange={(e) => handleInput(e)}
                     // disabled={form.isLoadingSetupWebphone}
                     fullWidth
+                    placeholder="Email"
                     required
                     color="info"
                     id="form-email"
-                    label="Email"
+                    // label="Email"
                     name="email"
+                    type="email"
                     size="small"
                     margin="dense"
                     sx={styling.TextField}
                   />
+                  <Typography marginTop={1}>Phone number</Typography>
                   <TextField
                     value={form.phone}
                     onChange={(e) => handleInput(e)}
                     fullWidth
+                    placeholder="Phone number"
                     required
+                    variant="outlined"
                     color="info"
                     id="form-phone"
-                    label="Phone"
+                    // label="Phone"
                     name="phone"
                     size="small"
                     margin="dense"
                     type="number"
                     sx={styling.TextField}
                   />
-
-                  <Box>
-                    <Checkbox required sx={styling.Checkbox} />
-                    <Typography component="span" fontSize={12}>
-                      You agree to our friendly
-                    </Typography>
-                    <Typography
-                      component="span"
-                      fontSize={12}
-                      onClick={() => setOpenModalAgree(true)}
-                      color={color.main}
-                    >
-                      Privacy Policy
-                    </Typography>
+                  <Box marginTop={1}>
+                    <ReCAPTCHA
+                      required
+                      ref={captchaRef}
+                      sitekey="6LfAbc8jAAAAAFJJXtfVkUgwyF8cPdWhI_YSwcg7"
+                      onChange={(e) => setCaptcha(e)}
+                    />
                   </Box>
                   <Box
-                    width="90%"
+                    width="100%"
                     display="flex"
                     flexDirection="column"
                     justifyContent="center"
-                    position={`${type === "web" ? "absolute" : "absolute"}`}
-                    bottom={0}
+                    marginTop={3}
+                    bottom={5}
                     paddingY="12px"
                   >
                     {msgError ? (
-                      <Typography color="red">{msgError}</Typography>
+                      <Alert severity="error">{msgError}</Alert>
                     ) : (
                       <></>
                     )}
@@ -297,13 +310,13 @@ export default function login() {
                 </form>
               </Box>
             </Box>
-          ) : openFloating && isOpen === "welcome" ? (
-            <>
-              <Welcome setOpenFloating={setOpenFloating} />
-            </>
           ) : (
             <>
-              <FloatingButton setOpenFloating={setOpenFloating} />
+              <Welcome
+                setOpenModalAgree={setOpenModalAgree}
+                setOpenFloating={setOpenFloating}
+                setCloseCall={props.props.setCloseCall}
+              />
             </>
           )}
         </>
@@ -329,20 +342,20 @@ const color = {
 const styling = {
   TextField: {
     "& label.Mui-focused": {
-      color: color.secondary,
+      color: color.primary,
     },
     "& .MuiInput-underline:after": {
-      borderBottomColor: color.secondary,
+      borderBottomColor: color.primary,
     },
     "& .MuiOutlinedInput-root": {
       "& fieldset": {
         borderColor: color.main,
       },
       "&:hover fieldset": {
-        borderColor: "#001219",
+        borderColor: color.primary,
       },
       "&.Mui-focused fieldset": {
-        borderColor: color.secondary,
+        borderColor: color.primary,
       },
     },
   },

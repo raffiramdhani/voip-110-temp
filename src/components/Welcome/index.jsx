@@ -56,21 +56,24 @@ const styling = {
   },
 };
 
-const Welcome = ({ setIsLogin, setOpenFloating }) => {
+const Welcome = (props) => {
   const { setIsOpen } = useAuth((state) => state);
+  const [agree, setAgree] = useState(false)
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const [type, setType] = useState("");
-
+  // const [type, setType] = useState("");
+  const url_string = window.location.href;
+  const url_params = new URL(url_string);
+  const type = url_params.searchParams.get("type");
   // LISTEN HEIGHT WINDOW
   useEffect(() => {
     // window.addEventListener("message", (e) => console.log(e));
     function handleResize() {
       setWindowWidth(window.innerWidth);
       if (window.innerWidth < 768) {
-        setType("mobile");
+        // setType("mobile");
       }
       if (window.innerWidth >= 768) {
-        setType("web");
+        // setType("web");
       }
     }
 
@@ -82,12 +85,17 @@ const Welcome = ({ setIsLogin, setOpenFloating }) => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+  const label =
+    "By using this VOIP service, I agree to the  Terms & Condition Policy, and that the information I provide here is correct.";
   return (
     <>
       <Box
-        position={`${type === "web" ? "absolute" : ""}`}
-        width={`${type === "web" ? "25%" : "100%"}`}
-        height={`${type === "web" ? "70%" : "100vh"}`}
+        // position={`${type === "web" ? "absolute" : ""}`}
+        // width={`${type === "web" ? "25%" : "100%"}`}
+        // height={`${type === "web" ? "70%" : "100vh"}`}
+        // position="absolute"
+        // width={`${type === "web" ? "25%" : "100%"}`}
+        // height={`${type === "web" ? "70%" : "100vh"}`}
         bottom="8rem"
         right="2rem"
         display="flex"
@@ -109,41 +117,71 @@ const Welcome = ({ setIsLogin, setOpenFloating }) => {
           >
             <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
               <img src={WelcomeIcon} />
-              <Typography color={color.main}>OMNIX VoIP</Typography>
             </Box>
             <IconButton
               onClick={() => {
-                setIsOpen("welcome"), setOpenFloating(false);
+                setIsOpen("welcome");
+                // props.setOpenFloating(false);
+                props.setCloseCall();
               }}
             >
               <RemoveIcon />
             </IconButton>
           </Box>
           <Box marginY="10px">
-            <Typography
-              sx={{
-                fontWeight: 700,
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                gap: 5,
+                marginBottom: 5,
               }}
             >
-              Hi Welcome!
-            </Typography>
-            <Typography>What can we help you today?</Typography>
+              <Typography
+                sx={{
+                  fontWeight: 600,
+                }}
+              >
+                Welcome to
+              </Typography>
+              <Typography fontWeight={600} color={color.main}>
+                OMNIX VoIP
+              </Typography>
+            </div>
+            <Typography fontSize={12}>What can we help you today?</Typography>
           </Box>
         </Box>
-        <Box position="absolute" bottom="0px" padding="12px 15px">
-          <Box>
-            <Typography>We are online!</Typography>
-            <Box
-              display="flex"
-              flexDirection="row"
-              justifyContent="space-between"
-            >
-              <Typography>
-                You can start a conversation with our agents (livechat's name)
+        <Box height="359px" backgroundColor="white" padding="55px 15px">
+          <Box
+            display="flex"
+            flexDirection="row"
+            alignItems="start"
+            border="1px solid #C4C4C4"
+            borderRadius="10px"
+            padding="10px"
+          >
+            <Checkbox checked={agree} onChange={(e) => setAgree(e.target.checked)} label="label" />
+            <Box marginTop={1}>
+              <Typography fontSize="14px" marginBottom={2}>
+                {label}
               </Typography>
-              <img src={AgentDefault} />
+              <Typography
+                color="#5A55D2"
+                style={{ textDecoration: "underline" }}
+                onClick={() => {
+                  props.setOpenModalAgree(true)
+                }}
+                fontSize="14px"
+              >
+                Terms & Condition Policy
+              </Typography>
             </Box>
-            <Box>
+          </Box>
+          <Box
+            backgroundColor="white"
+            padding="12px 15px"
+            marginTop={25}
+          >
               <Button
                 sx={{
                   width: "100%",
@@ -152,14 +190,14 @@ const Welcome = ({ setIsLogin, setOpenFloating }) => {
                   backgroundColor: `${color.main}`,
                   color: "white",
                 }}
+                disabled={!agree}
                 variant="contained"
                 onClick={() => {
                   setIsOpen("login");
                 }}
               >
-                Start
+                I'm Agree
               </Button>
-            </Box>
           </Box>
         </Box>
       </Box>
