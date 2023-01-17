@@ -62,6 +62,7 @@ export default function login(props) {
     if (captcha) {
       setLoading(true);
       const data = await requestExtension();
+      console.log("data", data);
       if (data) {
         profile.setProfile(form);
         profile.setReqExten(data);
@@ -115,15 +116,23 @@ export default function login(props) {
         if (decryptText) {
           const decrypted = JSON.parse(decryptText);
           console.log("decrypted>>>", decrypted);
-          return {
-            token: decrypted.token,
-            exten: decrypted.exten,
-            secret: decrypted.secret,
-            callto: decrypted.callto,
-            sip: decrypted.sip,
-            rtc: decrypted.rtc,
-            api: decrypted.api,
-          };
+
+          if (decrypted.message === "extensions not available") {
+            setMsgError(`Sorry, ${decrypted.message}`);
+            setTimeout(() => {
+              setMsgError(null);
+            }, 3000);
+          } else {
+            return {
+              token: decrypted.token,
+              exten: decrypted.exten,
+              secret: decrypted.secret,
+              callto: decrypted.callto,
+              sip: decrypted.sip,
+              rtc: decrypted.rtc,
+              api: decrypted.api,
+            };
+          }
         }
       })
       .catch((err) => console.log("ERROR ==>>", err));
@@ -204,7 +213,13 @@ export default function login(props) {
                   </IconButton>
                 </Box>
               </Box>
-              <Box sx={{ height: "495px", padding: "20px", backgroundColor: "white" }}>
+              <Box
+                sx={{
+                  height: "495px",
+                  padding: "20px",
+                  backgroundColor: "white",
+                }}
+              >
                 <Typography className="mb-2">
                   To start a call, please fill the form before
                 </Typography>

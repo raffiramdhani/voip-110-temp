@@ -196,7 +196,7 @@ const Welcome = (props) => {
                   setIsOpen("login");
                 }}
               >
-                I'm Agree
+                I Agree
               </Button>
           </Box>
         </Box>
