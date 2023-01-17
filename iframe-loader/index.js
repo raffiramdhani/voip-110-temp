@@ -104,6 +104,7 @@ function widgetApi() {
 
     const MainColor = script.getAttribute("main-color");
     const urlOriginIframe = "https://widgetvoip-bpjs.netlify.app/";
+    // const urlOriginIframe = "http://localhost:5173/";
     const tenant = script.getAttribute("tenant")
 
     const api = {
@@ -174,8 +175,8 @@ function widgetApi() {
     });
 
     const license = script.getAttribute("data-license");
-    // const widgetUrl = `${urlOriginIframe}/${tenant}/?type=web&license=${license}`;
-    const widgetUrl = `${urlOriginIframe}?type=web&license=${license}`;
+    const widgetUrl = `${urlOriginIframe}/${tenant}/?type=web&license=${license}`;
+    // const widgetUrl = `${urlOriginIframe}?type=web&license=${license}`;
 
     iframe.src = widgetUrl;
 
