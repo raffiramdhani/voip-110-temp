@@ -104,6 +104,7 @@ function widgetApi() {
 
     const MainColor = script.getAttribute("main-color");
     const urlOriginIframe = "https://widgetvoip-bpjs.netlify.app/";
+    // const urlOriginIframe = "http://localhost:5173/";
     const tenant = script.getAttribute("tenant")
 
     const api = {
