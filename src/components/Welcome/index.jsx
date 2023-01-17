@@ -155,7 +155,7 @@ const Welcome = (props) => {
             <Typography fontSize={12}>What can we help you today?</Typography>
           </Box>
         </Box>
-        <Box height="359px" backgroundColor="white" padding="55px 15px">
+        <Box height={type === "web" ? "359px" : "100vh"} backgroundColor="white" padding="55px 15px">
           <Box
             display="flex"
             flexDirection="row"
