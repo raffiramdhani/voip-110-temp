@@ -58,7 +58,7 @@ const styling = {
 
 const Welcome = (props) => {
   const { setIsOpen } = useAuth((state) => state);
-  const [agree, setAgree] = useState(false)
+  const [agree, setAgree] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   // const [type, setType] = useState("");
   const url_string = window.location.href;
@@ -118,15 +118,19 @@ const Welcome = (props) => {
             <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
               <img src={WelcomeIcon} />
             </Box>
-            <IconButton
-              onClick={() => {
-                setIsOpen("welcome");
-                // props.setOpenFloating(false);
-                props.setCloseCall();
-              }}
-            >
-              <RemoveIcon />
-            </IconButton>
+            {type === "web" ? (
+              <IconButton
+                onClick={() => {
+                  setIsOpen("welcome");
+                  // props.setOpenFloating(false);
+                  props.setCloseCall();
+                }}
+              >
+                <RemoveIcon />
+              </IconButton>
+            ) : (
+              <></>
+            )}
           </Box>
           <Box marginY="10px">
             <div
@@ -160,7 +164,11 @@ const Welcome = (props) => {
             borderRadius="10px"
             padding="10px"
           >
-            <Checkbox checked={agree} onChange={(e) => setAgree(e.target.checked)} label="label" />
+            <Checkbox
+              checked={agree}
+              onChange={(e) => setAgree(e.target.checked)}
+              label="label"
+            />
             <Box marginTop={1}>
               <Typography fontSize="14px" marginBottom={2}>
                 {label}
@@ -169,7 +177,7 @@ const Welcome = (props) => {
                 color="#5A55D2"
                 style={{ textDecoration: "underline" }}
                 onClick={() => {
-                  props.setOpenModalAgree(true)
+                  props.setOpenModalAgree(true);
                 }}
                 fontSize="14px"
               >
@@ -177,27 +185,23 @@ const Welcome = (props) => {
               </Typography>
             </Box>
           </Box>
-          <Box
-            backgroundColor="white"
-            padding="12px 15px"
-            marginTop={25}
-          >
-              <Button
-                sx={{
-                  width: "100%",
-                  borderRadius: "10px",
-                  marginTop: "1em",
-                  backgroundColor: `${color.main}`,
-                  color: "white",
-                }}
-                disabled={!agree}
-                variant="contained"
-                onClick={() => {
-                  setIsOpen("login");
-                }}
-              >
-                I Agree
-              </Button>
+          <Box backgroundColor="white" padding="12px 15px" marginTop={25}>
+            <Button
+              sx={{
+                width: "100%",
+                borderRadius: "10px",
+                marginTop: "1em",
+                backgroundColor: `${color.main}`,
+                color: "white",
+              }}
+              disabled={!agree}
+              variant="contained"
+              onClick={() => {
+                setIsOpen("login");
+              }}
+            >
+              I Agree
+            </Button>
           </Box>
         </Box>
       </Box>

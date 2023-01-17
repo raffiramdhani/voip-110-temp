@@ -333,7 +333,7 @@ export default function phoneCall() {
         <>
           <Box
             width="100%"
-            height="535px"
+            height="100vh"
             bgcolor="#FFF"
             display="flex"
             position="relative"
