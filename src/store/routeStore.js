@@ -4,7 +4,6 @@ import { devtools, persist } from "zustand/middleware";
 const intialValue = {
   curentRoute: "login",
   ui: {
-    openCallUI: false,
     error: false,
     errorMessage: null,
   },

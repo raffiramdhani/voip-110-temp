@@ -1,5 +1,13 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { Box, Grid, Paper, Button, Typography } from "@mui/material";
+import {
+  Box,
+  Grid,
+  Paper,
+  Button,
+  Typography,
+  IconButton,
+} from "@mui/material";
+import RemoveIcon from "@mui/icons-material/Remove";
 
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import MicOffIcon from "@mui/icons-material/MicOff";
@@ -11,6 +19,18 @@ import DTMFSound from "../assets/dtmf.wav";
 
 import { decrypt } from "@/utils/encrypt";
 import useProfileStore from "@/store/profileStore";
+
+import NumPad from "@/styles/AlfaNumerik.jsx";
+import CallerAva from "../assets/caller-ava.png";
+
+import MuteOff from "../assets/mute-off.png";
+import MuteOn from "../assets/mute-on.png";
+import SpeakerOn from "../assets/speaker-on.png";
+import SpeakerOff from "../assets/speaker-off.png";
+import KeypadIcon from "../assets/keypad.png";
+import EndCall from "../assets/end-call.png";
+
+import Keypad from "../components/Keypad";
 
 const env = import.meta.env;
 
@@ -29,6 +49,8 @@ export default function phoneCall() {
   const [reqExten, setReqExten] = useState(null);
   const [statusRegiter, setStatusRegister] = useState(null);
   const [statusCall, setStatusCall] = useState("waiting");
+
+  const [isKeypad, setIsKeypad] = useState(false);
 
   useEffect(() => {
     initFlashphoner();
@@ -164,6 +186,7 @@ export default function phoneCall() {
       .on(CALL_STATUS.ESTABLISHED, function (call) {
         console.log("CALL_STATUS ==>> " + CALL_STATUS.ESTABLISHED);
         setStatusCall(CALL_STATUS.ESTABLISHED);
+        handleStart()
       })
       .on(CALL_STATUS.HOLD, function (call) {
         console.log("CALL_STATUS ==>> " + CALL_STATUS.HOLD);
@@ -179,7 +202,7 @@ export default function phoneCall() {
       });
 
     outCall.call();
-    console.log(outCall);
+    console.log("outCall", outCall);
     currentCall.current = outCall;
   };
 
@@ -228,115 +251,267 @@ export default function phoneCall() {
   };
 
   const isCalling = statusCall === CALL_STATUS.ESTABLISHED;
+  console.log(statusCall);
+
+  //Stopwatch
+  const [isActive, setIsActive] = useState(false);
+  const [isPaused, setIsPaused] = useState(true);
+  const [time, setTime] = useState(0);
+
+  React.useEffect(() => {
+    let interval = null;
+
+    if (isActive && isPaused === false) {
+      interval = setInterval(() => {
+        setTime((time) => time + 10);
+      }, 10);
+    } else {
+      clearInterval(interval);
+    }
+    return () => {
+      clearInterval(interval);
+    };
+
+    
+  }, [isActive, isPaused]);
+
+  const handleStart = () => {
+    setIsActive(true);
+    setIsPaused(false);
+  };
+
+  const handlePauseResume = () => {
+    setIsPaused(!isPaused);
+  };
+
+  const handleReset = () => {
+    setIsActive(false);
+    setTime(0);
+  };
+
   return (
     <Box
-      width="100%"
-      height="100%"
-      bgcolor="#FFF"
+      // position={`${type === "web" ? "absolute" : ""}`}
+      // width={`${type === "web" ? "25%" : "100%"}`}
+      // height={`${type === "web" ? "70%" : "100vh"}`}
+      bottom="8rem"
+      right="2rem"
       display="flex"
-      justifyContent="center"
-      alignItems="center"
+      flexDirection="column"
+      boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
+      backgroundColor="white"
     >
-      <Box maxWidth="350px"       >
-        {/* PROFILE AGNET PIC  */}
+      <Box
+        padding="12px 15px"
+        display="flex"
+        alignItems="center"
+        bgcolor={color.secondary}
+      >
         <Box
+          width="100%"
           display="flex"
-          justifyContent="center"
+          flexDirection="row"
+          justifyContent="space-between"
           alignItems="center"
-          mb="20px"
         >
+          <Typography>VoIP ONX</Typography>
+        </Box>
+        <IconButton
+        // onClick={() => {
+        //   setIsOpen("login");
+        //   setOpenFloating(false);
+        // }}
+        >
+          <RemoveIcon />
+        </IconButton>
+      </Box>
+      {isKeypad ? (
+        <>
+          <Keypad setIsKeypad={setIsKeypad} isCalling={isCalling} endCall={endCall} onDialPadPressed={onDialPadPressed} />
+        </>
+      ) : (
+        <>
           <Box
-            bgcolor={env.VITE_APP_MAIN_COLOR}
+            width="100%"
+            height="535px"
+            bgcolor="#FFF"
             display="flex"
-            alignItems="center"
-            justifyContent="center"
-            width="70px"
-            height="70px"
-            borderRadius="100%"
+            position="relative"
+            flexDirection="column"
           >
-            <SupportAgentIcon sx={{ fontSize: "50px", color: "#fff" }} />
-          </Box>
-        </Box>
-        <Box textAlign="center">
-          <Typography fontSize="9px" color="#c4c4c4">
-            status
-          </Typography>
-          <Typography sx={{ textTransform: "capitalize" }}>
-            {statusCall?.toLowerCase()}
-          </Typography>
-        </Box>
-        {/* MUTE HANGUP BUTTON  */}
-        <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ my: 2 }}>
-          <Grid item xs={6}>
-            <Button
-              onClick={() => toggleMute()}
-              fullWidth
-              variant={isMuted ? "contained" : "outlined"}
-              startIcon={isMuted ? <MicOffIcon /> : <MicIcon />}
-              color={isMuted ? "error" : "primary"}
-              disabled={!isCalling}
+            {/* PROFILE AGNET PIC  */}
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              marginY="20px"
             >
-              {isMuted ? "Unmute" : "Mute"}
-            </Button>
-          </Grid>
-          <Grid item xs={6}>
-            <Button
-              onClick={() => handleHangup()}
-              fullWidth
-              color="error"
-              variant="outlined"
-              startIcon={<PhoneDisabledIcon />}
-              disabled={!isCalling}
-            >
-              Hangup
-            </Button>
-          </Grid>
-        </Grid>
-        {/* DIAL PAD  */}
-        <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }}>
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9, "*", 0, "#"].map((d, i) => (
-            <Grid
-              onClick={() => {
-                if (isCalling) {
-                  onDialPadPressed(d);
-                }
-              }}
-              key={i}
-              item
-              xs={4}
-            >
-              <Paper
-                sx={{
-                  "&:hover": { bgcolor: "#f4f4f4" },
-                  "&:focus": { bgcolor: "#f4f4f4" },
-                  padding: "10px",
-                  bgcolor: isCalling ? "#fff" : "#f4f4f4",
-                  cursor: isCalling ? "pointer" : "not-allowed",
-                }}
+              <Box
+                bgcolor={env.VITE_APP_MAIN_COLOR}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                width="70px"
+                height="70px"
+                borderRadius="100%"
+                padding="15px"
+                border="none"
               >
-                {d}
-              </Paper>
+                <img className="my-3" src={CallerAva} />
+              </Box>
+            </Box>
+            <Box textAlign="center">
+              {/* <Typography fontSize="9px" color="#c4c4c4">
+              status
+            </Typography>
+            <Typography sx={{ textTransform: "capitalize" }}>
+              {statusCall?.toLowerCase()}
+            </Typography> */}
+              {/* <Typography sx={{ textTransform: "capitalize" }}>
+                Dhimas
+              </Typography> */}
+              <Typography>
+                {statusCall === "waiting"
+                  ? "Calling"
+                  : statusCall === "finish"
+                  ? "Ringing"
+                  : statusCall === "ESTABLISHED"
+                  ? "Connected"
+                  : ""}
+              </Typography>
+              <div style={{display: "flex", flexDirection: "row", justifyContent: "center", margin: "10px 0"}} className="timer">
+                <Typography style={{color: "#3DCB87", fontSize: 18, fontWeight: 600 }} className="digits">
+                  {("0" + Math.floor((time / 60000) % 60)).slice(-2)}:
+                </Typography>
+                <Typography style={{color: "#3DCB87", fontSize: 18, fontWeight: 600 }} className="digits">
+                  {("0" + Math.floor((time / 1000) % 60)).slice(-2)}
+                </Typography>
+                {/* <span className="digits mili-sec">
+                  {("0" + ((time / 10) % 100)).slice(-2)}
+                </span> */}
+              </div>
+            </Box>
+            {/* MUTE HANGUP BUTTON  */}
+            <Grid
+              container
+              rowSpacing={1}
+              columnSpacing={{ xs: 1 }}
+              sx={{ my: 2, paddingX: 3 }}
+            >
+              <Grid item xs={6} padding={0} textAlign="center">
+                <IconButton
+                  sx={{
+                    borderRadius: "50px",
+                    border: "2px solid #9D9FB1",
+                    padding: "15px",
+                  }}
+                  onClick={() => toggleMute()}
+                  fullWidth
+                  // variant={isMuted ? "contained" : "outlined"}
+                  // startIcon={isMuted ? MuteOff : MuteOn}
+                  // color={isMuted ? "error" : "primary"}
+                  disabled={!isCalling}
+                >
+                  <img src={isMuted ? MuteOn : MuteOff} />
+                </IconButton>
+                <Typography color="#9D9FB1" fontSize="16px" marginTop="10px">
+                  Mute
+                </Typography>
+              </Grid>
+              {/* <Grid item xs={6} textAlign="center">/ */}
+              {/* <IconButton
+                  sx={{
+                    borderRadius: "50px",
+                    border: "2px solid #9D9FB1",
+                    padding: "15px",
+                  }}
+                  onClick={() => toggleMute()}
+                  fullWidth
+                  variant={isMuted ? "contained" : "outlined"}
+                  startIcon={isMuted ? <MicOffIcon /> : <MicIcon />}
+                  color={isMuted ? "error" : "primary"}
+                  disabled={!isCalling}
+                >
+                  <img src={SpeakerOff} />
+                </IconButton> */}
+              {/* <Typography color="#9D9FB1" fontSize="16px" marginTop="10px">
+                  Speaker
+                </Typography> */}
+              {/* <Button
+                onClick={() => handleHangup()}
+                fullWidth
+                color="error"
+                variant="outlined"
+                startIcon={<PhoneDisabledIcon />}
+                disabled={!isCalling}
+              >
+                Hangup
+              </Button> */}
+              {/* </Grid> */}
+              <Grid item xs={6} textAlign="center">
+                <IconButton
+                  sx={{
+                    borderRadius: "50px",
+                    border: "2px solid #9D9FB1",
+                    padding: "15px",
+                  }}
+                  onClick={() => setIsKeypad(true)}
+                  fullWidth
+                  variant={isMuted ? "contained" : "outlined"}
+                  // startIcon={isMuted ? <MicOffIcon /> : <MicIcon />}
+                  color={isMuted ? "error" : "primary"}
+                  // disabled={!isCalling}
+                >
+                  <img src={KeypadIcon} />
+                </IconButton>
+                <Typography color="#9D9FB1" fontSize="16px" marginTop="10px">
+                  Keypad
+                </Typography>
+              </Grid>
             </Grid>
-          ))}
-        </Grid>
-        {/* END CALL BUTTON  */}
-        <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} sx={{ my: 2 }}>
-          <Grid item xs={12}>
-            <Button onClick={() => endCall()} fullWidth variant="outlined">
-              End Call
-            </Button>
-          </Grid>
-        </Grid>
-        <Box>
+
+            {/* END CALL BUTTON  */}
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+                backgroundColor: "white",
+                position: "absolute",
+                bottom: 100,
+              }}
+              textAlign="center"
+              marginY="20px"
+            >
+              <IconButton
+                sx={{
+                  borderRadius: "100%",
+                  padding: "22px 15px",
+                  backgroundColor: "#FF3B30",
+                }}
+                onClick={() => endCall()}
+              >
+                <img src={EndCall} />
+              </IconButton>
+            </Box>
+            {/* <Box>
           <Typography fontSize={9} color="#c4c4c4">
             Statu register: {statusRegiter}
           </Typography>
-        </Box>
-        <Box display="none">
-          <div id="remoteVideo" ref={remoteVideo}></div>
-          <div id="localVideo" ref={localVideo}></div>
-        </Box>
-      </Box>
+        </Box> */}
+          </Box>
+        </>
+      )}
+            <Box display="none">
+              <div id="remoteVideo" ref={remoteVideo}></div>
+              <div id="localVideo" ref={localVideo}></div>
+            </Box>
     </Box>
   );
 }
+
+const color = {
+  textTitle: "#fff",
+  main: env.VITE_APP_MAIN_COLOR,
+  secondary: "#EBE8FF",
+};

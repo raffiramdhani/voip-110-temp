@@ -74,8 +74,8 @@ function widgetApi() {
     widgetStyle.display = "none";
     widgetStyle.boxSizing = "border-box";
 
-    widgetStyle.width = "80px";
-    widgetStyle.height = "80px";
+    widgetStyle.width = "400px";
+    widgetStyle.height = "600px";
     widgetStyle.position = "fixed";
     widgetStyle.bottom = "5px";
     widgetStyle.right = "10px";
@@ -103,7 +103,7 @@ function widgetApi() {
     widget.appendChild(iframe);
 
     const MainColor = script.getAttribute("main-color");
-    const urlOriginIframe = "http://localhost:5173/";
+    const urlOriginIframe = "https://widgetvoip-bpjs.netlify.app/";
     const tenant = script.getAttribute("tenant")
 
     const api = {
@@ -174,7 +174,8 @@ function widgetApi() {
     });
 
     const license = script.getAttribute("data-license");
-    const widgetUrl = `${urlOriginIframe}/${tenant}/?license=${license}`;
+    // const widgetUrl = `${urlOriginIframe}/${tenant}/?type=web&license=${license}`;
+    const widgetUrl = `${urlOriginIframe}?type=web&license=${license}`;
 
     iframe.src = widgetUrl;
 
