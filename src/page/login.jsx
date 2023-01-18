@@ -46,6 +46,9 @@ export default function login(props) {
   const [msgError, setMsgError] = useState(null);
   const [captcha, setCaptcha] = useState(null);
 
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [errMsg, setErrMsg] = useState(null);
+
   const { isOpen, setIsOpen } = useAuth((state) => state);
   const url_string = window.location.href;
   const url_params = new URL(url_string);
@@ -58,21 +61,28 @@ export default function login(props) {
   };
 
   const handleSubmit = async (e) => {
+    // if (phoneNumber !== regexPhoneNumber) {
+    //   setMsgError("Sorry, phone number in invalid!");
+    // }
     e.preventDefault();
     if (captcha) {
-      setLoading(true);
-      const data = await requestExtension();
-      console.log("data", data);
-      if (data) {
-        profile.setProfile(form);
-        profile.setReqExten(data);
-        route.push("call");
-      } else {
-        setMsgError("Sorry, failed to call try again later!");
-        setTimeout(() => {
-          setMsgError(null);
-        }, 3000);
-      }
+      // if (phoneNumber !== regexPhoneNumber) {
+      //   setMsgError("Sorry, phone number in invalid!");
+      // } else {
+        setLoading(true);
+        const data = await requestExtension();
+        // console.log("data", data);
+        if (data) {
+          profile.setProfile(form);
+          profile.setReqExten(data);
+          route.push("call");
+        } else {
+          setMsgError("Sorry, failed to call try again later!");
+          setTimeout(() => {
+            setMsgError(null);
+          }, 3000);
+        }
+      // }
     } else {
       setMsgError("Please, checklist captcha!");
     }
@@ -115,7 +125,7 @@ export default function login(props) {
         const decryptText = decrypt(res);
         if (decryptText) {
           const decrypted = JSON.parse(decryptText);
-          console.log("decrypted>>>", decrypted);
+          // console.log("decrypted>>>", decrypted);
 
           if (decrypted.message === "extensions not available") {
             setMsgError(`Sorry, ${decrypted.message}`);
@@ -139,6 +149,15 @@ export default function login(props) {
 
     return data;
   };
+
+  // const regexPhoneNumber =
+    // "(()?(+62|62|0)(d{2,3})?)?[ .-]?d{2,4}[ .-]?d{2,4}[ .-]?d{2,4}";
+    // "(()?(+62|62|0)(d{2,3})?)?[ .-]?d{2,4}[ .-]?d{2,4}[ .-]?d{2,4}";
+    // "(\+62 ((\d{3}([ -]\d{3,})([- ]\d{4,})?)|(\d+)))|(\(\d+\) \d+)|\d{3}( \d+)+|(\d+[ -]\d+)|\d+";
+
+    // const testPhone = phoneNumber.match(regexPhoneNumber)
+
+    // console.log("testphone", testPhone);
 
   // LISTEN HEIGHT WINDOW
   useEffect(() => {
@@ -267,7 +286,10 @@ export default function login(props) {
                 <Typography marginTop={1}>Phone number</Typography>
                 <TextField
                   value={form.phone}
-                  onChange={(e) => handleInput(e)}
+                  onChange={(e) => {
+                    setPhoneNumber(e.target.value);
+                    handleInput(e);
+                  }}
                   fullWidth
                   placeholder="Phone number"
                   required
