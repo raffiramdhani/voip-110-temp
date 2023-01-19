@@ -1,5 +1,8 @@
 # Voip Widget
 
+## How to Embedded Widget VoIP
+
+- Add this url https://widgetvoip-bpjs.netlify.app/index.js in element script at index.html
 
 
 ## Getting started

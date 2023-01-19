@@ -54,7 +54,7 @@ export default function phoneCall() {
 
   useEffect(() => {
     initFlashphoner();
-    console.log("1.0.0");
+    // console.log("1.0.0");
   }, []);
 
   // STEP 1
@@ -94,7 +94,7 @@ export default function phoneCall() {
         const decryptText = decrypt(res);
         if (decryptText) {
           const decrypted = JSON.parse(decryptText);
-          console.log("decrypted>>>", decrypted);
+          // console.log("decrypted>>>", decrypted);
           return {
             token: decrypted.token,
             exten: decrypted.exten,
@@ -139,33 +139,33 @@ export default function phoneCall() {
       urlServer: data.rtc,
       sipOptions,
     };
-    console.log("connectionOption >>", sipOptions);
+    // console.log("connectionOption >>", sipOptions);
 
     Flashphoner.createSession(connectionOptions)
       .on(SESSION_STATUS.ESTABLISHED, function (session) {
         call({ session, reqExten: data });
-        console.log("Register ==>> " + SESSION_STATUS.ESTABLISHED);
+        // console.log("Register ==>> " + SESSION_STATUS.ESTABLISHED);
         setStatusRegister(SESSION_STATUS.ESTABLISHED);
       })
       .on(SESSION_STATUS.REGISTERED, function (session) {
-        console.log("Register ==>> " + SESSION_STATUS.REGISTERED);
+        // console.log("Register ==>> " + SESSION_STATUS.REGISTERED);
         setStatusRegister(SESSION_STATUS.REGISTERED);
       })
       .on(SESSION_STATUS.DISCONNECTED, function () {
-        console.log("Register ==>> " + SESSION_STATUS.DISCONNECTED);
+        // console.log("Register ==>> " + SESSION_STATUS.DISCONNECTED);
         setStatusRegister(SESSION_STATUS.DISCONNECTED);
       })
       .on(SESSION_STATUS.FAILED, function () {
-        console.log("Register ==>> " + SESSION_STATUS.DISCONNECTED);
+        // console.log("Register ==>> " + SESSION_STATUS.DISCONNECTED);
         setStatusRegister(SESSION_STATUS.DISCONNECTED);
       });
 
-    console.log("Phone - connecting");
+    // console.log("Phone - connecting");
   };
 
   // STEP 4
   const call = async ({ session, reqExten }) => {
-    console.log("Phone - call " + reqExten.callto);
+    // console.log("Phone - call " + reqExten.callto);
     let constraints = {
       audio: true,
       video: false,
@@ -180,29 +180,29 @@ export default function phoneCall() {
         constraints: constraints,
       })
       .on(CALL_STATUS.RING, function (call) {
-        console.log("CALL_STATUS ==>> " + CALL_STATUS.RING);
+        // console.log("CALL_STATUS ==>> " + CALL_STATUS.RING);
         setStatusCall(CALL_STATUS.RING);
       })
       .on(CALL_STATUS.ESTABLISHED, function (call) {
-        console.log("CALL_STATUS ==>> " + CALL_STATUS.ESTABLISHED);
+        // console.log("CALL_STATUS ==>> " + CALL_STATUS.ESTABLISHED);
         setStatusCall(CALL_STATUS.ESTABLISHED);
         handleStart()
       })
       .on(CALL_STATUS.HOLD, function (call) {
-        console.log("CALL_STATUS ==>> " + CALL_STATUS.HOLD);
+        // console.log("CALL_STATUS ==>> " + CALL_STATUS.HOLD);
         setStatusCall(CALL_STATUS.HOLD);
       })
       .on(CALL_STATUS.FINISH, function (call) {
-        console.log("CALL_STATUS ==>> " + CALL_STATUS.FINISH);
+        // console.log("CALL_STATUS ==>> " + CALL_STATUS.FINISH);
         setStatusCall(CALL_STATUS.FINISH);
       })
       .on(CALL_STATUS.FAILED, function (call) {
-        console.log("CALL_STATUS ==>> " + CALL_STATUS.FAILED);
+        // console.log("CALL_STATUS ==>> " + CALL_STATUS.FAILED);
         setStatusCall(CALL_STATUS.FAILED);
       });
 
     outCall.call();
-    console.log("outCall", outCall);
+    // console.log("outCall", outCall);
     currentCall.current = outCall;
   };
 
@@ -251,7 +251,7 @@ export default function phoneCall() {
   };
 
   const isCalling = statusCall === CALL_STATUS.ESTABLISHED;
-  console.log(statusCall);
+  // console.log(statusCall);
 
   //Stopwatch
   const [isActive, setIsActive] = useState(false);
@@ -333,7 +333,7 @@ export default function phoneCall() {
         <>
           <Box
             width="100%"
-            height="535px"
+            height="100vh"
             bgcolor="#FFF"
             display="flex"
             position="relative"

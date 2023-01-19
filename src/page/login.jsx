@@ -29,6 +29,8 @@ import useProfileStore from "@/store/profileStore";
 import { decrypt } from "@/utils/encrypt";
 import useAuth from "@/store/openingStore";
 
+import { browserName, osName } from "react-device-detect";
+
 const env = import.meta.env;
 
 export default function login(props) {
@@ -46,6 +48,9 @@ export default function login(props) {
   const [msgError, setMsgError] = useState(null);
   const [captcha, setCaptcha] = useState(null);
 
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [errMsg, setErrMsg] = useState(null);
+
   const { isOpen, setIsOpen } = useAuth((state) => state);
   const url_string = window.location.href;
   const url_params = new URL(url_string);
@@ -58,11 +63,19 @@ export default function login(props) {
   };
 
   const handleSubmit = async (e) => {
+    // if (phoneNumber !== regexPhoneNumber) {
+    //   setMsgError("Sorry, phone number in invalid!");
+    // }
     e.preventDefault();
     if (captcha) {
+      // if (phoneNumber !== regexPhoneNumber) {
+      //   setMsgError("Sorry, phone number in invalid!");
+      // } else {
       setLoading(true);
       const data = await requestExtension();
+      console.log("data", data);
       if (data) {
+        postTransaction(data);
         profile.setProfile(form);
         profile.setReqExten(data);
         route.push("call");
@@ -72,10 +85,45 @@ export default function login(props) {
           setMsgError(null);
         }, 3000);
       }
+      // }
     } else {
       setMsgError("Please, checklist captcha!");
     }
     setLoading(false);
+  };
+
+  const postTransaction = async (value) => {
+    let myHeaders = new Headers();
+    myHeaders.append("Authorization", `${env.VITE_APP_AUTHORIZATION}`);
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+      username: form.name === "" ? "Jane" : form.name,
+      email: form.email === "" ? "jane@gmail.com" : form.email,
+      phone: form.phone === "" ? "081234567899" : form.phone,
+      date_call: new Date(),
+      os: osName,
+      browser: browserName,
+      tenant_id: 0,
+      tenant: env.VITE_APP_EXTEN_TENANT,
+      extention: parseInt(value.exten),
+      call_id: value.callto,
+    });
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    const data = await fetch(
+      `https://apidev-voip.onx.co.id/voip/transaction`,
+      requestOptions
+    )
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+    return data;
   };
 
   const handleSubmitMobile = async () => {
@@ -108,28 +156,48 @@ export default function login(props) {
       redirect: "follow",
     };
 
-    const data = await fetch(`${env.VITE_APP_EXTEN_URL}`, requestOptions)
+    const data = await fetch(
+      `${env.VITE_APP_EXTEN_URL}${env.VITE_APP_EXTEN_TENANT}`,
+      requestOptions
+    )
       .then((res) => res.text())
       .then((res) => {
         const decryptText = decrypt(res);
         if (decryptText) {
           const decrypted = JSON.parse(decryptText);
           console.log("decrypted>>>", decrypted);
-          return {
-            token: decrypted.token,
-            exten: decrypted.exten,
-            secret: decrypted.secret,
-            callto: decrypted.callto,
-            sip: decrypted.sip,
-            rtc: decrypted.rtc,
-            api: decrypted.api,
-          };
+
+          if (decrypted.status === "failed") {
+            setMsgError(`Sorry, ${decrypted.message}`);
+            setTimeout(() => {
+              setMsgError(null);
+            }, 3000);
+          } else {
+            return {
+              token: decrypted.token,
+              exten: decrypted.exten,
+              secret: decrypted.secret,
+              callto: decrypted.callto,
+              sip: decrypted.sip,
+              rtc: decrypted.rtc,
+              api: decrypted.api,
+            };
+          }
         }
       })
       .catch((err) => console.log("ERROR ==>>", err));
 
     return data;
   };
+
+  // const regexPhoneNumber =
+  // "(()?(+62|62|0)(d{2,3})?)?[ .-]?d{2,4}[ .-]?d{2,4}[ .-]?d{2,4}";
+  // "(()?(+62|62|0)(d{2,3})?)?[ .-]?d{2,4}[ .-]?d{2,4}[ .-]?d{2,4}";
+  // "(\+62 ((\d{3}([ -]\d{3,})([- ]\d{4,})?)|(\d+)))|(\(\d+\) \d+)|\d{3}( \d+)+|(\d+[ -]\d+)|\d+";
+
+  // const testPhone = phoneNumber.match(regexPhoneNumber)
+
+  // console.log("testphone", testPhone);
 
   // LISTEN HEIGHT WINDOW
   useEffect(() => {
@@ -155,44 +223,45 @@ export default function login(props) {
 
   return (
     <Box>
-      {type === "web" ? (
-        <>
-          {props.props.showCallPage && isOpen === "login" ? (
+      {/* {type === "web" ? ( */}
+      <>
+        {props.props.showCallPage && isOpen === "login" ? (
+          <Box
+            height="400px"
+            // position="absolute"
+            // width={`${type === "web" ? "25%" : "100%"}`}
+            // height={`${type === "web" ? "70%" : "100%"}`}
+            bottom="8rem"
+            right="2rem"
+            display="flex"
+            flexDirection="column"
+            boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
+          >
             <Box
-              height="400px"
-              // position="absolute"
-              // width={`${type === "web" ? "25%" : "100%"}`}
-              // height={`${type === "web" ? "70%" : "100%"}`}
-              bottom="8rem"
-              right="2rem"
+              padding="12px 15px"
               display="flex"
-              flexDirection="column"
-              boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
+              alignItems="center"
+              bgcolor={color.secondary}
             >
               <Box
-                padding="12px 15px"
+                width="100%"
                 display="flex"
+                flexDirection="row"
+                justifyContent="space-between"
                 alignItems="center"
-                bgcolor={color.secondary}
               >
                 <Box
-                  width="100%"
                   display="flex"
                   flexDirection="row"
-                  justifyContent="space-between"
                   alignItems="center"
+                  gap={2}
                 >
-                  <Box
-                    display="flex"
-                    flexDirection="row"
-                    alignItems="center"
-                    gap={2}
-                  >
-                    <img src={WelcomeIcon} />
-                    <Typography fontWeight={600} color={color.main}>
-                      OMNIX VoIP
-                    </Typography>
-                  </Box>
+                  <img src={WelcomeIcon} />
+                  <Typography fontWeight={600} color={color.main}>
+                    OMNIX VoIP
+                  </Typography>
+                </Box>
+                {type === "web" ? (
                   <IconButton
                     onClick={() => {
                       setIsOpen("login");
@@ -202,129 +271,141 @@ export default function login(props) {
                   >
                     <RemoveIcon />
                   </IconButton>
-                </Box>
-              </Box>
-              <Box sx={{ height: "495px", padding: "20px", backgroundColor: "white" }}>
-                <Typography className="mb-2">
-                  To start a call, please fill the form before
-                </Typography>
-                <form
-                  style={{ height: `80vh` }}
-                  onSubmit={(e) => handleSubmit(e)}
-                >
-                  <Typography marginTop={2}>Fullname</Typography>
-                  <TextField
-                    value={form.name}
-                    onChange={(e) => handleInput(e)}
-                    // disabled={form.isLoadingSetupWebphone}
-                    fullWidth
-                    placeholder="Enter fullname"
-                    required
-                    color="info"
-                    id="form-name"
-                    // label="Name"
-                    size="small"
-                    margin="dense"
-                    name="name"
-                    sx={styling.TextField}
-                  />
-                  <Typography marginTop={1}>Email</Typography>
-                  <TextField
-                    value={form.email}
-                    onChange={(e) => handleInput(e)}
-                    // disabled={form.isLoadingSetupWebphone}
-                    fullWidth
-                    placeholder="Email"
-                    required
-                    color="info"
-                    id="form-email"
-                    // label="Email"
-                    name="email"
-                    type="email"
-                    size="small"
-                    margin="dense"
-                    sx={styling.TextField}
-                  />
-                  <Typography marginTop={1}>Phone number</Typography>
-                  <TextField
-                    value={form.phone}
-                    onChange={(e) => handleInput(e)}
-                    fullWidth
-                    placeholder="Phone number"
-                    required
-                    variant="outlined"
-                    color="info"
-                    id="form-phone"
-                    // label="Phone"
-                    name="phone"
-                    size="small"
-                    margin="dense"
-                    type="number"
-                    sx={styling.TextField}
-                  />
-                  <Box marginTop={1}>
-                    <ReCAPTCHA
-                      required
-                      ref={captchaRef}
-                      sitekey="6LfAbc8jAAAAAFJJXtfVkUgwyF8cPdWhI_YSwcg7"
-                      onChange={(e) => setCaptcha(e)}
-                    />
-                  </Box>
-                  <Box
-                    width="100%"
-                    display="flex"
-                    flexDirection="column"
-                    justifyContent="center"
-                    marginTop={3}
-                    bottom={5}
-                    paddingY="12px"
-                  >
-                    {msgError ? (
-                      <Alert severity="error">{msgError}</Alert>
-                    ) : (
-                      <></>
-                    )}
-                    <Button
-                      type="submit"
-                      sx={{
-                        width: "100%",
-                        borderRadius: "10px",
-                        marginTop: "1em",
-                        backgroundColor: `${color.main}`,
-                        color: "white",
-                      }}
-                      variant="contained"
-                      // startIcon={<PhoneInTalkIcon />}
-                      disabled={loading}
-                    >
-                      {loading && (
-                        <CircularProgress
-                          size={20}
-                          color="inherit"
-                          sx={{ marginX: "10px" }}
-                        />
-                      )}
-                      Start Call
-                    </Button>
-                  </Box>
-                </form>
+                ) : (
+                  <></>
+                )}
               </Box>
             </Box>
-          ) : (
-            <>
-              <Welcome
-                setOpenModalAgree={setOpenModalAgree}
-                setOpenFloating={setOpenFloating}
-                setCloseCall={props.props.setCloseCall}
-              />
-            </>
-          )}
-        </>
-      ) : (
+            <Box
+              sx={{
+                height: "495px",
+                padding: "20px",
+                backgroundColor: "white",
+              }}
+            >
+              <Typography className="mb-2">
+                To start a call, please fill the form before
+              </Typography>
+              <form
+                style={{ height: `80vh` }}
+                onSubmit={(e) => handleSubmit(e)}
+              >
+                <Typography marginTop={2}>Fullname</Typography>
+                <TextField
+                  value={form.name}
+                  onChange={(e) => handleInput(e)}
+                  // disabled={form.isLoadingSetupWebphone}
+                  fullWidth
+                  placeholder="Enter fullname"
+                  required
+                  color="info"
+                  id="form-name"
+                  // label="Name"
+                  size="small"
+                  margin="dense"
+                  name="name"
+                  sx={styling.TextField}
+                />
+                <Typography marginTop={1}>Email</Typography>
+                <TextField
+                  value={form.email}
+                  onChange={(e) => handleInput(e)}
+                  // disabled={form.isLoadingSetupWebphone}
+                  fullWidth
+                  placeholder="Email"
+                  required
+                  color="info"
+                  id="form-email"
+                  // label="Email"
+                  name="email"
+                  type="email"
+                  size="small"
+                  margin="dense"
+                  sx={styling.TextField}
+                />
+                <Typography marginTop={1}>Phone number</Typography>
+                <TextField
+                  value={form.phone}
+                  onChange={(e) => {
+                    setPhoneNumber(e.target.value);
+                    handleInput(e);
+                  }}
+                  fullWidth
+                  placeholder="Phone number"
+                  required
+                  variant="outlined"
+                  color="info"
+                  id="form-phone"
+                  // label="Phone"
+                  name="phone"
+                  size="small"
+                  margin="dense"
+                  type="number"
+                  sx={styling.TextField}
+                />
+                <Box marginTop={1}>
+                  <ReCAPTCHA
+                    required
+                    ref={captchaRef}
+                    sitekey="6LfAbc8jAAAAAFJJXtfVkUgwyF8cPdWhI_YSwcg7"
+                    onChange={(e) => setCaptcha(e)}
+                  />
+                </Box>
+                <Box
+                  width="100%"
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="center"
+                  marginTop={3}
+                  bottom={5}
+                  paddingY="12px"
+                >
+                  {msgError ? (
+                    <Alert severity="error">{msgError}</Alert>
+                  ) : (
+                    <></>
+                  )}
+                  <Button
+                    type="submit"
+                    sx={{
+                      width: "100%",
+                      borderRadius: "10px",
+                      marginTop: "1em",
+                      backgroundColor: `${color.main}`,
+                      color: "white",
+                    }}
+                    variant="contained"
+                    // startIcon={<PhoneInTalkIcon />}
+                    disabled={loading}
+                  >
+                    {loading && (
+                      <CircularProgress
+                        size={20}
+                        color="inherit"
+                        sx={{ marginX: "10px" }}
+                      />
+                    )}
+                    Start Call
+                  </Button>
+                </Box>
+              </form>
+            </Box>
+          </Box>
+        ) : (
+          <>
+            <Welcome
+              setOpenModalAgree={setOpenModalAgree}
+              setOpenFloating={setOpenFloating}
+              setCloseCall={props.props.setCloseCall}
+            />
+          </>
+        )}
+      </>
+      {/* ) : (
         <>
           <StartCall handleSubmitMobile={handleSubmitMobile} />
         </>
-      )}
+      )} */}
       <TermsCond
         open={openModalAgree}
         onClose={() => setOpenModalAgree(false)}
