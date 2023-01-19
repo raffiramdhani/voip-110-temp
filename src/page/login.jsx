@@ -39,6 +39,7 @@ export default function login(props) {
     name: "",
     phone: "",
     email: "",
+    nik: ""
   });
   const [openModalAgree, setOpenModalAgree] = useState(false);
   const [openFloating, setOpenFloating] = useState(false);
@@ -104,9 +105,10 @@ export default function login(props) {
     myHeaders.append("Content-Type", "application/json");
 
     var raw = JSON.stringify({
-      username: form.name === "" ? "Jane" : form.name,
-      email: form.email === "" ? "jane@gmail.com" : form.email,
-      phone: form.phone === "" ? "081234567899" : form.phone,
+      nik: form.nik,
+      username: form.name,
+      email: form.email,
+      phone: form.phone,
       timestamp: new Date(),
       token: env.VITE_APP_EXTEN_TOKEN,
       type: env.VITE_APP_EXTEN_TYPE,
@@ -127,7 +129,7 @@ export default function login(props) {
           const decrypted = JSON.parse(decryptText);
           // console.log("decrypted>>>", decrypted);
 
-          if (decrypted.message === "extensions not available") {
+          if (decrypted.status === "failed") {
             setMsgError(`Sorry, ${decrypted.message}`);
             setTimeout(() => {
               setMsgError(null);
@@ -150,14 +152,7 @@ export default function login(props) {
     return data;
   };
 
-  // const regexPhoneNumber =
-    // "(()?(+62|62|0)(d{2,3})?)?[ .-]?d{2,4}[ .-]?d{2,4}[ .-]?d{2,4}";
-    // "(()?(+62|62|0)(d{2,3})?)?[ .-]?d{2,4}[ .-]?d{2,4}[ .-]?d{2,4}";
-    // "(\+62 ((\d{3}([ -]\d{3,})([- ]\d{4,})?)|(\d+)))|(\(\d+\) \d+)|\d{3}( \d+)+|(\d+[ -]\d+)|\d+";
-
-    // const testPhone = phoneNumber.match(regexPhoneNumber)
-
-    // console.log("testphone", testPhone);
+  const regexPhoneNumber ="(\()?(\+62|62|0)(\d{2,3})?\)?[ .-]?\d{2,4}[ .-]?\d{2,4}[ .-]?\d{2,4}"
 
   // LISTEN HEIGHT WINDOW
   useEffect(() => {
@@ -244,19 +239,35 @@ export default function login(props) {
               }}
             >
               <Typography className="mb-2">
-                To start a call, please fill the form before
+                Untuk memulai panggilan, harap isi form terlebih dahhulu,
               </Typography>
               <form
                 style={{ height: `80vh` }}
                 onSubmit={(e) => handleSubmit(e)}
               >
-                <Typography marginTop={2}>Fullname</Typography>
+                <Typography marginTop={2}>NIK</Typography>
+                {/* <TextField
+                  value={form.nik}
+                  onChange={(e) => handleInput(e)}
+                  // disabled={form.isLoadingSetupWebphone}
+                  fullWidth
+                  placeholder="NIK"
+                  required
+                  color="info"
+                  id="form-nik"
+                  // label="Name"
+                  size="small"
+                  margin="dense"
+                  name="nik"
+                  sx={styling.TextField}
+                /> */}
+                <Typography marginTop={2}>Nama Lengkap</Typography>
                 <TextField
                   value={form.name}
                   onChange={(e) => handleInput(e)}
                   // disabled={form.isLoadingSetupWebphone}
                   fullWidth
-                  placeholder="Enter fullname"
+                  placeholder="Nama Lengkap"
                   required
                   color="info"
                   id="form-name"
@@ -283,7 +294,7 @@ export default function login(props) {
                   margin="dense"
                   sx={styling.TextField}
                 />
-                <Typography marginTop={1}>Phone number</Typography>
+                <Typography marginTop={1}></Typography>
                 <TextField
                   value={form.phone}
                   onChange={(e) => {
