@@ -157,7 +157,7 @@ export default function login(props) {
     };
 
     const data = await fetch(
-      `${env.VITE_APP_EXTEN_URL}`,
+      `${env.VITE_APP_EXTEN_URL}${env.VITE_APP_EXTEN_TENANT}`,
       requestOptions
     )
       .then((res) => res.text())
