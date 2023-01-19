@@ -154,7 +154,7 @@ function widgetApi() {
 
       window.addEventListener("message", (evt) => {
         // console.log("MainColor", MainColor);
-          console.log("loader", evt);
+          // console.log("loader", evt);
 
         if (evt.origin !== urlOriginIframe) {
           return;
