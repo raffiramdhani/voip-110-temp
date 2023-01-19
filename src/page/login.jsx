@@ -29,6 +29,8 @@ import useProfileStore from "@/store/profileStore";
 import { decrypt } from "@/utils/encrypt";
 import useAuth from "@/store/openingStore";
 
+import { browserName, osName } from "react-device-detect";
+
 const env = import.meta.env;
 
 export default function login(props) {
@@ -70,24 +72,59 @@ export default function login(props) {
       // if (phoneNumber !== regexPhoneNumber) {
       //   setMsgError("Sorry, phone number in invalid!");
       // } else {
-        setLoading(true);
-        const data = await requestExtension();
-        // console.log("data", data);
-        if (data) {
-          profile.setProfile(form);
-          profile.setReqExten(data);
-          route.push("call");
-        } else {
-          setMsgError("Sorry, failed to call try again later!");
-          setTimeout(() => {
-            setMsgError(null);
-          }, 3000);
-        }
+      setLoading(true);
+      const data = await requestExtension();
+      console.log("data", data);
+      if (data) {
+        postTransaction(data);
+        profile.setProfile(form);
+        profile.setReqExten(data);
+        route.push("call");
+      } else {
+        setMsgError("Sorry, failed to call try again later!");
+        setTimeout(() => {
+          setMsgError(null);
+        }, 3000);
+      }
       // }
     } else {
       setMsgError("Please, checklist captcha!");
     }
     setLoading(false);
+  };
+
+  const postTransaction = async (value) => {
+    let myHeaders = new Headers();
+    myHeaders.append("Authorization", `${env.VITE_APP_AUTHORIZATION}`);
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+      username: form.name === "" ? "Jane" : form.name,
+      email: form.email === "" ? "jane@gmail.com" : form.email,
+      phone: form.phone === "" ? "081234567899" : form.phone,
+      date_call: new Date(),
+      os: osName,
+      browser: browserName,
+      tenant_id: 0,
+      tenant: env.VITE_APP_EXTEN_TENANT,
+      extention: parseInt(value.exten),
+      call_id: value.callto,
+    });
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    const data = await fetch(
+      `https://apidev-voip.onx.co.id/voip/transaction`,
+      requestOptions
+    )
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+    return data;
   };
 
   const handleSubmitMobile = async () => {
@@ -121,13 +158,16 @@ export default function login(props) {
       redirect: "follow",
     };
 
-    const data = await fetch(`${env.VITE_APP_EXTEN_URL}`, requestOptions)
+    const data = await fetch(
+      `${env.VITE_APP_EXTEN_URL}${env.VITE_APP_EXTEN_TENANT}`,
+      requestOptions
+    )
       .then((res) => res.text())
       .then((res) => {
         const decryptText = decrypt(res);
         if (decryptText) {
           const decrypted = JSON.parse(decryptText);
-          // console.log("decrypted>>>", decrypted);
+          console.log("decrypted>>>", decrypted);
 
           if (decrypted.status === "failed") {
             setMsgError(`Sorry, ${decrypted.message}`);
