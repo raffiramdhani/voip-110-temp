@@ -41,7 +41,7 @@ export default function login(props) {
     name: "",
     phone: "",
     email: "",
-    nik: ""
+    nik: "",
   });
   const [openModalAgree, setOpenModalAgree] = useState(false);
   const [openFloating, setOpenFloating] = useState(false);
@@ -50,13 +50,20 @@ export default function login(props) {
   const [captcha, setCaptcha] = useState(null);
 
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [errMsg, setErrMsg] = useState(null);
+  const [NIK, setNIK] = useState("");
 
   const { isOpen, setIsOpen } = useAuth((state) => state);
   const url_string = window.location.href;
   const url_params = new URL(url_string);
   const type = url_params.searchParams.get("type");
   let captchaRef = React.useRef();
+  const regexPhoneNumber = /^08[0-9]{7,12}$/;
+  const regexPNIK = /^(\d)(?!\1+$)\d{15}$/;
+  const regexNIK2 = /^(?!(\d)\1+$|(?:0(?=1)|1(?=2)|2(?=3)|3(?=4)|4(?=5)|5(?=6)|6(?=7)|7(?=8)|8(?=9)|9(?=0)){5}\d$|(?:0(?=9)|1(?=0)|2(?=1)|3(?=2)|4(?=3)|5(?=4)|6(?=5)|7(?=6)|8(?=7)|9(?=8)){5}\d$)\d{16}$/
+  const regexNIKLengkap = /^(1[1-9]|21|[37][1-6]|5[1-3]|6[1-5]|[89][12])\d{2}\d{2}([04][1-9]|[1256][0-9]|[37][01])(0[1-9]|1[0-2])\d{2}\d{4}$/
+  const regexNIKMenengah = /^\\d{6}([04][1-9]|[1256][0-9]|[37][01])(0[1-9]|1[0-2])\d{2}\d{4}$/
+  // console.log(regexNIK2.test(NIK), regexNIKLengkap.test(NIK),  regexNIKMenengah.test(NIK));
+  // NIK.startsWith(0), 
 
   const handleInput = (e) => {
     e.preventDefault();
@@ -64,31 +71,37 @@ export default function login(props) {
   };
 
   const handleSubmit = async (e) => {
-    // if (phoneNumber !== regexPhoneNumber) {
-    //   setMsgError("Sorry, phone number in invalid!");
-    // }
     e.preventDefault();
-    if (captcha) {
-      // if (phoneNumber !== regexPhoneNumber) {
-      //   setMsgError("Sorry, phone number in invalid!");
-      // } else {
-      setLoading(true);
-      const data = await requestExtension();
-      console.log("data", data);
-      if (data) {
-        postTransaction(data);
-        profile.setProfile(form);
-        profile.setReqExten(data);
-        route.push("call");
-      } else {
-        setMsgError("Sorry, failed to call try again later!");
-        setTimeout(() => {
-          setMsgError(null);
-        }, 3000);
-      }
-      // }
+    if (!regexPhoneNumber.test(phoneNumber)) {
+      setMsgError(
+        "Maaf, format nomor telepon harus diawali dengan 08, minimal 9 digit dan maksimal 13 digit!"
+      );
+    } else if (!regexNIKLengkap.test(NIK)) {
+      setMsgError(
+        "Maaf, format NIK tidak boleh diawali dengan angka 0, ada angka sama berulang, angka berurutan dan wajib 16 digit!"
+      );
+    } else if (NIK.startsWith(0)) {
+      setMsgError(
+        "Maaf, NIK tidak boleh diawali dengan angka 0!"
+      );
     } else {
-      setMsgError("Please, checklist captcha!");
+      if (captcha) {
+        setLoading(true);
+        const data = await requestExtension();
+        if (data) {
+          postTransaction(data);
+          profile.setProfile(form);
+          profile.setReqExten(data);
+          route.push("call");
+        } else {
+          setMsgError("Sorry, failed to call try again later!");
+          setTimeout(() => {
+            setMsgError(null);
+          }, 3000);
+        }
+      } else {
+        setMsgError("Please, checklist captcha!");
+      }
     }
     setLoading(false);
   };
@@ -192,7 +205,7 @@ export default function login(props) {
     return data;
   };
 
-  const regexPhoneNumber ="(\()?(\+62|62|0)(\d{2,3})?\)?[ .-]?\d{2,4}[ .-]?\d{2,4}[ .-]?\d{2,4}"
+  // console.log(regex.test(phoneNumber))
 
   // LISTEN HEIGHT WINDOW
   useEffect(() => {
@@ -222,15 +235,16 @@ export default function login(props) {
       <>
         {props.props.showCallPage && isOpen === "login" ? (
           <Box
-            height="400px"
+            // height="400px"
             // position="absolute"
             // width={`${type === "web" ? "25%" : "100%"}`}
             // height={`${type === "web" ? "70%" : "100%"}`}
-            bottom="8rem"
-            right="2rem"
+            // bottom="8rem"
+            // right="2rem"
             display="flex"
             flexDirection="column"
-            boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
+            // boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
+            // backgroundColor="white"
           >
             <Box
               padding="12px 15px"
@@ -273,22 +287,25 @@ export default function login(props) {
             </Box>
             <Box
               sx={{
-                height: "495px",
+                // height: "495px",
                 padding: "20px",
                 backgroundColor: "white",
               }}
             >
-              <Typography className="mb-2">
-                Untuk memulai panggilan, harap isi form terlebih dahhulu,
+              <Typography className="mb-2" fontSize={14}>
+                Untuk memulai panggilan, harap isi form terlebih dahulu,
               </Typography>
               <form
-                style={{ height: `80vh` }}
+                // style={{ height: `80vh` }}
                 onSubmit={(e) => handleSubmit(e)}
               >
-                <Typography marginTop={2}>NIK</Typography>
-                {/* <TextField
+                <Typography marginTop={2} fontSize={14}>NIK</Typography>
+                <TextField
                   value={form.nik}
-                  onChange={(e) => handleInput(e)}
+                  onChange={(e) => {
+                    handleInput(e);
+                    setNIK(e.target.value)
+                  }}
                   // disabled={form.isLoadingSetupWebphone}
                   fullWidth
                   placeholder="NIK"
@@ -300,8 +317,8 @@ export default function login(props) {
                   margin="dense"
                   name="nik"
                   sx={styling.TextField}
-                /> */}
-                <Typography marginTop={2}>Nama Lengkap</Typography>
+                />
+                <Typography marginTop={2} fontSize={14}>Nama Lengkap</Typography>
                 <TextField
                   value={form.name}
                   onChange={(e) => handleInput(e)}
@@ -317,7 +334,7 @@ export default function login(props) {
                   name="name"
                   sx={styling.TextField}
                 />
-                <Typography marginTop={1}>Email</Typography>
+                <Typography marginTop={1} fontSize={14}>Email</Typography>
                 <TextField
                   value={form.email}
                   onChange={(e) => handleInput(e)}
@@ -334,7 +351,7 @@ export default function login(props) {
                   margin="dense"
                   sx={styling.TextField}
                 />
-                <Typography marginTop={1}></Typography>
+                <Typography marginTop={1} fontSize={14}>Nomor Telepon</Typography>
                 <TextField
                   value={form.phone}
                   onChange={(e) => {
@@ -342,7 +359,7 @@ export default function login(props) {
                     handleInput(e);
                   }}
                   fullWidth
-                  placeholder="Phone number"
+                  placeholder="Nomor Telepon"
                   required
                   variant="outlined"
                   color="info"
@@ -367,9 +384,10 @@ export default function login(props) {
                   display="flex"
                   flexDirection="column"
                   justifyContent="center"
-                  marginTop={3}
+                  marginTop={2}
                   bottom={5}
                   paddingY="12px"
+                  // backgroundColor="white"
                 >
                   {msgError ? (
                     <Alert severity="error">{msgError}</Alert>
@@ -381,8 +399,8 @@ export default function login(props) {
                     sx={{
                       width: "100%",
                       borderRadius: "10px",
-                      marginTop: "1em",
                       backgroundColor: `${color.main}`,
+                      marginTop: "10px",
                       color: "white",
                     }}
                     variant="contained"
