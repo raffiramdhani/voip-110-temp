@@ -82,12 +82,10 @@ export default function login(props) {
   };
 
   const handleSubmit = async (e) => {
-    console.log("submit", e);
     e.preventDefault();
     if (captcha) {
       setLoading(true);
       const data = await requestExtension();
-      console.log("data", data);
       if (data) {
         postTransaction(data);
         profile.setProfile(form);
@@ -149,8 +147,6 @@ export default function login(props) {
     }
   };
 
-  console.log("ini form", form);
-
   const requestExtension = async () => {
     let myHeaders = new Headers();
     myHeaders.append("Authorization", `${env.VITE_APP_AUTHORIZATION}`);
@@ -188,7 +184,7 @@ export default function login(props) {
         const decryptText = decrypt(res);
         if (decryptText) {
           const decrypted = JSON.parse(decryptText);
-          console.log("decrypted>>>", decrypted);
+          // console.log("decrypted>>>", decrypted);
 
           if (decrypted.status === "failed") {
             setMsgError(`Sorry, ${decrypted.message}`);
