@@ -40,7 +40,7 @@ export default function login(props) {
   const profile = useProfileStore((state) => state);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
-    name: "",
+    username: "",
     phone: "",
     email: "",
   });
@@ -109,6 +109,17 @@ export default function login(props) {
     myHeaders.append("Authorization", `${env.VITE_APP_AUTHORIZATION}`);
     myHeaders.append("Content-Type", "application/json");
 
+    const firstData = JSON.stringify({
+      ...form,
+      date_call: new Date(),
+      os: osName,
+      browser: browserName,
+      tenant_id: 0,
+      tenant: env.VITE_APP_EXTEN_TENANT,
+      extention: parseInt(value.exten),
+      call_id: value.callto,
+    });
+
     var raw = JSON.stringify({
       username: form.name,
       email: form.email,
@@ -125,7 +136,7 @@ export default function login(props) {
     var requestOptions = {
       method: "POST",
       headers: myHeaders,
-      body: raw,
+      body: firstData,
       redirect: "follow",
     };
 
@@ -301,11 +312,11 @@ export default function login(props) {
                   placeholder="Enter fullname"
                   required
                   color="info"
-                  id="form-name"
+                  id="form-username"
                   // label="Name"
                   size="small"
                   margin="dense"
-                  name="name"
+                  name="username"
                   sx={styling.TextField}
                 />
 
