@@ -9,8 +9,9 @@ import {
   CircularProgress,
   IconButton,
   Alert,
+  Select,
+  MenuItem,
 } from "@mui/material";
-
 import RemoveIcon from "@mui/icons-material/Remove";
 
 import WelcomeIcon from "../assets/welcome-icon.png";
@@ -30,6 +31,7 @@ import { decrypt } from "@/utils/encrypt";
 import useAuth from "@/store/openingStore";
 
 import { browserName, osName } from "react-device-detect";
+import axios from "axios";
 
 const env = import.meta.env;
 
@@ -47,6 +49,7 @@ export default function login(props) {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [msgError, setMsgError] = useState(null);
   const [captcha, setCaptcha] = useState(null);
+  const [listingAdditionalField, setListingAdditionalField] = useState(null);
 
   const [phoneNumber, setPhoneNumber] = useState("");
   const [errMsg, setErrMsg] = useState(null);
@@ -62,15 +65,26 @@ export default function login(props) {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const getAdditionalField = async () => {
+    const config = {
+      headers: {
+        Authorization: `${env.VITE_APP_AUTHORIZATION}`,
+      },
+    };
+    const res = await axios
+      .get(
+        `https://apidev-voip.onx.co.id/additional-field-customer/widget/${env.VITE_APP_EXTEN_TENANT}`,
+        config
+      )
+      .then((res) => setListingAdditionalField(res.data))
+      .catch((err) => console.log(err));
+    return res;
+  };
+
   const handleSubmit = async (e) => {
-    // if (phoneNumber !== regexPhoneNumber) {
-    //   setMsgError("Sorry, phone number in invalid!");
-    // }
+    console.log("submit", e);
     e.preventDefault();
     if (captcha) {
-      // if (phoneNumber !== regexPhoneNumber) {
-      //   setMsgError("Sorry, phone number in invalid!");
-      // } else {
       setLoading(true);
       const data = await requestExtension();
       console.log("data", data);
@@ -98,9 +112,9 @@ export default function login(props) {
     myHeaders.append("Content-Type", "application/json");
 
     var raw = JSON.stringify({
-      username: form.name === "" ? "Jane" : form.name,
-      email: form.email === "" ? "jane@gmail.com" : form.email,
-      phone: form.phone === "" ? "081234567899" : form.phone,
+      username: form.name,
+      email: form.email,
+      phone: form.phone,
       date_call: new Date(),
       os: osName,
       browser: browserName,
@@ -121,7 +135,7 @@ export default function login(props) {
       `https://apidev-voip.onx.co.id/voip/transaction`,
       requestOptions
     )
-      .then((res) => console.log(res))
+      .then((res) => console.log("Success"))
       .catch((err) => console.log(err));
     return data;
   };
@@ -135,15 +149,24 @@ export default function login(props) {
     }
   };
 
+  console.log("ini form", form);
+
   const requestExtension = async () => {
     let myHeaders = new Headers();
     myHeaders.append("Authorization", `${env.VITE_APP_AUTHORIZATION}`);
     myHeaders.append("Content-Type", "application/json");
 
+    const firstData = JSON.stringify({
+      ...form,
+      timestamp: new Date(),
+      token: env.VITE_APP_EXTEN_TOKEN,
+      type: env.VITE_APP_EXTEN_TYPE,
+    });
+
     var raw = JSON.stringify({
-      username: form.name === "" ? "Jane" : form.name,
-      email: form.email === "" ? "jane@gmail.com" : form.email,
-      phone: form.phone === "" ? "081234567899" : form.phone,
+      username: form.name,
+      email: form.email,
+      phone: form.phone,
       timestamp: new Date(),
       token: env.VITE_APP_EXTEN_TOKEN,
       type: env.VITE_APP_EXTEN_TYPE,
@@ -152,7 +175,7 @@ export default function login(props) {
     var requestOptions = {
       method: "POST",
       headers: myHeaders,
-      body: raw,
+      body: firstData,
       redirect: "follow",
     };
 
@@ -201,24 +224,7 @@ export default function login(props) {
 
   // LISTEN HEIGHT WINDOW
   useEffect(() => {
-    // window.addEventListener("message", (e) => console.log(e));
-    function handleResize() {
-      setWindowWidth(window.innerWidth);
-      if (window.innerWidth < 768) {
-        // setType("mobile");
-      }
-      if (window.innerWidth >= 768) {
-        // setType("web");
-      }
-    }
-
-    window.addEventListener("resize", handleResize);
-    handleResize();
-
-    return () => {
-      // window.removeEventListener("message", (e) => console.log(e));
-      window.removeEventListener("resize", handleResize);
-    };
+    getAdditionalField();
   }, []);
 
   return (
@@ -227,7 +233,7 @@ export default function login(props) {
       <>
         {props.props.showCallPage && isOpen === "login" ? (
           <Box
-            height="400px"
+            // height="400px"
             // position="absolute"
             // width={`${type === "web" ? "25%" : "100%"}`}
             // height={`${type === "web" ? "70%" : "100%"}`}
@@ -278,7 +284,7 @@ export default function login(props) {
             </Box>
             <Box
               sx={{
-                height: "495px",
+                // height: "495px",
                 padding: "20px",
                 backgroundColor: "white",
               }}
@@ -287,7 +293,7 @@ export default function login(props) {
                 To start a call, please fill the form before
               </Typography>
               <form
-                style={{ height: `80vh` }}
+                // style={{ height: `80vh` }}
                 onSubmit={(e) => handleSubmit(e)}
               >
                 <Typography marginTop={2}>Fullname</Typography>
@@ -306,6 +312,7 @@ export default function login(props) {
                   name="name"
                   sx={styling.TextField}
                 />
+
                 <Typography marginTop={1}>Email</Typography>
                 <TextField
                   value={form.email}
@@ -343,6 +350,56 @@ export default function login(props) {
                   type="number"
                   sx={styling.TextField}
                 />
+
+                {listingAdditionalField
+                  ? listingAdditionalField &&
+                    listingAdditionalField.map((e) => {
+                      return (
+                        <>
+                          <Typography marginTop={1}>{e.label}</Typography>
+                          {e.type === "select" ? (
+                            <>
+                              <Select
+                                name={e.key}
+                                id={`form-${e.key}`}
+                                placeholder={e.label}
+                                required
+                                size="small"
+                                // value={age}
+                                onChange={(event) => handleInput(event)}
+                                label={e.label}
+                                sx={{ width: "100%" }}
+                              >
+                                {e?.option.map((e) => {
+                                  return <MenuItem value={e}>{e}</MenuItem>;
+                                })}
+                              </Select>
+                            </>
+                          ) : (
+                            <TextField
+                              // value={form.e.label}
+                              onChange={(event) => handleInput(event)}
+                              // disabled={form.isLoadingSetupWebphone}
+                              fullWidth
+                              multiline={e.type === "textarea" ? true : false}
+                              rows={e.type === "textarea" ? 3 : 1}
+                              placeholder={e.label}
+                              required
+                              color="info"
+                              id={`form-${e.key}`}
+                              // label="Email"
+                              name={e.key}
+                              type={e.type}
+                              size="small"
+                              margin="dense"
+                              sx={styling.TextField}
+                            />
+                          )}
+                        </>
+                      );
+                    })
+                  : null}
+
                 <Box marginTop={1}>
                   <ReCAPTCHA
                     required
