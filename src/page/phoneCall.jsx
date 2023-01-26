@@ -314,7 +314,7 @@ export default function phoneCall() {
           justifyContent="space-between"
           alignItems="center"
         >
-          <Typography>VoIP ONX</Typography>
+          <Typography fontWeight={600}  color="#059d4d">BPJSKes 165</Typography>
         </Box>
         <IconButton
         // onClick={() => {

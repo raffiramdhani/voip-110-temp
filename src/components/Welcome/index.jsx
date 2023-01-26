@@ -15,6 +15,7 @@ import {
   IconButton,
 } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
+import icon_bpjs from "../../assets/bpjs.png";
 const env = import.meta.env;
 
 const color = {
@@ -116,7 +117,7 @@ const Welcome = (props) => {
             alignItems="center"
           >
             <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
-              <img src={WelcomeIcon} />
+              <img src={icon_bpjs} style={{width: 40}} />
             </Box>
             {type === "web" ? (
               <IconButton
@@ -148,8 +149,8 @@ const Welcome = (props) => {
               >
                 Welcome to
               </Typography>
-              <Typography fontWeight={600} color={color.main}>
-                OMNIX VoIP
+              <Typography fontWeight={600} color="#059d4d">
+                BPJSKes 165
               </Typography>
             </div>
             <Typography fontSize={12}>What can we help you today?</Typography>

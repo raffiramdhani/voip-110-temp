@@ -28,7 +28,7 @@ import useRouteStore from "@/store/routeStore";
 import useProfileStore from "@/store/profileStore";
 import { decrypt } from "@/utils/encrypt";
 import useAuth from "@/store/openingStore";
-
+import icon_bpjs from "../assets/bpjs.png";
 import { browserName, osName } from "react-device-detect";
 
 const env = import.meta.env;
@@ -57,7 +57,7 @@ export default function login(props) {
   const url_params = new URL(url_string);
   const type = url_params.searchParams.get("type");
   let captchaRef = React.useRef();
-  const regexPhoneNumber = /^08[0-9]{7,12}$/;
+  const regexPhoneNumber = /^08[0-9]{7,11}$/;
   const regexPNIK = /^(\d)(?!\1+$)\d{15}$/;
   const regexNIK2 = /^(?!(\d)\1+$|(?:0(?=1)|1(?=2)|2(?=3)|3(?=4)|4(?=5)|5(?=6)|6(?=7)|7(?=8)|8(?=9)|9(?=0)){5}\d$|(?:0(?=9)|1(?=0)|2(?=1)|3(?=2)|4(?=3)|5(?=4)|6(?=5)|7(?=6)|8(?=7)|9(?=8)){5}\d$)\d{16}$/
   const regexNIKLengkap = /^(1[1-9]|21|[37][1-6]|5[1-3]|6[1-5]|[89][12])\d{2}\d{2}([04][1-9]|[1256][0-9]|[37][01])(0[1-9]|1[0-2])\d{2}\d{4}$/
@@ -83,6 +83,10 @@ export default function login(props) {
     } else if (NIK.startsWith(0)) {
       setMsgError(
         "Maaf, NIK tidak boleh diawali dengan angka 0!"
+      );
+    } else if (!regexNIK2.test(NIK)) {
+      setMsgError(
+        "Maaf, format NIK tidak boleh diawali dengan angka 0, ada angka sama berulang, angka berurutan dan wajib 16 digit!"
       );
     } else {
       if (captcha) {
@@ -112,9 +116,9 @@ export default function login(props) {
     myHeaders.append("Content-Type", "application/json");
 
     var raw = JSON.stringify({
-      username: form.name === "" ? "Jane" : form.name,
-      email: form.email === "" ? "jane@gmail.com" : form.email,
-      phone: form.phone === "" ? "081234567899" : form.phone,
+      username: form.name,
+      email: form.email,
+      phone: form.phone,
       date_call: new Date(),
       os: osName,
       browser: browserName,
@@ -265,9 +269,9 @@ export default function login(props) {
                   alignItems="center"
                   gap={2}
                 >
-                  <img src={WelcomeIcon} />
-                  <Typography fontWeight={600} color={color.main}>
-                    OMNIX VoIP
+              <img src={icon_bpjs} style={{width: 40}} />
+                  <Typography fontWeight={600} color="#059d4d">
+                    BPJSKes 165
                   </Typography>
                 </Box>
                 {type === "web" ? (

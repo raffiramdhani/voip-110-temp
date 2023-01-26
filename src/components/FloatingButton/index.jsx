@@ -1,6 +1,7 @@
 import React from "react";
 import VoiceIcon from "../../assets/voice-icon.png";
 import useAuth from "@/store/openingStore";
+import icon_bpjs from "../../assets/bpjs.png";
 
 const FloatingButton = ({ setOpenFloating }) => {
   const { isOpen, setIsOpen } = useAuth((state) => state);
@@ -34,14 +35,15 @@ const FloatingButton = ({ setOpenFloating }) => {
         }}
         onClick={() => setOpenFloating(true)}
       >
+        testing
         <img
-          src={`${VoiceIcon}`}
-          srcSet={`${VoiceIcon}`}
-          alt={`${VoiceIcon}asd`}
+          src={`${icon_bpjs}`}
+          srcSet={`${icon_bpjs}`}
+          alt={`${icon_bpjs}asd`}
           loading="lazy"
           style={{
-            height: "25px",
-            width: "25px",
+            height: "50px",
+            width: "50px",
           }}
         />
       </div>
