@@ -16,6 +16,7 @@ import PhoneDisabledIcon from "@mui/icons-material/PhoneDisabled";
 
 import * as Flashphoner from "@flashphoner/websdk";
 import DTMFSound from "../assets/dtmf.wav";
+import ringingSound from "../assets/phone-ringing.wav";
 
 import { decrypt } from "@/utils/encrypt";
 import useProfileStore from "@/store/profileStore";
@@ -45,17 +46,27 @@ export default function phoneCall() {
   const localVideo = useRef();
   const remoteVideo = useRef();
   const dtmfSound = useMemo(() => new Audio(DTMFSound), []);
+  const ringingSounds = useMemo(() => new Audio(ringingSound), []);
   const [isMuted, setIsMuted] = useState(false);
   const [reqExten, setReqExten] = useState(null);
   const [statusRegiter, setStatusRegister] = useState(null);
   const [statusCall, setStatusCall] = useState("waiting");
 
+  const [isFinish, setIsFinish] = useState(true)
+  const [isEstablished, setIsEstablished] = useState(false)
+
   const [isKeypad, setIsKeypad] = useState(false);
+
+  if (statusCall === "RING") {
+    ringingSounds.play();
+  } else {
+    ringingSounds.pause()
+  }
 
   useEffect(() => {
     initFlashphoner();
     // console.log("1.0.0");
-  }, []);
+  }, [isFinish]);
 
   // STEP 1
   const initFlashphoner = () => {
@@ -186,6 +197,7 @@ export default function phoneCall() {
       .on(CALL_STATUS.ESTABLISHED, function (call) {
         // console.log("CALL_STATUS ==>> " + CALL_STATUS.ESTABLISHED);
         setStatusCall(CALL_STATUS.ESTABLISHED);
+        setIsEstablished(true)
         handleStart()
       })
       .on(CALL_STATUS.HOLD, function (call) {
@@ -194,6 +206,7 @@ export default function phoneCall() {
       })
       .on(CALL_STATUS.FINISH, function (call) {
         // console.log("CALL_STATUS ==>> " + CALL_STATUS.FINISH);
+        setIsFinish(!isFinish)
         setStatusCall(CALL_STATUS.FINISH);
       })
       .on(CALL_STATUS.FAILED, function (call) {
@@ -205,6 +218,10 @@ export default function phoneCall() {
     // console.log("outCall", outCall);
     currentCall.current = outCall;
   };
+
+  
+
+  // console.log(isFinish, isEstablished, statusCall);
 
   const onDialPadPressed = (dtmf) => {
     dtmfSound.play();
@@ -227,6 +244,7 @@ export default function phoneCall() {
   };
 
   const endCall = () => {
+    setStatusCall("End Call")
     const toMatch = [
       /Android/i,
       /webOS/i,
@@ -248,6 +266,8 @@ export default function phoneCall() {
     } else {
       window.location.reload();
     }
+    setIsFinish(true)
+    setIsEstablished(false)
   };
 
   const isCalling = statusCall === CALL_STATUS.ESTABLISHED;
@@ -288,6 +308,10 @@ export default function phoneCall() {
     setIsActive(false);
     setTime(0);
   };
+
+  if (isFinish && isEstablished && statusCall === "FINISH") {
+    endCall()
+  }
 
   return (
     <Box
@@ -373,11 +397,11 @@ export default function phoneCall() {
               <Typography>
                 {statusCall === "waiting"
                   ? "Calling"
-                  : statusCall === "finish"
+                  : statusCall === "RING"
                   ? "Ringing"
                   : statusCall === "ESTABLISHED"
-                  ? "Connected"
-                  : ""}
+                  ? "Connected" :
+                  statusCall === "End Call" ? "End Call" : "" }
               </Typography>
               <div style={{display: "flex", flexDirection: "row", justifyContent: "center", margin: "10px 0"}} className="timer">
                 <Typography style={{color: "#3DCB87", fontSize: 18, fontWeight: 600 }} className="digits">
@@ -485,8 +509,9 @@ export default function phoneCall() {
             >
               <IconButton
                 sx={{
-                  borderRadius: "100%",
-                  padding: "22px 15px",
+                  borderRadius: 50,
+                  overflow: "hidden",
+                  padding: "25px 15px",
                   backgroundColor: "#FF3B30",
                 }}
                 onClick={() => endCall()}
