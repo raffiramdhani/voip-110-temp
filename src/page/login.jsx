@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Box,
   Button,
@@ -13,6 +13,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
+import { v4 as uuidv4 } from "uuid";
 
 import WelcomeIcon from "../assets/welcome-icon.png";
 
@@ -60,6 +61,8 @@ export default function login(props) {
   const type = url_params.searchParams.get("type");
   let captchaRef = React.useRef();
 
+  const genID = uuidv4()
+
   const handleInput = (e) => {
     e.preventDefault();
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -86,7 +89,10 @@ export default function login(props) {
     if (captcha) {
       setLoading(true);
       const data = await requestExtension();
-      if (data) {
+      // console.log(data);
+      if (data.failed) {
+        setMsgError(`Sorry, ${data.failed}!`);
+      } else if (data) {
         postTransaction(data);
         profile.setProfile(form);
         profile.setReqExten(data);
@@ -117,7 +123,7 @@ export default function login(props) {
       tenant_id: 0,
       tenant: env.VITE_APP_EXTEN_TENANT,
       extention: parseInt(value.exten),
-      call_id: value.callto,
+      call_id: genID.slice(0, 8),
     });
 
     var raw = JSON.stringify({
@@ -130,7 +136,7 @@ export default function login(props) {
       tenant_id: 0,
       tenant: env.VITE_APP_EXTEN_TENANT,
       extention: parseInt(value.exten),
-      call_id: value.callto,
+      call_id: genID.slice(0, 8),
     });
 
     var requestOptions = {
@@ -168,6 +174,7 @@ export default function login(props) {
       timestamp: new Date(),
       token: env.VITE_APP_EXTEN_TOKEN,
       type: env.VITE_APP_EXTEN_TYPE,
+      call_id: genID.slice(0, 8)
     });
 
     var raw = JSON.stringify({
@@ -177,6 +184,7 @@ export default function login(props) {
       timestamp: new Date(),
       token: env.VITE_APP_EXTEN_TOKEN,
       type: env.VITE_APP_EXTEN_TYPE,
+      call_id: genID.slice(0, 8)
     });
 
     var requestOptions = {
@@ -198,10 +206,9 @@ export default function login(props) {
           // console.log("decrypted>>>", decrypted);
 
           if (decrypted.status === "failed") {
-            setMsgError(`Sorry, ${decrypted.message}`);
-            setTimeout(() => {
-              setMsgError(null);
-            }, 3000);
+            return {
+              failed: decrypted.message,
+            };
           } else {
             return {
               token: decrypted.token,
@@ -215,7 +222,12 @@ export default function login(props) {
           }
         }
       })
-      .catch((err) => console.log("ERROR ==>>", err));
+      .catch((err) => {
+        console.log("ERROR ==>>", err);
+        return {
+          failed: "failed to call",
+        };
+      });
 
     return data;
   };
@@ -248,7 +260,7 @@ export default function login(props) {
             right="2rem"
             display="flex"
             flexDirection="column"
-            boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
+            // boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
           >
             <Box
               padding="12px 15px"
@@ -370,7 +382,7 @@ export default function login(props) {
                                 name={e.key}
                                 id={`form-${e.key}`}
                                 placeholder={e.label}
-                                required
+                                required={e.is_mandatory ? true : false}
                                 size="small"
                                 // value={age}
                                 onChange={(event) => handleInput(event)}
@@ -391,7 +403,7 @@ export default function login(props) {
                               multiline={e.type === "textarea" ? true : false}
                               rows={e.type === "textarea" ? 3 : 1}
                               placeholder={e.label}
-                              required
+                              required={e.is_mandatory ? true : false}
                               color="info"
                               id={`form-${e.key}`}
                               // label="Email"

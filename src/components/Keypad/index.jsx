@@ -15,7 +15,7 @@ const Keypad = ({ setIsKeypad, endCall, isCalling, onDialPadPressed }) => {
         display: "flex",
         flexDirection: "column",
         marginTop: 5,
-        height: "495px"
+        height: "495px",
       }}
     >
       {/* DIAL PAD  */}
@@ -75,7 +75,12 @@ const Keypad = ({ setIsKeypad, endCall, isCalling, onDialPadPressed }) => {
             </Button>
           </Grid>
         ))}
-        <Grid container rowSpacing={1} columnSpacing={{ xs: 1 }} marginTop="10px">
+        <Grid
+          container
+          rowSpacing={1}
+          columnSpacing={{ xs: 1 }}
+          marginTop="10px"
+        >
           <Grid
             width="100%"
             display="flex"
@@ -106,8 +111,9 @@ const Keypad = ({ setIsKeypad, endCall, isCalling, onDialPadPressed }) => {
           >
             <IconButton
               sx={{
-                borderRadius: "100%",
-                padding: "22px 15px",
+                borderRadius: 50,
+                overflow: "hidden",
+                padding: "25px 15px",
                 backgroundColor: "#FF3B30",
               }}
               onClick={() => endCall()}
