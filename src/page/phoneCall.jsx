@@ -311,6 +311,8 @@ export default function phoneCall() {
 
   if (isFinish && isEstablished && statusCall === "FINISH") {
     endCall()
+  } else {
+    
   }
 
   return (
