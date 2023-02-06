@@ -105,6 +105,7 @@ export default function phoneCall() {
       type: env.VITE_APP_EXTEN_TYPE,
       call_id: genID.slice(0, 8),
       vdn: params?.vdn,
+      timestamp: new Date(),
     });
 
     var requestOptions = {
@@ -115,12 +116,13 @@ export default function phoneCall() {
     };
 
     const data = await fetch(
-      "https://sip2.onx.co.id/infra/api/reqexten.php",
+      `${env.VITE_APP_EXTEN_URL}${env.VITE_APP_EXTEN_TENANT}`,
       requestOptions
     )
       .then((res) => res.text())
       .then((res) => {
         const decryptText = decrypt(res);
+
         if (decryptText) {
           const decrypted = JSON.parse(decryptText);
           // console.log("decrypted>>>", decrypted);
