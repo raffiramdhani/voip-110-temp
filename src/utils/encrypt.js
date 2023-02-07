@@ -1,10 +1,10 @@
 import CryptoJS from "crypto-js";
 
 const env = import.meta.env;
-export const decrypt = (val) => {
+export const decrypt = (val, iv = null, key = null) => {
   try {
-    const IV = env.VITE_APP_DECODE_IV;
-    const KEY = env.VITE_APP_DECODE_KEY;
+    const IV = iv ?? env.VITE_APP_DECODE_IV;
+    const KEY = key ?? env.VITE_APP_DECODE_KEY;
     var encrypted = CryptoJS.enc.Base64.parse(val);
     var key = CryptoJS.enc.Utf8.parse(KEY);
     var iv = CryptoJS.enc.Utf8.parse(IV);
@@ -22,7 +22,7 @@ export const decrypt = (val) => {
     );
     return decrypted.toString(CryptoJS.enc.Utf8);
   } catch (err) {
-    console.log("ERRROR ===> failed decrypt:", err)
+    console.log("ERRROR ===> failed decrypt:", err);
     return false;
   }
 };

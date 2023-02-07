@@ -87,16 +87,19 @@ export default function phoneCall() {
     myHeaders.append("Authorization", env.VITE_APP_AUTHORIZATION);
     myHeaders.append("Content-Type", "application/json");
 
-    const encryptedParams = new Proxy(
-      new URLSearchParams(window.location.search),
-      {
-        get: (searchParams, prop) => searchParams.get(prop),
-      }
+    const encryptedParams = new URLSearchParams(window.location.search).get(
+      "key"
     );
 
-    const params = JSON.parse(JSON.parse('"' + encryptedParams.key + '"'));
-    console.log("params", params);
+    const params = JSON.parse(
+      decrypt(
+        encryptedParams,
+        env.VITE_VOIP_DECODE_IV,
+        env.VITE_VOIP_DECODE_KEY
+      )
+    );
 
+    console.log("params", encryptedParams, params);
     var raw = JSON.stringify({
       username: params?.user?.fullname,
       email: params?.user?.email,
