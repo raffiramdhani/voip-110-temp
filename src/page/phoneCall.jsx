@@ -147,8 +147,8 @@ export default function phoneCall() {
 
   // STEP 3
   const connect = async () => {
-    // const data = profile.reqExten;
-    const data = await requestExtension();
+    const data = profile.reqExten;
+    // const data = await requestExtension();
 
     if (
       Browser.isSafariWebRTC() &&
