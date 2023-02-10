@@ -2,7 +2,7 @@ import create from "zustand";
 import { devtools, persist } from "zustand/middleware";
 
 const intialValue = {
-  curentRoute: "call",
+  curentRoute: "login",
   ui: {
     error: false,
     errorMessage: null,
