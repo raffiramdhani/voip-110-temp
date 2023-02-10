@@ -568,10 +568,10 @@ export default function phoneCall() {
           </Box>
         </>
       )}
-      <Box display="none">
-        <div id="remoteVideo" ref={remoteVideo}></div>
-        <div id="localVideo" ref={localVideo}></div>
-      </Box>
+            <Box display="none">
+              <div id="remoteVideo" ref={remoteVideo}></div>
+              <div id="localVideo" ref={localVideo}></div>
+            </Box>
     </Box>
   );
 }

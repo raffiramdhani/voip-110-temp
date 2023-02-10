@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Fade } from "@mui/material";
+import { Box, Fade, Typography } from "@mui/material";
 import useRouteStore from "@/store/routeStore";
 
 import Pages from "./page";
@@ -16,7 +16,6 @@ export default function App() {
   const type = url_params.searchParams.get("type");
 
   let showCallPage = route.ui.openCallUI;
-
 
   if (type !== "web") {
     showCallPage = true;
@@ -79,7 +78,28 @@ export default function App() {
             </Box>
           )} */}
 
-          <Pages type={type} showCallPage={showCallPage} setCloseCall={setCloseCall} setOpenCall={setOpenCall} />
+          <Pages
+            type={type}
+            showCallPage={showCallPage}
+            setCloseCall={setCloseCall}
+            setOpenCall={setOpenCall}
+          />
+          
+        <Typography
+          style={{
+            position: "fixed",
+            bottom: 0,
+            right: 0,
+            background: "#000",
+            fontSize: "8px",
+            padding: "3px",
+            color: "#fff",
+            borderTopLeftRadius: 5,
+            fontWeight: "bold",
+          }}
+        >
+          Version: 1.0
+        </Typography>
         </Box>
       </Fade>
       {!showCallPage && <Button onClick={() => setOpenCall()} />}
