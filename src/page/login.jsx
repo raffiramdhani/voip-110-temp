@@ -61,7 +61,7 @@ export default function login(props) {
   const type = url_params.searchParams.get("type");
   let captchaRef = React.useRef();
 
-  const genID = uuidv4()
+  const genID = uuidv4();
 
   const handleInput = (e) => {
     e.preventDefault();
@@ -89,9 +89,12 @@ export default function login(props) {
     if (captcha) {
       setLoading(true);
       const data = await requestExtension();
-      // console.log(data);
-      if (data.failed) {
+      console.log(data);
+      if (!data) {
+        setMsgError(`Sorry, tenant failed!`);
+      } else if (data.failed) {
         setMsgError(`Sorry, ${data.failed}!`);
+        setLoading(false);
       } else if (data) {
         postTransaction(data);
         profile.setProfile(form);
@@ -147,7 +150,7 @@ export default function login(props) {
     };
 
     const data = await fetch(
-      `https://apidev-voip.onx.co.id/voip/transaction`,
+      `${VITE_APP_EXTEN_URL}/voip/transaction`,
       requestOptions
     )
       .then((res) => console.log("Success"))
@@ -174,7 +177,7 @@ export default function login(props) {
       timestamp: new Date(),
       token: env.VITE_APP_EXTEN_TOKEN,
       type: env.VITE_APP_EXTEN_TYPE,
-      call_id: genID.slice(0, 8)
+      call_id: genID.slice(0, 8),
     });
 
     var raw = JSON.stringify({
@@ -184,7 +187,7 @@ export default function login(props) {
       timestamp: new Date(),
       token: env.VITE_APP_EXTEN_TOKEN,
       type: env.VITE_APP_EXTEN_TYPE,
-      call_id: genID.slice(0, 8)
+      call_id: genID.slice(0, 8),
     });
 
     var requestOptions = {
@@ -195,7 +198,7 @@ export default function login(props) {
     };
 
     const data = await fetch(
-      `${env.VITE_APP_EXTEN_URL}${env.VITE_APP_EXTEN_TENANT}`,
+      `${env.VITE_APP_EXTEN_URL}/voip/req_extention/${env.VITE_APP_EXTEN_TENANT}`,
       requestOptions
     )
       .then((res) => res.text())
