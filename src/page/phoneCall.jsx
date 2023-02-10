@@ -271,7 +271,7 @@ export default function phoneCall() {
   };
 
   const isCalling = statusCall === CALL_STATUS.ESTABLISHED;
-  // console.log(statusCall);
+  console.log(statusCall);
 
   //Stopwatch
   const [isActive, setIsActive] = useState(false);
