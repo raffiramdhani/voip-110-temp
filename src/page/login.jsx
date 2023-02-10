@@ -76,7 +76,7 @@ export default function login(props) {
     };
     const res = await axios
       .get(
-        `https://apidev-voip.onx.co.id/additional-field-customer/widget/${env.VITE_APP_EXTEN_TENANT}`,
+        `${env.VITE_APP_EXTEN_URL}/additional-field-customer/widget/${env.VITE_APP_EXTEN_TENANT}`,
         config
       )
       .then((res) => setListingAdditionalField(res.data))
@@ -150,7 +150,7 @@ export default function login(props) {
     };
 
     const data = await fetch(
-      `${VITE_APP_EXTEN_URL}/voip/transaction`,
+      `${env.VITE_APP_EXTEN_URL}/voip/transaction`,
       requestOptions
     )
       .then((res) => console.log("Success"))
@@ -172,6 +172,30 @@ export default function login(props) {
     myHeaders.append("Authorization", `${env.VITE_APP_AUTHORIZATION}`);
     myHeaders.append("Content-Type", "application/json");
 
+    const encryptedParams = new URLSearchParams(window.location.search).get(
+      "key"
+    );
+
+    const params = 
+      decrypt(
+        encryptedParams,
+        env.VITE_VOIP_DECODE_IV,
+        env.VITE_VOIP_DECODE_KEY
+      )
+
+    console.log("params", params);
+
+    var dataFromUrl = JSON.stringify({
+      username: params?.user?.fullname,
+      email: params?.user?.email,
+      phone: params?.user?.phone,
+      token: env.VITE_APP_EXTEN_TOKEN,
+      type: env.VITE_APP_EXTEN_TYPE,
+      call_id: genID.slice(0, 8),
+      vdn: params?.vdn,
+      timestamp: new Date(),
+    });
+
     const firstData = JSON.stringify({
       ...form,
       timestamp: new Date(),
@@ -180,20 +204,20 @@ export default function login(props) {
       call_id: genID.slice(0, 8),
     });
 
-    var raw = JSON.stringify({
-      username: form.name,
-      email: form.email,
-      phone: form.phone,
-      timestamp: new Date(),
-      token: env.VITE_APP_EXTEN_TOKEN,
-      type: env.VITE_APP_EXTEN_TYPE,
-      call_id: genID.slice(0, 8),
-    });
+    // var raw = JSON.stringify({
+    //   username: form.name,
+    //   email: form.email,
+    //   phone: form.phone,
+    //   timestamp: new Date(),
+    //   token: env.VITE_APP_EXTEN_TOKEN,
+    //   type: env.VITE_APP_EXTEN_TYPE,
+    //   call_id: genID.slice(0, 8),
+    // });
 
     var requestOptions = {
       method: "POST",
       headers: myHeaders,
-      body: firstData,
+      body: encryptedParams ? dataFromUrl : firstData,
       redirect: "follow",
     };
 
