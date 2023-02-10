@@ -8,6 +8,7 @@ import {
   IconButton,
 } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
+import { v4 as uuidv4 } from "uuid";
 
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import MicOffIcon from "@mui/icons-material/MicOff";
@@ -35,6 +36,8 @@ import Keypad from "../components/Keypad";
 
 const env = import.meta.env;
 
+const genID = uuidv4();
+
 export default function phoneCall() {
   let SESSION_STATUS = Flashphoner.constants.SESSION_STATUS;
   let CALL_STATUS = Flashphoner.constants.CALL_STATUS;
@@ -52,15 +55,15 @@ export default function phoneCall() {
   const [statusRegiter, setStatusRegister] = useState(null);
   const [statusCall, setStatusCall] = useState("waiting");
 
-  const [isFinish, setIsFinish] = useState(true)
-  const [isEstablished, setIsEstablished] = useState(false)
+  const [isFinish, setIsFinish] = useState(true);
+  const [isEstablished, setIsEstablished] = useState(false);
 
   const [isKeypad, setIsKeypad] = useState(false);
 
   if (statusCall === "RING") {
     ringingSounds.play();
   } else {
-    ringingSounds.pause()
+    ringingSounds.pause();
   }
 
   useEffect(() => {
@@ -84,12 +87,28 @@ export default function phoneCall() {
     myHeaders.append("Authorization", env.VITE_APP_AUTHORIZATION);
     myHeaders.append("Content-Type", "application/json");
 
+    const encryptedParams = new URLSearchParams(window.location.search).get(
+      "key"
+    );
+
+    const params = JSON.parse(
+      decrypt(
+        encryptedParams,
+        env.VITE_VOIP_DECODE_IV,
+        env.VITE_VOIP_DECODE_KEY
+      )
+    );
+
+    console.log("params", encryptedParams, params);
     var raw = JSON.stringify({
-      username: "Dummy",
-      email: "dummy@gmail.com",
-      phone: "08581154888",
+      username: params?.user?.fullname,
+      email: params?.user?.email,
+      phone: params?.user?.phone,
       token: env.VITE_APP_EXTEN_TOKEN,
       type: env.VITE_APP_EXTEN_TYPE,
+      call_id: genID.slice(0, 8),
+      vdn: params?.vdn,
+      timestamp: new Date(),
     });
 
     var requestOptions = {
@@ -99,10 +118,14 @@ export default function phoneCall() {
       redirect: "follow",
     };
 
-    const data = await fetch(env.VITE_APP_EXTEN_URL, requestOptions)
+    const data = await fetch(
+      `${env.VITE_APP_EXTEN_URL}${env.VITE_APP_EXTEN_TENANT}`,
+      requestOptions
+    )
       .then((res) => res.text())
       .then((res) => {
         const decryptText = decrypt(res);
+
         if (decryptText) {
           const decrypted = JSON.parse(decryptText);
           // console.log("decrypted>>>", decrypted);
@@ -124,8 +147,8 @@ export default function phoneCall() {
 
   // STEP 3
   const connect = async () => {
-    const data = profile.reqExten;
-    await setReqExten(data);
+    // const data = profile.reqExten;
+    const data = await requestExtension();
 
     if (
       Browser.isSafariWebRTC() &&
@@ -197,8 +220,8 @@ export default function phoneCall() {
       .on(CALL_STATUS.ESTABLISHED, function (call) {
         // console.log("CALL_STATUS ==>> " + CALL_STATUS.ESTABLISHED);
         setStatusCall(CALL_STATUS.ESTABLISHED);
-        setIsEstablished(true)
-        handleStart()
+        setIsEstablished(true);
+        handleStart();
       })
       .on(CALL_STATUS.HOLD, function (call) {
         // console.log("CALL_STATUS ==>> " + CALL_STATUS.HOLD);
@@ -206,7 +229,7 @@ export default function phoneCall() {
       })
       .on(CALL_STATUS.FINISH, function (call) {
         // console.log("CALL_STATUS ==>> " + CALL_STATUS.FINISH);
-        setIsFinish(!isFinish)
+        setIsFinish(!isFinish);
         setStatusCall(CALL_STATUS.FINISH);
       })
       .on(CALL_STATUS.FAILED, function (call) {
@@ -218,8 +241,6 @@ export default function phoneCall() {
     // console.log("outCall", outCall);
     currentCall.current = outCall;
   };
-
-  
 
   // console.log(isFinish, isEstablished, statusCall);
 
@@ -244,7 +265,7 @@ export default function phoneCall() {
   };
 
   const endCall = () => {
-    setStatusCall("End Call")
+    setStatusCall("End Call");
     const toMatch = [
       /Android/i,
       /webOS/i,
@@ -266,12 +287,12 @@ export default function phoneCall() {
     } else {
       window.location.reload();
     }
-    setIsFinish(true)
-    setIsEstablished(false)
+    setIsFinish(true);
+    setIsEstablished(false);
   };
 
   const isCalling = statusCall === CALL_STATUS.ESTABLISHED;
-  console.log(statusCall);
+  // console.log(statusCall);
 
   //Stopwatch
   const [isActive, setIsActive] = useState(false);
@@ -291,8 +312,6 @@ export default function phoneCall() {
     return () => {
       clearInterval(interval);
     };
-
-    
   }, [isActive, isPaused]);
 
   const handleStart = () => {
@@ -310,9 +329,8 @@ export default function phoneCall() {
   };
 
   if (isFinish && isEstablished && statusCall === "FINISH") {
-    endCall()
+    endCall();
   } else {
-    
   }
 
   return (
@@ -353,7 +371,12 @@ export default function phoneCall() {
       </Box>
       {isKeypad ? (
         <>
-          <Keypad setIsKeypad={setIsKeypad} isCalling={isCalling} endCall={endCall} onDialPadPressed={onDialPadPressed} />
+          <Keypad
+            setIsKeypad={setIsKeypad}
+            isCalling={isCalling}
+            endCall={endCall}
+            onDialPadPressed={onDialPadPressed}
+          />
         </>
       ) : (
         <>
@@ -402,14 +425,30 @@ export default function phoneCall() {
                   : statusCall === "RING"
                   ? "Ringing"
                   : statusCall === "ESTABLISHED"
-                  ? "Connected" :
-                  statusCall === "End Call" ? "End Call" : "" }
+                  ? "Connected"
+                  : statusCall === "End Call"
+                  ? "End Call"
+                  : ""}
               </Typography>
-              <div style={{display: "flex", flexDirection: "row", justifyContent: "center", margin: "10px 0"}} className="timer">
-                <Typography style={{color: "#3DCB87", fontSize: 18, fontWeight: 600 }} className="digits">
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  margin: "10px 0",
+                }}
+                className="timer"
+              >
+                <Typography
+                  style={{ color: "#3DCB87", fontSize: 18, fontWeight: 600 }}
+                  className="digits"
+                >
                   {("0" + Math.floor((time / 60000) % 60)).slice(-2)}:
                 </Typography>
-                <Typography style={{color: "#3DCB87", fontSize: 18, fontWeight: 600 }} className="digits">
+                <Typography
+                  style={{ color: "#3DCB87", fontSize: 18, fontWeight: 600 }}
+                  className="digits"
+                >
                   {("0" + Math.floor((time / 1000) % 60)).slice(-2)}
                 </Typography>
                 {/* <span className="digits mili-sec">
