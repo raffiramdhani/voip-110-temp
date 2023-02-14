@@ -87,13 +87,10 @@ export default function phoneCall() {
     myHeaders.append("Authorization", env.VITE_APP_AUTHORIZATION);
     myHeaders.append("Content-Type", "application/json");
 
-    const encryptedParams = new URLSearchParams(window.location.search).get(
-      "key"
-    );
+    const encryptedParams = window.location.search.replace("?key=", "");
 
-    const params = JSON.parse(JSON.parse('"' + encryptedParams + '"'));
+    const params = JSON.parse(decrypt(encryptedParams));
 
-    console.log("params", encryptedParams, params);
     var raw = JSON.stringify({
       username: params?.user?.fullname,
       email: params?.user?.email,
