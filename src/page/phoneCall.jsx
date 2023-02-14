@@ -91,13 +91,7 @@ export default function phoneCall() {
       "key"
     );
 
-    const params = JSON.parse(
-      decrypt(
-        encryptedParams,
-        env.VITE_VOIP_DECODE_IV,
-        env.VITE_VOIP_DECODE_KEY
-      )
-    );
+    const params = JSON.parse(JSON.parse('"' + encryptedParams + '"'));
 
     console.log("params", encryptedParams, params);
     var raw = JSON.stringify({
@@ -119,7 +113,7 @@ export default function phoneCall() {
     };
 
     const data = await fetch(
-      `${env.VITE_APP_EXTEN_URL}${env.VITE_APP_EXTEN_TENANT}`,
+      `${env.VITE_APP_EXTEN_URL}/voip/req_extention/${env.VITE_APP_EXTEN_TENANT}`,
       requestOptions
     )
       .then((res) => res.text())
@@ -568,10 +562,10 @@ export default function phoneCall() {
           </Box>
         </>
       )}
-            <Box display="none">
-              <div id="remoteVideo" ref={remoteVideo}></div>
-              <div id="localVideo" ref={localVideo}></div>
-            </Box>
+      <Box display="none">
+        <div id="remoteVideo" ref={remoteVideo}></div>
+        <div id="localVideo" ref={localVideo}></div>
+      </Box>
     </Box>
   );
 }
