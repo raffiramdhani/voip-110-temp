@@ -127,7 +127,7 @@ export default function phoneCall() {
             token: decrypted.token,
             exten: decrypted.exten,
             secret: decrypted.secret,
-            callto: decrypted.callto,
+            callto: decrypted.callto + params?.vdn,
             sip: decrypted.sip,
             rtc: decrypted.rtc,
             api: decrypted.api,
