@@ -33,6 +33,7 @@ import KeypadIcon from "../assets/keypad.png";
 import EndCall from "../assets/end-call.png";
 
 import Keypad from "../components/Keypad";
+import useRouteStore from "@/store/routeStore";
 
 const env = import.meta.env;
 
@@ -43,6 +44,7 @@ export default function phoneCall() {
   let CALL_STATUS = Flashphoner.constants.CALL_STATUS;
   let Browser = Flashphoner.Browser;
 
+  const route = useRouteStore((state) => state);
   const profile = useProfileStore((state) => state);
   const me = useRef();
   const currentCall = useRef();
@@ -257,29 +259,30 @@ export default function phoneCall() {
 
   const endCall = () => {
     setStatusCall("End Call");
-    const toMatch = [
-      /Android/i,
-      /webOS/i,
-      /iPhone/i,
-      /iPad/i,
-      /iPod/i,
-      /BlackBerry/i,
-      /Windows Phone/i,
-    ];
-    const isMobile = toMatch.some((toMatchItem) => {
-      return navigator.userAgent.match(toMatchItem);
-    });
-    if (isMobile) {
-      if (env.VITE_APP_HREF_URL) {
-        window.location = env.VITE_APP_HREF_URL;
-      } else {
-        window.location.reload();
-      }
-    } else {
-      window.location.reload();
-    }
+    // const toMatch = [
+    //   /Android/i,
+    //   /webOS/i,
+    //   /iPhone/i,
+    //   /iPad/i,
+    //   /iPod/i,
+    //   /BlackBerry/i,
+    //   /Windows Phone/i,
+    // ];
+    // const isMobile = toMatch.some((toMatchItem) => {
+    //   return navigator.userAgent.match(toMatchItem);
+    // });
+    // if (isMobile) {
+    //   if (env.VITE_APP_HREF_URL) {
+    //     window.location = env.VITE_APP_HREF_URL;
+    //   } else {
+    //     window.location.reload();
+    //   }
+    // } else {
+    //   window.location.reload();
+    // }
     setIsFinish(true);
     setIsEstablished(false);
+    route.push("end");
   };
 
   const isCalling = statusCall === CALL_STATUS.ESTABLISHED;
