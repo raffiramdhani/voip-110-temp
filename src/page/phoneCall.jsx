@@ -44,6 +44,12 @@ export default function phoneCall() {
   let CALL_STATUS = Flashphoner.constants.CALL_STATUS;
   let Browser = Flashphoner.Browser;
 
+  const encryptedParams = window.location.search.replace("?key=", "");
+
+  const params = JSON.parse(decrypt(encryptedParams));
+
+  console.log("params", params, encryptedParams);
+
   const route = useRouteStore((state) => state);
   const profile = useProfileStore((state) => state);
   const me = useRef();
@@ -61,6 +67,7 @@ export default function phoneCall() {
   const [isEstablished, setIsEstablished] = useState(false);
 
   const [isKeypad, setIsKeypad] = useState(false);
+  const [isDebugShown, setIsDebugShown] = useState(false);
 
   if (statusCall === "RING") {
     ringingSounds.play();
@@ -89,9 +96,9 @@ export default function phoneCall() {
     myHeaders.append("Authorization", env.VITE_APP_AUTHORIZATION);
     myHeaders.append("Content-Type", "application/json");
 
-    const encryptedParams = window.location.search.replace("?key=", "");
+    // const encryptedParams = window.location.search.replace("?key=", "");
 
-    const params = JSON.parse(decrypt(encryptedParams));
+    // const params = JSON.parse(decrypt(encryptedParams));
 
     var raw = JSON.stringify({
       username: params?.user?.fullname,
@@ -529,6 +536,19 @@ export default function phoneCall() {
               </Grid>
             </Grid>
 
+            {/* DEBUG  */}
+            {isDebugShown ? (
+              <Box textAlign="center">
+                <Typography>username: {params?.user?.fullname}</Typography>
+                <Typography>email: {params?.user?.email}</Typography>
+                <Typography>phone: {params?.user?.phone}</Typography>
+                <Typography>token: {env.VITE_APP_EXTEN_TOKEN}</Typography>
+                <Typography>type: {env.VITE_APP_EXTEN_TYPE}</Typography>
+                <Typography>call_id: {genID.slice(0, 8)}</Typography>
+                <Typography>vdn: {params?.vdn}</Typography>
+              </Box>
+            ) : null}
+
             {/* END CALL BUTTON  */}
             <Box
               sx={{
@@ -562,6 +582,30 @@ export default function phoneCall() {
           </Box>
         </>
       )}
+
+      {/* DEBUG */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          backgroundColor: "white",
+          position: "absolute",
+          bottom: 10,
+          right: 10,
+        }}
+        textAlign="center"
+        marginY="20px"
+      >
+        <Button
+          sx={{
+            padding: "15px",
+            backgroundColor: "#FF3B30",
+          }}
+          onClick={() => setIsDebugShown(!isDebugShown)}
+        >
+          Debug
+        </Button>
+      </Box>
       <Box display="none">
         <div id="remoteVideo" ref={remoteVideo}></div>
         <div id="localVideo" ref={localVideo}></div>
