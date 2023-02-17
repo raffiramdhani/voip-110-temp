@@ -44,7 +44,10 @@ export default function phoneCall() {
   let CALL_STATUS = Flashphoner.constants.CALL_STATUS;
   let Browser = Flashphoner.Browser;
 
-  const encryptedParams = window.location.search.replace("?key=", "");
+  const encryptedParams = new URLSearchParams(window.location.search)
+    .get("key")
+    .split(" ")
+    .join("+");
 
   const params = JSON.parse(decrypt(encryptedParams));
 
