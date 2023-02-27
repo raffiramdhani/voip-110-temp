@@ -3,6 +3,7 @@ import { Box } from "@mui/material";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 const env = import.meta.env;
 import VoiceIcon from "../assets/voice-icon.png";
+import icon_bpjs from "../assets/bpjs.png";
 
 export default function Button({ onClick }) {
   return (
@@ -31,7 +32,7 @@ export default function Button({ onClick }) {
   >
     <div
       style={{
-        backgroundColor: `${env.VITE_APP_MAIN_COLOR}`,
+        backgroundColor: `white`,
         width: 65,
         height: 60,
         borderRadius: "34px 8px 34px 34px",
@@ -50,13 +51,13 @@ export default function Button({ onClick }) {
       onClick={onClick}
     >
       <img
-        src={`${VoiceIcon}`}
-        srcSet={`${VoiceIcon}`}
-        alt={`${VoiceIcon}asd`}
+        src={`${icon_bpjs}`}
+        srcSet={`${icon_bpjs}`}
+        alt={`${icon_bpjs}asd`}
         loading="lazy"
         style={{
-          height: "25px",
-          width: "25px",
+          height: "35px",
+          width: "35px",
         }}
       />
     </div>

@@ -30,7 +30,7 @@ import useRouteStore from "@/store/routeStore";
 import useProfileStore from "@/store/profileStore";
 import { decrypt } from "@/utils/encrypt";
 import useAuth from "@/store/openingStore";
-
+import icon_bpjs from "../assets/bpjs.png";
 import { browserName, osName } from "react-device-detect";
 import axios from "axios";
 
@@ -44,6 +44,7 @@ export default function login(props) {
     username: "",
     phone: "",
     email: "",
+    nik: "",
   });
   const [openModalAgree, setOpenModalAgree] = useState(false);
   const [openFloating, setOpenFloating] = useState(false);
@@ -53,13 +54,20 @@ export default function login(props) {
   const [listingAdditionalField, setListingAdditionalField] = useState(null);
 
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [errMsg, setErrMsg] = useState(null);
+  const [NIK, setNIK] = useState("");
 
   const { isOpen, setIsOpen } = useAuth((state) => state);
   const url_string = window.location.href;
   const url_params = new URL(url_string);
   const type = url_params.searchParams.get("type");
   let captchaRef = React.useRef();
+  const regexPhoneNumber = /^08[0-9]{7,11}$/;
+  const regexPNIK = /^(\d)(?!\1+$)\d{15}$/;
+  const regexNIK2 = /^(?!(\d)\1+$|(?:0(?=1)|1(?=2)|2(?=3)|3(?=4)|4(?=5)|5(?=6)|6(?=7)|7(?=8)|8(?=9)|9(?=0)){5}\d$|(?:0(?=9)|1(?=0)|2(?=1)|3(?=2)|4(?=3)|5(?=4)|6(?=5)|7(?=6)|8(?=7)|9(?=8)){5}\d$)\d{16}$/
+  const regexNIKLengkap = /^(1[1-9]|21|[37][1-6]|5[1-3]|6[1-5]|[89][12])\d{2}\d{2}([04][1-9]|[1256][0-9]|[37][01])(0[1-9]|1[0-2])\d{2}\d{4}$/
+  const regexNIKMenengah = /^\\d{6}([04][1-9]|[1256][0-9]|[37][01])(0[1-9]|1[0-2])\d{2}\d{4}$/
+  // console.log(regexNIK2.test(NIK), regexNIKLengkap.test(NIK),  regexNIKMenengah.test(NIK));
+  // NIK.startsWith(0), 
 
   const genID = uuidv4();
 
@@ -86,8 +94,25 @@ export default function login(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (captcha) {
-      setLoading(true);
+    if (!regexPhoneNumber.test(phoneNumber)) {
+      setMsgError(
+        "Maaf, format nomor telepon harus diawali dengan 08, minimal 9 digit dan maksimal 13 digit!"
+      );
+    } else if (!regexNIKLengkap.test(NIK)) {
+      setMsgError(
+        "Maaf, format NIK tidak boleh diawali dengan angka 0, ada angka sama berulang, angka berurutan dan wajib 16 digit!"
+      );
+    } else if (NIK.startsWith(0)) {
+      setMsgError(
+        "Maaf, NIK tidak boleh diawali dengan angka 0!"
+      );
+    } else if (!regexNIK2.test(NIK)) {
+      setMsgError(
+        "Maaf, format NIK tidak boleh diawali dengan angka 0, ada angka sama berulang, angka berurutan dan wajib 16 digit!"
+      );
+    } else {
+      if (captcha) {
+        setLoading(true);
       const data = await requestExtension();
       console.log(data);
       if (!data) {
@@ -106,9 +131,9 @@ export default function login(props) {
           setMsgError(null);
         }, 3000);
       }
-      // }
-    } else {
-      setMsgError("Please, checklist captcha!");
+      } else {
+        setMsgError("Please, checklist captcha!");
+      }
     }
     setLoading(false);
   };
@@ -259,14 +284,7 @@ export default function login(props) {
     return data;
   };
 
-  // const regexPhoneNumber =
-  // "(()?(+62|62|0)(d{2,3})?)?[ .-]?d{2,4}[ .-]?d{2,4}[ .-]?d{2,4}";
-  // "(()?(+62|62|0)(d{2,3})?)?[ .-]?d{2,4}[ .-]?d{2,4}[ .-]?d{2,4}";
-  // "(\+62 ((\d{3}([ -]\d{3,})([- ]\d{4,})?)|(\d+)))|(\(\d+\) \d+)|\d{3}( \d+)+|(\d+[ -]\d+)|\d+";
-
-  // const testPhone = phoneNumber.match(regexPhoneNumber)
-
-  // console.log("testphone", testPhone);
+  // console.log(regex.test(phoneNumber))
 
   // LISTEN HEIGHT WINDOW
   useEffect(() => {
@@ -283,8 +301,8 @@ export default function login(props) {
             // position="absolute"
             // width={`${type === "web" ? "25%" : "100%"}`}
             // height={`${type === "web" ? "70%" : "100%"}`}
-            bottom="8rem"
-            right="2rem"
+            // bottom="8rem"
+            // right="2rem"
             display="flex"
             flexDirection="column"
             // boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
@@ -308,9 +326,9 @@ export default function login(props) {
                   alignItems="center"
                   gap={2}
                 >
-                  <img src={WelcomeIcon} />
-                  <Typography fontWeight={600} color={color.main}>
-                    OMNIX VoIP
+              <img src={icon_bpjs} style={{width: 40}} />
+                  <Typography fontWeight={600} color="#059d4d">
+                    BPJSKes 165
                   </Typography>
                 </Box>
                 {type === "web" ? (
@@ -335,20 +353,39 @@ export default function login(props) {
                 backgroundColor: "white",
               }}
             >
-              <Typography className="mb-2">
-                To start a call, please fill the form before
+              <Typography className="mb-2" fontSize={14}>
+                Untuk memulai panggilan, harap isi form terlebih dahulu,
               </Typography>
               <form
                 // style={{ height: `80vh` }}
                 onSubmit={(e) => handleSubmit(e)}
               >
-                <Typography marginTop={2}>Fullname</Typography>
+                <Typography marginTop={2} fontSize={14}>NIK</Typography>
+                <TextField
+                  value={form.nik}
+                  onChange={(e) => {
+                    handleInput(e);
+                    setNIK(e.target.value)
+                  }}
+                  // disabled={form.isLoadingSetupWebphone}
+                  fullWidth
+                  placeholder="NIK"
+                  required
+                  color="info"
+                  id="form-nik"
+                  // label="Name"
+                  size="small"
+                  margin="dense"
+                  name="nik"
+                  sx={styling.TextField}
+                />
+                <Typography marginTop={2} fontSize={14}>Nama Lengkap</Typography>
                 <TextField
                   value={form.name}
                   onChange={(e) => handleInput(e)}
                   // disabled={form.isLoadingSetupWebphone}
                   fullWidth
-                  placeholder="Enter fullname"
+                  placeholder="Nama Lengkap"
                   required
                   color="info"
                   id="form-username"
@@ -376,7 +413,7 @@ export default function login(props) {
                   margin="dense"
                   sx={styling.TextField}
                 />
-                <Typography marginTop={1}>Phone number</Typography>
+                <Typography marginTop={1} fontSize={14}>Nomor Telepon</Typography>
                 <TextField
                   value={form.phone}
                   onChange={(e) => {
@@ -384,7 +421,7 @@ export default function login(props) {
                     handleInput(e);
                   }}
                   fullWidth
-                  placeholder="Phone number"
+                  placeholder="Nomor Telepon"
                   required
                   variant="outlined"
                   color="info"
@@ -459,9 +496,10 @@ export default function login(props) {
                   display="flex"
                   flexDirection="column"
                   justifyContent="center"
-                  marginTop={3}
+                  marginTop={2}
                   bottom={5}
                   paddingY="12px"
+                  // backgroundColor="white"
                 >
                   {msgError ? (
                     <Alert severity="error">{msgError}</Alert>
@@ -473,8 +511,8 @@ export default function login(props) {
                     sx={{
                       width: "100%",
                       borderRadius: "10px",
-                      marginTop: "1em",
                       backgroundColor: `${color.main}`,
+                      marginTop: "10px",
                       color: "white",
                     }}
                     variant="contained"

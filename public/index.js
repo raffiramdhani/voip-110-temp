@@ -103,7 +103,7 @@ function widgetApi() {
     widget.appendChild(iframe);
 
     const MainColor = script.getAttribute("main-color");
-    const urlOriginIframe = "https://voipwidget-dev.netlify.app/";
+    const urlOriginIframe = "https://widgetvoip-bpjs.netlify.app/";
     // const urlOriginIframe = "http://localhost:5173/";
     const tenant = script.getAttribute("tenant")
 
