@@ -1,7 +1,14 @@
 import { Grid, Typography } from "@mui/material";
 import React from "react";
+import useRouteStore from "@/store/routeStore";
 
 export default function endCall() {
+  const route = useRouteStore((state) => state);
+  React.useEffect(() => {
+    setTimeout(() => {
+      route.push("login")
+    }, 5000);
+  })
   return (
     <Grid
       container
@@ -10,7 +17,7 @@ export default function endCall() {
       alignItems="center"
       sx={{ minHeight: "100vh" }}
     >
-      <Typography>Terimakasih telah menghubungi kami.</Typography>
+      <Typography>Terima kasih telah menghubungi kami.</Typography>
     </Grid>
   );
 }
