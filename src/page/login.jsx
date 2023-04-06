@@ -76,13 +76,15 @@ export default function login(props) {
     };
     const res = await axios
       .get(
-        `${env.VITE_APP_EXTEN_URL}/additional-field-customer/widget/${env.VITE_APP_EXTEN_TENANT}`,
+        `${env.VITE_APP_EXTEN_URL}additional-field-customer/widget/${env.VITE_APP_EXTEN_TENANT}`,
         config
       )
       .then((res) => setListingAdditionalField(res.data))
       .catch((err) => console.log(err));
     return res;
   };
+
+  console.log("listAdd", listingAdditionalField);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -183,8 +185,6 @@ export default function login(props) {
         env.VITE_VOIP_DECODE_KEY
       )
 
-    console.log("params", params);
-
     var dataFromUrl = JSON.stringify({
       username: params?.user?.fullname,
       email: params?.user?.email,
@@ -194,6 +194,7 @@ export default function login(props) {
       call_id: genID.slice(0, 8),
       vdn: params?.vdn,
       timestamp: new Date(),
+      additional_field: listingAdditionalField[0],
     });
 
     const firstData = JSON.stringify({
@@ -202,6 +203,7 @@ export default function login(props) {
       token: env.VITE_APP_EXTEN_TOKEN,
       type: env.VITE_APP_EXTEN_TYPE,
       call_id: genID.slice(0, 8),
+      additional_field: listingAdditionalField[0],
     });
 
     // var raw = JSON.stringify({
@@ -222,7 +224,7 @@ export default function login(props) {
     };
 
     const data = await fetch(
-      `${env.VITE_APP_EXTEN_URL}/voip/req_extention/${env.VITE_APP_EXTEN_TENANT}`,
+      `${env.VITE_APP_EXTEN_URL}voip/req_extention/${env.VITE_APP_EXTEN_TENANT}`,
       requestOptions
     )
       .then((res) => res.text())
