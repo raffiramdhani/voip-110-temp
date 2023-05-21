@@ -76,7 +76,7 @@ export default function login(props) {
     };
     const res = await axios
       .get(
-        `${env.VITE_APP_EXTEN_URL}/additional-field-customer/widget/${env.VITE_APP_EXTEN_TENANT}`,
+        `${env.VITE_APP_EXTEN_URL}additional-field-customer/widget/${env.VITE_APP_EXTEN_TENANT}`,
         config
       )
       .then((res) => setListingAdditionalField(res.data))
