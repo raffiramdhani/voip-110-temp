@@ -15,7 +15,7 @@ export default function endCall() {
       spacing={0}
       justifyContent="center"
       alignItems="center"
-      sx={{ minHeight: "100vh" }}
+      sx={{ minHeight: "100vh", backgroundColor: "white" }}
     >
       <Typography>Terima kasih telah menghubungi kami.</Typography>
     </Grid>
