@@ -84,14 +84,12 @@ export default function login(props) {
     return res;
   };
 
-  console.log("listAdd", listingAdditionalField);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (captcha) {
       setLoading(true);
       const data = await requestExtension();
-      console.log(data);
+      console.log("data", data);
       if (!data) {
         setMsgError(`Sorry, tenant failed!`);
       } else if (data.failed) {
