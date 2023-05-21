@@ -89,7 +89,9 @@ export default function login(props) {
     if (captcha) {
       setLoading(true);
       const data = await requestExtension();
-      console.log("data", data);
+      if (data?.failed) {
+        console.log("Call failed ==>", data?.failed);
+      }
       if (!data) {
         setMsgError(`Sorry, tenant failed!`);
       } else if (data.failed) {
