@@ -98,7 +98,10 @@ export default function phoneCall() {
     const params = JSON.parse(decrypt(encryptedParams));
 
     var raw = JSON.stringify({
-      username: params?.user?.fullname,
+      menu: params?.menu_id,
+      is_postlogin: params?.user?.email ? 1 : 0,
+      name: params?.user?.fullname,
+      username: "bsi",
       email: params?.user?.email,
       phone: params?.user?.phone,
       token: env.VITE_APP_EXTEN_TOKEN,
