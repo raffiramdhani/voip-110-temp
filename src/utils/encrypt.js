@@ -49,7 +49,7 @@ export const decrypt = (val, iv = null, key = null) => {
     );
     return decrypted.toString(CryptoJS.enc.Utf8);
   } catch (err) {
-    console.log("ERRROR ===> failed decrypt:", err);
+    // console.log("ERRROR ===> failed decrypt:", err);
     return false;
   }
 };
