@@ -33,6 +33,7 @@ import KeypadIcon from "../assets/keypad.png";
 import EndCall from "../assets/end-call.png";
 
 import Keypad from "../components/Keypad";
+import useRouteStore from "@/store/routeStore";
 
 const env = import.meta.env;
 
@@ -43,6 +44,7 @@ export default function phoneCall() {
   let CALL_STATUS = Flashphoner.constants.CALL_STATUS;
   let Browser = Flashphoner.Browser;
 
+  const route = useRouteStore((state) => state);
   const profile = useProfileStore((state) => state);
   const me = useRef();
   const currentCall = useRef();
@@ -87,21 +89,19 @@ export default function phoneCall() {
     myHeaders.append("Authorization", env.VITE_APP_AUTHORIZATION);
     myHeaders.append("Content-Type", "application/json");
 
-    const encryptedParams = new URLSearchParams(window.location.search).get(
-      "key"
-    );
+    const encryptedParams = new URLSearchParams(window.location.search)
+      ?.get("key")
+      ?.split(" ")
+      ?.join("+")
+      ?.replace(/\\/g, "");
 
-    const params = JSON.parse(
-      decrypt(
-        encryptedParams,
-        env.VITE_VOIP_DECODE_IV,
-        env.VITE_VOIP_DECODE_KEY
-      )
-    );
+    const params = JSON.parse(decrypt(encryptedParams));
 
-    console.log("params", encryptedParams, params);
     var raw = JSON.stringify({
-      username: params?.user?.fullname,
+      menu: params?.menu_id,
+      is_postlogin: params?.user?.email ? 1 : 0,
+      name: params?.user?.fullname,
+      username: "bsi",
       email: params?.user?.email,
       phone: params?.user?.phone,
       token: env.VITE_APP_EXTEN_TOKEN,
@@ -119,7 +119,7 @@ export default function phoneCall() {
     };
 
     const data = await fetch(
-      `${env.VITE_APP_EXTEN_URL}${env.VITE_APP_EXTEN_TENANT}`,
+      `${env.VITE_APP_EXTEN_URL}/voip/req_extention/${env.VITE_APP_EXTEN_TENANT}`,
       requestOptions
     )
       .then((res) => res.text())
@@ -133,7 +133,7 @@ export default function phoneCall() {
             token: decrypted.token,
             exten: decrypted.exten,
             secret: decrypted.secret,
-            callto: decrypted.callto,
+            callto: decrypted.callto + params?.vdn,
             sip: decrypted.sip,
             rtc: decrypted.rtc,
             api: decrypted.api,
@@ -266,29 +266,30 @@ export default function phoneCall() {
 
   const endCall = () => {
     setStatusCall("End Call");
-    const toMatch = [
-      /Android/i,
-      /webOS/i,
-      /iPhone/i,
-      /iPad/i,
-      /iPod/i,
-      /BlackBerry/i,
-      /Windows Phone/i,
-    ];
-    const isMobile = toMatch.some((toMatchItem) => {
-      return navigator.userAgent.match(toMatchItem);
-    });
-    if (isMobile) {
-      if (env.VITE_APP_HREF_URL) {
-        window.location = env.VITE_APP_HREF_URL;
-      } else {
-        window.location.reload();
-      }
-    } else {
-      window.location.reload();
-    }
+    // const toMatch = [
+    //   /Android/i,
+    //   /webOS/i,
+    //   /iPhone/i,
+    //   /iPad/i,
+    //   /iPod/i,
+    //   /BlackBerry/i,
+    //   /Windows Phone/i,
+    // ];
+    // const isMobile = toMatch.some((toMatchItem) => {
+    //   return navigator.userAgent.match(toMatchItem);
+    // });
+    // if (isMobile) {
+    //   if (env.VITE_APP_HREF_URL) {
+    //     window.location = env.VITE_APP_HREF_URL;
+    //   } else {
+    //     window.location.reload();
+    //   }
+    // } else {
+    //   window.location.reload();
+    // }
     setIsFinish(true);
     setIsEstablished(false);
+    route.push("end");
   };
 
   const isCalling = statusCall === CALL_STATUS.ESTABLISHED;
@@ -568,10 +569,10 @@ export default function phoneCall() {
           </Box>
         </>
       )}
-            <Box display="none">
-              <div id="remoteVideo" ref={remoteVideo}></div>
-              <div id="localVideo" ref={localVideo}></div>
-            </Box>
+      <Box display="none">
+        <div id="remoteVideo" ref={remoteVideo}></div>
+        <div id="localVideo" ref={localVideo}></div>
+      </Box>
     </Box>
   );
 }

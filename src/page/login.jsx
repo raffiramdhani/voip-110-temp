@@ -76,7 +76,7 @@ export default function login(props) {
     };
     const res = await axios
       .get(
-        `${env.VITE_APP_EXTEN_URL}/additional-field-customer/widget/${env.VITE_APP_EXTEN_TENANT}`,
+        `${env.VITE_APP_EXTEN_URL}additional-field-customer/widget/${env.VITE_APP_EXTEN_TENANT}`,
         config
       )
       .then((res) => setListingAdditionalField(res.data))
@@ -89,7 +89,9 @@ export default function login(props) {
     if (captcha) {
       setLoading(true);
       const data = await requestExtension();
-      console.log(data);
+      if (data?.failed) {
+        console.log("Call failed ==>", data?.failed);
+      }
       if (!data) {
         setMsgError(`Sorry, tenant failed!`);
       } else if (data.failed) {
@@ -183,8 +185,6 @@ export default function login(props) {
         env.VITE_VOIP_DECODE_KEY
       )
 
-    console.log("params", params);
-
     var dataFromUrl = JSON.stringify({
       username: params?.user?.fullname,
       email: params?.user?.email,
@@ -194,6 +194,7 @@ export default function login(props) {
       call_id: genID.slice(0, 8),
       vdn: params?.vdn,
       timestamp: new Date(),
+      additional_field: listingAdditionalField[0],
     });
 
     const firstData = JSON.stringify({
@@ -202,6 +203,7 @@ export default function login(props) {
       token: env.VITE_APP_EXTEN_TOKEN,
       type: env.VITE_APP_EXTEN_TYPE,
       call_id: genID.slice(0, 8),
+      additional_field: listingAdditionalField[0],
     });
 
     // var raw = JSON.stringify({
@@ -222,7 +224,7 @@ export default function login(props) {
     };
 
     const data = await fetch(
-      `${env.VITE_APP_EXTEN_URL}/voip/req_extention/${env.VITE_APP_EXTEN_TENANT}`,
+      `${env.VITE_APP_EXTEN_URL}voip/req_extention/${env.VITE_APP_EXTEN_TENANT}`,
       requestOptions
     )
       .then((res) => res.text())
@@ -402,7 +404,9 @@ export default function login(props) {
                     listingAdditionalField.map((e) => {
                       return (
                         <>
-                          <Typography marginTop={1}>{e.label}</Typography>
+                        {e.display_type === "show" && e.is_mandatory?
+                        <>
+                        <Typography marginTop={1}>{e.label}</Typography>
                           {e.type === "select" ? (
                             <>
                               <Select
@@ -441,6 +445,50 @@ export default function login(props) {
                               sx={styling.TextField}
                             />
                           )}
+                        </> : !e.is_mandatory  && e.display_type === "show" ? 
+                        <>
+                        <Typography marginTop={1}>{e.label}</Typography>
+                          {e.type === "select" ? (
+                            <>
+                              <Select
+                                name={e.key}
+                                id={`form-${e.key}`}
+                                placeholder={e.label}
+                                // required={e.is_mandatory ? true : false}
+                                size="small"
+                                // value={age}
+                                onChange={(event) => handleInput(event)}
+                                label={e.label}
+                                sx={{ width: "100%" }}
+                              >
+                                {e?.option.map((e) => {
+                                  return <MenuItem value={e}>{e}</MenuItem>;
+                                })}
+                              </Select>
+                            </>
+                          ) : (
+                            <TextField
+                              // value={form.e.label}
+                              onChange={(event) => handleInput(event)}
+                              // disabled={form.isLoadingSetupWebphone}
+                              fullWidth
+                              multiline={e.type === "textarea" ? true : false}
+                              rows={e.type === "textarea" ? 3 : 1}
+                              placeholder={e.label}
+                              // required={e.is_mandatory ? true : false}
+                              color="info"
+                              id={`form-${e.key}`}
+                              // label="Email"
+                              name={e.key}
+                              type={e.type}
+                              size="small"
+                              margin="dense"
+                              sx={styling.TextField}
+                            />
+                          )}
+                        </> : e.display_type === "hidden" ? null : null
+                        }
+                          
                         </>
                       );
                     })
