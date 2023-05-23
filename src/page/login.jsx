@@ -76,7 +76,7 @@ export default function login(props) {
     };
     const res = await axios
       .get(
-        `${env.VITE_APP_EXTEN_URL}additional-field-customer/widget/${env.VITE_APP_EXTEN_TENANT}`,
+        `${env.VITE_APP_EXTEN_URL}/additional-field-customer/widget/${env.VITE_APP_EXTEN_TENANT}`,
         config
       )
       .then((res) => setListingAdditionalField(res.data))
@@ -89,6 +89,7 @@ export default function login(props) {
     if (captcha) {
       setLoading(true);
       const data = await requestExtension();
+      console.log("is data", data);
       if (data?.failed) {
         console.log("Call failed ==>", data?.failed);
       }
@@ -169,6 +170,8 @@ export default function login(props) {
     }
   };
 
+  // console.log(listingAdditionalField);
+
   const requestExtension = async () => {
     let myHeaders = new Headers();
     myHeaders.append("Authorization", `${env.VITE_APP_AUTHORIZATION}`);
@@ -224,7 +227,7 @@ export default function login(props) {
     };
 
     const data = await fetch(
-      `${env.VITE_APP_EXTEN_URL}voip/req_extention/${env.VITE_APP_EXTEN_TENANT}`,
+      `${env.VITE_APP_EXTEN_URL}/voip/req_extention/${env.VITE_APP_EXTEN_TENANT}`,
       requestOptions
     )
       .then((res) => res.text())
