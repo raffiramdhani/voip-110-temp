@@ -89,7 +89,7 @@ export default function login(props) {
     if (captcha) {
       setLoading(true);
       const data = await requestExtension();
-      console.log("is data", data);
+      // console.log("is data", data);
       if (data?.failed) {
         console.log("Call failed ==>", data?.failed);
       }
