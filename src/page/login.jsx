@@ -15,7 +15,7 @@ import {
 import RemoveIcon from "@mui/icons-material/Remove";
 import { v4 as uuidv4 } from "uuid";
 
-import WelcomeIcon from "../assets/welcome-icon.png";
+import WelcomeIcon from "../assets/polri.svg";
 
 import ContactSupportIcon from "@mui/icons-material/ContactSupport";
 import PhoneInTalkIcon from "@mui/icons-material/PhoneInTalk";
@@ -197,7 +197,7 @@ export default function login(props) {
       call_id: genID.slice(0, 8),
       vdn: params?.vdn,
       timestamp: new Date(),
-      additional_field: listingAdditionalField[0],
+      additional_field: listingAdditionalField ?  listingAdditionalField[0] : null,
     });
 
     const firstData = JSON.stringify({
@@ -206,7 +206,7 @@ export default function login(props) {
       token: env.VITE_APP_EXTEN_TOKEN,
       type: env.VITE_APP_EXTEN_TYPE,
       call_id: genID.slice(0, 8),
-      additional_field: listingAdditionalField[0],
+      additional_field: listingAdditionalField ?  listingAdditionalField[0] : null,
     });
 
     // var raw = JSON.stringify({
@@ -279,7 +279,7 @@ export default function login(props) {
   }, []);
 
   return (
-    <Box>
+    <Box backgroundColor={"#FFBF00"}>
       {/* {type === "web" ? ( */}
       <>
         {props.props.showCallPage && isOpen === "login" ? (
@@ -571,7 +571,7 @@ export default function login(props) {
 const color = {
   textTitle: "#fff",
   main: env.VITE_APP_MAIN_COLOR,
-  secondary: "#EBE8FF",
+  secondary: env.VITE_APP_SECONDARY_COLOR,
 };
 
 const styling = {

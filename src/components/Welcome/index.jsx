@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 // import { Button } from "antd";
 // import { MinusOutlined } from "@ant-design/icons";
-import WelcomeIcon from "../../assets/welcome-icon.png";
+import WelcomeIcon from "../../assets/polri.svg";
 import AgentDefault from "../../assets/agent-default.png";
 import useAuth from "@/store/openingStore";
 import {
@@ -20,7 +20,7 @@ const env = import.meta.env;
 const color = {
   textTitle: "#fff",
   main: env.VITE_APP_MAIN_COLOR,
-  secondary: "#EBE8FF",
+  secondary: env.VITE_APP_SECONDARY_COLOR,
 };
 
 const styling = {
@@ -117,6 +117,28 @@ const Welcome = (props) => {
           >
             <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
               <img src={WelcomeIcon} />
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 5,
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontWeight: 600,
+                  }}
+                >
+                  Welcome to{" "}
+                  <span style={{ color: color.main, fontWeight: 600 }}>
+                    OMNIX VoIP
+                  </span>
+                </Typography>
+
+                <Typography fontSize={12}>
+                  What can we help you today?
+                </Typography>
+              </div>
             </Box>
             {type === "web" ? (
               <IconButton
@@ -132,28 +154,7 @@ const Welcome = (props) => {
               <></>
             )}
           </Box>
-          <Box marginY="10px">
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                gap: 5,
-                marginBottom: 5,
-              }}
-            >
-              <Typography
-                sx={{
-                  fontWeight: 600,
-                }}
-              >
-                Welcome to
-              </Typography>
-              <Typography fontWeight={600} color={color.main}>
-                OMNIX VoIP
-              </Typography>
-            </div>
-            <Typography fontSize={12}>What can we help you today?</Typography>
-          </Box>
+          <Box marginY="10px"></Box>
         </Box>
         <Box height={"359px"} backgroundColor="white" padding="55px 15px">
           <Box
@@ -174,7 +175,7 @@ const Welcome = (props) => {
                 {label}
               </Typography>
               <Typography
-                color="#5A55D2"
+                color={color.main}
                 style={{ textDecoration: "underline" }}
                 onClick={() => {
                   props.setOpenModalAgree(true);

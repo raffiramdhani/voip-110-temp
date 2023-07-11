@@ -335,6 +335,12 @@ export default function phoneCall() {
   } else {
   }
 
+  const color = {
+    textTitle: "#fff",
+    main: env.VITE_APP_MAIN_COLOR,
+    secondary: env.VITE_APP_SECONDARY_COLOR,
+  };
+
   return (
     <Box
       // position={`${type === "web" ? "absolute" : ""}`}
@@ -360,7 +366,7 @@ export default function phoneCall() {
           justifyContent="space-between"
           alignItems="center"
         >
-          <Typography>VoIP ONX</Typography>
+          <Typography fontWeight={600} color={color.main}>VoIP ONX</Typography>
         </Box>
         <IconButton
         // onClick={() => {
