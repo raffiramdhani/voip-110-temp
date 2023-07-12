@@ -34,6 +34,7 @@ import EndCall from "../assets/end-call.png";
 
 import Keypad from "../components/Keypad";
 import useRouteStore from "@/store/routeStore";
+import { browserName, osName } from "react-device-detect";
 
 const env = import.meta.env;
 
@@ -58,7 +59,9 @@ export default function phoneCall() {
   const [statusCall, setStatusCall] = useState("waiting");
 
   const [isFinish, setIsFinish] = useState(true);
-  const [isEstablished, setIsEstablished] = useState(false);
+  const [isEstablished, setIsEstablished] = useState(true);
+  const [profiles, setProfiles] = useState(false);
+  const [reqExtend, setReqExtend] = useState(false);
 
   const [isKeypad, setIsKeypad] = useState(false);
 
@@ -69,9 +72,15 @@ export default function phoneCall() {
   }
 
   useEffect(() => {
-    initFlashphoner();
+    if (reqExtend) {
+      
+      initFlashphoner();
+    }
+    if (profile.reqExten) {
+      initFlashphoner();
+    }
     // console.log("1.0.0");
-  }, [isFinish]);
+  }, [reqExtend, isFinish]);
 
   // STEP 1
   const initFlashphoner = () => {
@@ -84,6 +93,35 @@ export default function phoneCall() {
   };
 
   // STEP 2
+  const handleSubmit = async () => {
+      const data = await requestExtension();
+      const encryptedParams = new URLSearchParams(window.location.search)
+      ?.get("key")
+      ?.split(" ")
+      ?.join("+")
+      ?.replace(/\\/g, "");
+
+      
+      const params = JSON.parse(decrypt(encryptedParams));
+      // console.log("is data", data);
+      if (data?.failed) {
+        console.log("Call failed ==>", data?.failed);
+      }
+      if (!data) {
+      } else if (data.failed) {
+        setLoading(false);
+      } else if (data) {
+        postTransaction(data);
+        setProfiles(params);
+        setReqExtend(data);
+        route.push("call");
+      } else {
+        setTimeout(() => {
+          setMsgError(null);
+        }, 3000);
+      }
+  };
+
   const requestExtension = async () => {
     let myHeaders = new Headers();
     myHeaders.append("Authorization", env.VITE_APP_AUTHORIZATION);
@@ -95,10 +133,25 @@ export default function phoneCall() {
       ?.join("+")
       ?.replace(/\\/g, "");
 
-    const params = JSON.parse(decrypt(encryptedParams));
+      
+      const params = JSON.parse(decrypt(encryptedParams));
 
-    var raw = JSON.stringify({
-      menu: params?.menu_id,
+      console.log(params);
+
+      var dataFromUrl = JSON.stringify({
+        username: params?.fullname,
+        email: params?.email,
+        phone: params?.phone,
+        token: env.VITE_APP_EXTEN_TOKEN,
+        type: env.VITE_APP_EXTEN_TYPE,
+        call_id: genID.slice(0, 8),
+        vdn: params?.vdn,
+        timestamp: new Date(),
+        // additional_field: listingAdditionalField[0],
+      });
+      
+      var raw = JSON.stringify({
+        menu: params?.menu_id,
       is_postlogin: params?.user?.email ? 1 : 0,
       name: params?.user?.fullname,
       username: "bsi",
@@ -110,11 +163,11 @@ export default function phoneCall() {
       vdn: params?.vdn,
       timestamp: new Date(),
     });
-
+    
     var requestOptions = {
       method: "POST",
       headers: myHeaders,
-      body: raw,
+      body: dataFromUrl,
       redirect: "follow",
     };
 
@@ -145,9 +198,72 @@ export default function phoneCall() {
     return data;
   };
 
+  const postTransaction = async (value) => {
+    let myHeaders = new Headers();
+    myHeaders.append("Authorization", `${env.VITE_APP_AUTHORIZATION}`);
+    myHeaders.append("Content-Type", "application/json");
+
+    const encryptedParams = new URLSearchParams(window.location.search)
+      ?.get("key")
+      ?.split(" ")
+      ?.join("+")
+      ?.replace(/\\/g, "");
+      const params = JSON.parse(decrypt(encryptedParams));
+
+    const firstData = JSON.stringify({
+      username: params.fullname,
+      email: params.email,
+      phone: params.phone,
+      date_call: new Date(),
+      os: osName,
+      browser: browserName,
+      tenant_id: 0,
+      tenant: env.VITE_APP_EXTEN_TENANT,
+      extention: parseInt(value.exten),
+      call_id: genID.slice(0, 8),
+    });
+
+    var raw = JSON.stringify({
+      username: params.name,
+      email: params.email,
+      phone: params.phone,
+      date_call: new Date(),
+      os: osName,
+      browser: browserName,
+      tenant_id: 0,
+      tenant: env.VITE_APP_EXTEN_TENANT,
+      extention: parseInt(value.exten),
+      call_id: genID.slice(0, 8),
+    });
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: firstData,
+      redirect: "follow",
+    };
+
+    const data = await fetch(
+      `${env.VITE_APP_EXTEN_URL}/voip/transaction`,
+      requestOptions
+    )
+      .then((res) => console.log("Success"))
+      .catch((err) => console.log(err));
+    return data;
+  };
+
+  useEffect(() => {
+    const encryptedParams = new URLSearchParams(window.location.search).get(
+      "key"
+    );
+    if (encryptedParams) {
+      handleSubmit();
+    }
+  }, []);
+
   // STEP 3
   const connect = async () => {
-    const data = profile.reqExten;
+    const data = reqExtend ? reqExtend : profile.reqExten;
     // const data = await requestExtension();
 
     if (
