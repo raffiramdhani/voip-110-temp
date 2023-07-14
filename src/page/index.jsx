@@ -17,6 +17,6 @@ export default function Page(props) {
     case "end":
       return <EndCall />;
     default:
-      return <h1>Not Found</h1>;
+      return window.closed();
   }
 }

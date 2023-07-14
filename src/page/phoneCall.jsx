@@ -73,7 +73,6 @@ export default function phoneCall() {
 
   useEffect(() => {
     if (reqExtend) {
-      
       initFlashphoner();
     }
     if (profile.reqExten) {
@@ -94,32 +93,31 @@ export default function phoneCall() {
 
   // STEP 2
   const handleSubmit = async () => {
-      const data = await requestExtension();
-      const encryptedParams = new URLSearchParams(window.location.search)
+    const data = await requestExtension();
+    const encryptedParams = new URLSearchParams(window.location.search)
       ?.get("key")
       ?.split(" ")
       ?.join("+")
       ?.replace(/\\/g, "");
 
-      
-      const params = JSON.parse(decrypt(encryptedParams));
-      // console.log("is data", data);
-      if (data?.failed) {
-        console.log("Call failed ==>", data?.failed);
-      }
-      if (!data) {
-      } else if (data.failed) {
-        setLoading(false);
-      } else if (data) {
-        postTransaction(data);
-        setProfiles(params);
-        setReqExtend(data);
-        route.push("call");
-      } else {
-        setTimeout(() => {
-          setMsgError(null);
-        }, 3000);
-      }
+    const params = JSON.parse(decrypt(encryptedParams));
+    // console.log("is data", data);
+    if (data?.failed) {
+      console.log("Call failed ==>", data?.failed);
+    }
+    if (!data) {
+    } else if (data.failed) {
+      setLoading(false);
+    } else if (data) {
+      postTransaction(data);
+      setProfiles(params);
+      setReqExtend(data);
+      route.push("call");
+    } else {
+      setTimeout(() => {
+        setMsgError(null);
+      }, 3000);
+    }
   };
 
   const requestExtension = async () => {
@@ -133,25 +131,24 @@ export default function phoneCall() {
       ?.join("+")
       ?.replace(/\\/g, "");
 
-      
-      const params = JSON.parse(decrypt(encryptedParams));
+    const params = JSON.parse(decrypt(encryptedParams));
 
-      console.log(params);
+    console.log(params);
 
-      var dataFromUrl = JSON.stringify({
-        username: params?.fullname,
-        email: params?.email,
-        phone: params?.phone,
-        token: env.VITE_APP_EXTEN_TOKEN,
-        type: env.VITE_APP_EXTEN_TYPE,
-        call_id: genID.slice(0, 8),
-        vdn: params?.vdn,
-        timestamp: new Date(),
-        // additional_field: listingAdditionalField[0],
-      });
-      
-      var raw = JSON.stringify({
-        menu: params?.menu_id,
+    var dataFromUrl = JSON.stringify({
+      username: params?.fullname,
+      email: params?.email,
+      phone: params?.phone,
+      token: env.VITE_APP_EXTEN_TOKEN,
+      type: env.VITE_APP_EXTEN_TYPE,
+      call_id: genID.slice(0, 8),
+      vdn: params?.vdn,
+      timestamp: new Date(),
+      // additional_field: listingAdditionalField[0],
+    });
+
+    var raw = JSON.stringify({
+      menu: params?.menu_id,
       is_postlogin: params?.user?.email ? 1 : 0,
       name: params?.user?.fullname,
       username: "bsi",
@@ -163,7 +160,7 @@ export default function phoneCall() {
       vdn: params?.vdn,
       timestamp: new Date(),
     });
-    
+
     var requestOptions = {
       method: "POST",
       headers: myHeaders,
@@ -186,7 +183,9 @@ export default function phoneCall() {
             token: decrypted.token,
             exten: decrypted.exten,
             secret: decrypted.secret,
-            callto: decrypted.callto + params?.vdn,
+            callto: params?.vdn
+              ? decrypted.callto + params?.vdn
+              : decrypted.callto,
             sip: decrypted.sip,
             rtc: decrypted.rtc,
             api: decrypted.api,
@@ -208,7 +207,7 @@ export default function phoneCall() {
       ?.split(" ")
       ?.join("+")
       ?.replace(/\\/g, "");
-      const params = JSON.parse(decrypt(encryptedParams));
+    const params = JSON.parse(decrypt(encryptedParams));
 
     const firstData = JSON.stringify({
       username: params.fullname,
@@ -265,7 +264,7 @@ export default function phoneCall() {
   const connect = async () => {
     const data = reqExtend ? reqExtend : profile.reqExten;
     // const data = await requestExtension();
-
+    console.log("ini data", data);
     if (
       Browser.isSafariWebRTC() &&
       Flashphoner.getMediaProviders()[0] === "WebRTC"
@@ -395,18 +394,38 @@ export default function phoneCall() {
     const isMobile = toMatch.some((toMatchItem) => {
       return navigator.userAgent.match(toMatchItem);
     });
+
     if (isMobile) {
       if (env.VITE_APP_HREF_URL) {
         window.location = env.VITE_APP_HREF_URL;
       } else {
-        window.location.reload();
+        if (reqExtend) {
+          // window.close();
+          // route.push("close");
+          // setIsFinish(true);
+          // setIsEstablished(false);
+          window.location = env.VITE_APP_HREF_URL
+        } else {
+          window.location.reload();
+          route.push("end");
+          setIsFinish(true);
+          setIsEstablished(false);
+        }
       }
     } else {
-      window.location.reload();
+      if (reqExtend) {
+        // window.close();
+        // route.push("close");
+        // setIsFinish(true);
+        // setIsEstablished(false);
+        window.location = env.VITE_APP_HREF_URL
+      } else {
+        window.location.reload();
+        route.push("end");
+        setIsFinish(true);
+        setIsEstablished(false);
+      }
     }
-    setIsFinish(true);
-    setIsEstablished(false);
-    route.push("end");
   };
 
   const isCalling = statusCall === CALL_STATUS.ESTABLISHED;
@@ -482,7 +501,9 @@ export default function phoneCall() {
           justifyContent="space-between"
           alignItems="center"
         >
-          <Typography fontWeight={600} color={color.main}>VoIP ONX</Typography>
+          <Typography fontWeight={600} color={color.main}>
+            VoIP ONX
+          </Typography>
         </Box>
         <IconButton
         // onClick={() => {
