@@ -266,27 +266,28 @@ export default function phoneCall() {
 
   const endCall = () => {
     setStatusCall("End Call");
-    // const toMatch = [
-    //   /Android/i,
-    //   /webOS/i,
-    //   /iPhone/i,
-    //   /iPad/i,
-    //   /iPod/i,
-    //   /BlackBerry/i,
-    //   /Windows Phone/i,
-    // ];
-    // const isMobile = toMatch.some((toMatchItem) => {
-    //   return navigator.userAgent.match(toMatchItem);
-    // });
-    // if (isMobile) {
-    //   if (env.VITE_APP_HREF_URL) {
-    //     window.location = env.VITE_APP_HREF_URL;
-    //   } else {
-    //     window.location.reload();
-    //   }
-    // } else {
-    //   window.location.reload();
-    // }
+    // handleHangup()
+    const toMatch = [
+      /Android/i,
+      /webOS/i,
+      /iPhone/i,
+      /iPad/i,
+      /iPod/i,
+      /BlackBerry/i,
+      /Windows Phone/i,
+    ];
+    const isMobile = toMatch.some((toMatchItem) => {
+      return navigator.userAgent.match(toMatchItem);
+    });
+    if (isMobile) {
+      if (env.VITE_APP_HREF_URL) {
+        window.location = env.VITE_APP_HREF_URL;
+      } else {
+        window.location.reload();
+      }
+    } else {
+      window.location.reload();
+    }
     setIsFinish(true);
     setIsEstablished(false);
     route.push("end");
