@@ -57,6 +57,8 @@ export default function phoneCall() {
   const [reqExten, setReqExten] = useState(null);
   const [statusRegiter, setStatusRegister] = useState(null);
   const [statusCall, setStatusCall] = useState("waiting");
+  const [lat, setLat] = useState(null);
+  const [long, setLong] = useState(null);
 
   const [isFinish, setIsFinish] = useState(true);
   const [isEstablished, setIsEstablished] = useState(true);
@@ -92,6 +94,30 @@ export default function phoneCall() {
   };
 
   // STEP 2
+
+  const geolocationAPI = navigator.geolocation;
+  if (!geolocationAPI) {
+    notification.error({
+      message: "Geolocation API is not available in your browser.",
+      placement: "bottomRight",
+      duration: 5,
+    });
+  } else {
+    geolocationAPI.getCurrentPosition(
+      (position) => {
+        const { coords } = position;
+        setLat(coords.latitude);
+        setLong(coords.longitude);
+      },
+      (error) => {
+        notification.error({
+          message: "Something went wrong getting your position.",
+          placement: "bottomRight",
+          duration: 5,
+        });
+      }
+    );
+  }
   const handleSubmit = async () => {
     const data = await requestExtension();
     const encryptedParams = new URLSearchParams(window.location.search)
@@ -133,8 +159,6 @@ export default function phoneCall() {
 
     const params = JSON.parse(decrypt(encryptedParams));
 
-    console.log(params);
-
     var dataFromUrl = JSON.stringify({
       username: params?.fullname,
       email: params?.email,
@@ -144,6 +168,10 @@ export default function phoneCall() {
       call_id: genID.slice(0, 8),
       vdn: params?.vdn,
       timestamp: new Date(),
+      location: {
+        latitude: lat,
+        longitude: long,
+      },
       // additional_field: listingAdditionalField[0],
     });
 
@@ -159,6 +187,10 @@ export default function phoneCall() {
       call_id: genID.slice(0, 8),
       vdn: params?.vdn,
       timestamp: new Date(),
+      location: {
+        latitude: lat,
+        longitude: long,
+      },
     });
 
     var requestOptions = {

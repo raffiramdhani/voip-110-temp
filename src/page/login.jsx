@@ -49,6 +49,8 @@ export default function login(props) {
   const [openFloating, setOpenFloating] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [msgError, setMsgError] = useState(null);
+  const [lat, setLat] = useState(null);
+  const [long, setLong] = useState(null);
   const [captcha, setCaptcha] = useState(null);
   const [listingAdditionalField, setListingAdditionalField] = useState(null);
 
@@ -60,7 +62,7 @@ export default function login(props) {
   const url_params = new URL(url_string);
   const type = url_params.searchParams.get("type");
   let captchaRef = React.useRef();
-
+  
   const genID = uuidv4();
 
   const handleInput = (e) => {
@@ -195,6 +197,10 @@ export default function login(props) {
       token: env.VITE_APP_EXTEN_TOKEN,
       type: env.VITE_APP_EXTEN_TYPE,
       call_id: genID.slice(0, 8),
+      location: {
+        latitude: lat,
+        longitude: long,
+      },
       vdn: params?.vdn,
       timestamp: new Date(),
       additional_field: listingAdditionalField ?  listingAdditionalField[0] : null,
@@ -207,6 +213,10 @@ export default function login(props) {
       type: env.VITE_APP_EXTEN_TYPE,
       call_id: genID.slice(0, 8),
       additional_field: listingAdditionalField ?  listingAdditionalField[0] : null,
+      location: {
+        latitude: lat,
+        longitude: long,
+      },
     });
 
     // var raw = JSON.stringify({
@@ -225,6 +235,8 @@ export default function login(props) {
       body: encryptedParams ? dataFromUrl : firstData,
       redirect: "follow",
     };
+
+    console.log(requestOptions);
 
     const data = await fetch(
       `${env.VITE_APP_EXTEN_URL}/voip/req_extention/${env.VITE_APP_EXTEN_TENANT}`,
@@ -263,6 +275,30 @@ export default function login(props) {
 
     return data;
   };
+
+  const geolocationAPI = navigator.geolocation;
+      if (!geolocationAPI) {
+        notification.error({
+          message: "Geolocation API is not available in your browser.",
+          placement: "bottomRight",
+          duration: 5,
+        });
+      } else {
+        geolocationAPI.getCurrentPosition(
+          (position) => {
+            const { coords } = position;
+            setLat(coords.latitude);
+            setLong(coords.longitude);
+          },
+          (error) => {
+            notification.error({
+              message: "Something went wrong getting your position.",
+              placement: "bottomRight",
+              duration: 5,
+            });
+          }
+        );
+      }
 
   // const regexPhoneNumber =
   // "(()?(+62|62|0)(d{2,3})?)?[ .-]?d{2,4}[ .-]?d{2,4}[ .-]?d{2,4}";
