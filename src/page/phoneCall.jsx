@@ -95,31 +95,10 @@ export default function phoneCall() {
 
   // STEP 2
 
-  const geolocationAPI = navigator.geolocation;
-  if (!geolocationAPI) {
-    notification.error({
-      message: "Geolocation API is not available in your browser.",
-      placement: "bottomRight",
-      duration: 5,
-    });
-  } else {
-    geolocationAPI.getCurrentPosition(
-      (position) => {
-        const { coords } = position;
-        setLat(coords.latitude);
-        setLong(coords.longitude);
-      },
-      (error) => {
-        notification.error({
-          message: "Something went wrong getting your position.",
-          placement: "bottomRight",
-          duration: 5,
-        });
-      }
-    );
-  }
-  const handleSubmit = async () => {
-    const data = await requestExtension();
+
+
+  const handleSubmit = async (lat, long) => {
+    const data = await requestExtension(lat, long);
     const encryptedParams = new URLSearchParams(window.location.search)
       ?.get("key")
       ?.split(" ")
@@ -146,7 +125,7 @@ export default function phoneCall() {
     }
   };
 
-  const requestExtension = async () => {
+  const requestExtension = async (lat, long) => {
     let myHeaders = new Headers();
     myHeaders.append("Authorization", env.VITE_APP_AUTHORIZATION);
     myHeaders.append("Content-Type", "application/json");
@@ -287,8 +266,33 @@ export default function phoneCall() {
     const encryptedParams = new URLSearchParams(window.location.search).get(
       "key"
     );
+
+    
     if (encryptedParams) {
-      handleSubmit();
+      const geolocationAPI = navigator.geolocation;
+      if (!geolocationAPI) {
+        notification.error({
+          message: "Geolocation API is not available in your browser.",
+          placement: "bottomRight",
+          duration: 5,
+        });
+      } else {
+        geolocationAPI.getCurrentPosition(
+          (position) => {
+            const { coords } = position;
+            setLat(coords.latitude);
+            setLong(coords.longitude);
+            handleSubmit(coords.latitude, coords.longitude);
+          },
+          (error) => {
+            notification.error({
+              message: "Something went wrong getting your position.",
+              placement: "bottomRight",
+              duration: 5,
+            });
+          }
+        );
+      }
     }
   }, []);
 
