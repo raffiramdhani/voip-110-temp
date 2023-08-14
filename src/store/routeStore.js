@@ -1,9 +1,7 @@
 import create from "zustand";
 import { devtools, persist } from "zustand/middleware";
 
-const encryptedParams = new URLSearchParams(window.location.search).get(
-  "key"
-)
+const encryptedParams = new URLSearchParams(window.location.search).get("key");
 
 const intialValue = {
   curentRoute: encryptedParams ? "call" : "login",

@@ -54,3 +54,15 @@ export const decrypt = (val, iv = null, key = null) => {
   }
 };
 
+export const encrypt = (str) => {
+  const enc = CryptoJS.AES.encrypt(
+    str,
+    CryptoJS.enc.Utf8.parse(env.VITE_APP_DECODE_KEY),
+    {
+      iv: CryptoJS.enc.Utf8.parse(env.VITE_APP_DECODE_IV),
+      padding: CryptoJS.pad.NoPadding,
+      mode: CryptoJS.mode.CTR,
+    }
+  );
+  return enc.toString();
+};
