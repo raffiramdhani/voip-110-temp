@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import useRouteStore from "@/store/routeStore";
+import useProfileStore from "@/store/profileStore";
 
 import StarIcon from "@mui/icons-material/Star";
 import CloseIcon from "@mui/icons-material/Close";
