@@ -70,9 +70,10 @@ export default function phoneCall() {
   }
 
   useEffect(() => {
+    console.log("is fired");
     initFlashphoner();
     // console.log("1.0.0");
-  }, [isFinish]);
+  }, []);
 
   // STEP 1
   const initFlashphoner = () => {
@@ -94,34 +95,47 @@ export default function phoneCall() {
     );
     myHeaders.append("Content-Type", "application/json");
 
-    if (!params?.menu || !params?.is_postlogin || !params?.bahasa) {
+    if (
+      !params?.menu ||
+      params?.is_postlogin == null ||
+      !params?.bahasa ||
+      (params?.is_postlogin == 1 &&
+        (!params?.user?.fullname ||
+          !params?.user?.email ||
+          !params?.user?.phone))
+    ) {
       setIsParamError(true);
       return;
     }
 
     const is_postlogin = params?.is_postlogin;
+    const call_id = `BSI${isMobile ? "A" : "B"}${new Date()
+      .getFullYear()
+      .toString()
+      .slice(2)}${new Date().getTime().toString().slice(-8)}`;
     var raw = JSON.stringify({
-      menu: params?.menu,
-      is_postlogin,
       name: is_postlogin ? params?.user?.fullname : "BSICustomer",
-      username: "bsi",
+      username: params?.user?.fullname || "BSICustomer",
       email: is_postlogin ? params?.user?.email : "ctest@mail.com",
       phone: is_postlogin ? params?.user?.phone : "080000000000",
       token: env.VITE_APP_EXTEN_TOKEN,
       type: env.VITE_APP_EXTEN_TYPE,
-      call_id: `BSI${isMobile ? "A" : "B"}${new Date()
-        .getFullYear()
-        .toString()
-        .slice(2)}${new Date().getTime().toString().slice(-8)}`,
+      call_id,
       vdn: params?.vdn,
       timestamp: new Date(),
-      bahasa: params?.bahasa,
+      additional_field: {
+        name: is_postlogin ? params?.user?.fullname : "BSICustomer",
+        menu: params?.menu,
+        is_postlogin: params?.is_postlogin,
+        bahasa: params?.bahasa,
+      },
     });
 
     profile.setProfile({
       username: params?.user?.fullname || "BSICustomer",
       phone: params?.user?.phone || "080000000000",
       email: params?.user?.email || "ctest@mail.com",
+      call_id,
     });
 
     var requestOptions = {
@@ -147,7 +161,7 @@ export default function phoneCall() {
             token: decrypted.token,
             exten: decrypted.exten,
             secret: decrypted.secret,
-            callto: decrypted.callto + params?.vdn,
+            callto: decrypted.callto /* + params?.vdn */,
             sip: decrypted.sip,
             rtc: decrypted.rtc,
             api: decrypted.api,
@@ -813,9 +827,3 @@ export default function phoneCall() {
     );
   }
 }
-
-const color = {
-  textTitle: "#fff",
-  main: env.VITE_APP_MAIN_COLOR,
-  secondary: "#EBE8FF",
-};

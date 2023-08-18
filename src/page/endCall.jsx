@@ -82,15 +82,23 @@ export default function endCall() {
 
   const handleSubmitReview = () => {
     setIsLoading(true);
+    const phone = profile?.profile?.phone
+      ? profile?.profile?.phone?.startsWith("0")
+        ? "+62" + profile?.profile?.phone?.slice(1)
+        : profile?.profile?.phone?.startsWith("62")
+        ? "+" + profile?.profile?.phone
+        : profile?.profile?.phone
+      : "";
     axios
       .post(
         `${env.VITE_APP_EXTEN_URL}/ratingController`,
         {
-          unique_id: profile?.profile?.phone,
-          phone: profile?.profile?.phone,
+          unique_id: phone,
+          phone,
           rating: score,
           rating_review,
           tenant: env.VITE_APP_EXTEN_TENANT,
+          call_id: profile?.profile?.call_id,
         },
         {
           headers: {

@@ -35,6 +35,18 @@ import { browserName, osName } from "react-device-detect";
 import axios from "axios";
 
 const env = import.meta.env;
+const toMatch = [
+  /Android/i,
+  /webOS/i,
+  /iPhone/i,
+  /iPad/i,
+  /iPod/i,
+  /BlackBerry/i,
+  /Windows Phone/i,
+];
+const isMobile = toMatch.some((toMatchItem) => {
+  return navigator.userAgent.match(toMatchItem);
+});
 
 export default function login(props) {
   const route = useRouteStore((state) => state);
@@ -51,6 +63,7 @@ export default function login(props) {
   const [msgError, setMsgError] = useState(null);
   const [captcha, setCaptcha] = useState(null);
   const [listingAdditionalField, setListingAdditionalField] = useState(null);
+  const [additionalField, setAdditionalField] = useState(null);
 
   const [phoneNumber, setPhoneNumber] = useState("");
   const [errMsg, setErrMsg] = useState(null);
@@ -61,11 +74,20 @@ export default function login(props) {
   const type = url_params.searchParams.get("type");
   let captchaRef = React.useRef();
 
-  const genID = uuidv4();
+  // const genID = uuidv4();
+  const call_id = `BSI${isMobile ? "A" : "B"}${new Date()
+    .getFullYear()
+    .toString()
+    .slice(2)}${new Date().getTime().toString().slice(-8)}`;
 
   const handleInput = (e) => {
     e.preventDefault();
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleAdditionalFieldInput = (e) => {
+    e.preventDefault();
+    setAdditionalField({ ...additionalField, [e.target.name]: e.target.value });
   };
 
   const getAdditionalField = async () => {
@@ -97,7 +119,7 @@ export default function login(props) {
         setLoading(false);
       } else if (data) {
         postTransaction(data);
-        profile.setProfile(form);
+        profile.setProfile({ ...form, call_id });
         profile.setReqExten(data);
         route.push("call");
       } else {
@@ -120,13 +142,14 @@ export default function login(props) {
 
     const firstData = JSON.stringify({
       ...form,
+      additional_field: additionalField,
       date_call: new Date(),
       os: osName,
       browser: browserName,
       tenant_id: 0,
       tenant: env.VITE_APP_EXTEN_TENANT,
       extention: parseInt(value.exten),
-      call_id: genID.slice(0, 8),
+      call_id,
     });
 
     var raw = JSON.stringify({
@@ -139,7 +162,7 @@ export default function login(props) {
       tenant_id: 0,
       tenant: env.VITE_APP_EXTEN_TENANT,
       extention: parseInt(value.exten),
-      call_id: genID.slice(0, 8),
+      call_id,
     });
 
     var requestOptions = {
@@ -176,12 +199,11 @@ export default function login(props) {
       "key"
     );
 
-    const params = 
-      decrypt(
-        encryptedParams,
-        env.VITE_VOIP_DECODE_IV,
-        env.VITE_VOIP_DECODE_KEY
-      )
+    const params = decrypt(
+      encryptedParams,
+      env.VITE_VOIP_DECODE_IV,
+      env.VITE_VOIP_DECODE_KEY
+    );
 
     console.log("params", params);
 
@@ -191,17 +213,18 @@ export default function login(props) {
       phone: params?.user?.phone,
       token: env.VITE_APP_EXTEN_TOKEN,
       type: env.VITE_APP_EXTEN_TYPE,
-      call_id: genID.slice(0, 8),
+      call_id,
       vdn: params?.vdn,
       timestamp: new Date(),
     });
 
     const firstData = JSON.stringify({
       ...form,
+      additional_field: additionalField,
       timestamp: new Date(),
       token: env.VITE_APP_EXTEN_TOKEN,
       type: env.VITE_APP_EXTEN_TYPE,
-      call_id: genID.slice(0, 8),
+      call_id,
     });
 
     // var raw = JSON.stringify({
@@ -412,7 +435,9 @@ export default function login(props) {
                                 required={e.is_mandatory ? true : false}
                                 size="small"
                                 // value={age}
-                                onChange={(event) => handleInput(event)}
+                                onChange={(event) =>
+                                  handleAdditionalFieldInput(event)
+                                }
                                 label={e.label}
                                 sx={{ width: "100%" }}
                               >
@@ -424,7 +449,9 @@ export default function login(props) {
                           ) : (
                             <TextField
                               // value={form.e.label}
-                              onChange={(event) => handleInput(event)}
+                              onChange={(event) =>
+                                handleAdditionalFieldInput(event)
+                              }
                               // disabled={form.isLoadingSetupWebphone}
                               fullWidth
                               multiline={e.type === "textarea" ? true : false}

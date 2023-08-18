@@ -1,7 +1,19 @@
+import { encrypt } from "@/utils/encrypt";
 import create from "zustand";
 import { devtools, persist } from "zustand/middleware";
 
 const encryptedParams = new URLSearchParams(window.location.search).get("key");
+// const payload = {
+//   menu: "Umum-Perbankan",
+//   is_postlogin: 1,
+//   user: {
+//     fullname: "Test",
+//     email: "test@mail.com",
+//     phone: "081234567890",
+//   },
+//   bahasa: "ID",
+// };
+// console.log("encryptedParams >>> ", encrypt(JSON.stringify(payload)));
 
 const intialValue = {
   curentRoute: encryptedParams ? "call" : "login",
