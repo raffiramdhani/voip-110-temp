@@ -15,8 +15,9 @@ import axios from "axios";
 import useRouteStore from "@/store/routeStore";
 import useProfileStore from "@/store/profileStore";
 
-import StarIcon from "@mui/icons-material/Star";
 import CloseIcon from "@mui/icons-material/Close";
+import StarActive from "@/assets/star-active.svg";
+import StarInactive from "@/assets/star-inactive.svg";
 
 const env = import.meta.env;
 const toMatch = [
@@ -32,39 +33,11 @@ const isMobile = toMatch.some((toMatchItem) => {
   return navigator.userAgent.match(toMatchItem);
 });
 
-const customIcons = {
-  1: {
-    icon: <StarIcon color="#e8b751" fontSize="large" />,
-    label: "Very Dissatisfied",
-  },
-  2: {
-    icon: <StarIcon color="#e8b751" fontSize="large" />,
-    label: "Dissatisfied",
-  },
-  3: {
-    icon: <StarIcon color="#e8b751" fontSize="large" />,
-    label: "Neutral",
-  },
-  4: {
-    icon: <StarIcon color="#e8b751" fontSize="large" />,
-    label: "Satisfied",
-  },
-  5: {
-    icon: <StarIcon color="#e8b751" fontSize="large" />,
-    label: "Very Satisfied",
-  },
-};
-
 const StyledRating = styled(Rating)(({ theme }) => ({
   "& .MuiRating-iconEmpty .MuiSvgIcon-root": {
     color: theme.palette.action.disabled,
   },
 }));
-
-const IconContainer = (props) => {
-  const { value, ...other } = props;
-  return <span {...other}>{customIcons[value].icon}</span>;
-};
 
 export default function endCall() {
   const route = useRouteStore((state) => state);
@@ -130,7 +103,7 @@ export default function endCall() {
     >
       {showRating ? (
         <IconButton
-          sx={{ position: "absolute", top: 24, right: 24 }}
+          sx={{ position: "absolute", top: 16, right: 16 }}
           onClick={() => {
             setShowRating(false);
             handleNavigateNext();
@@ -143,6 +116,7 @@ export default function endCall() {
         <>
           <Container
             sx={{
+              px: "24px",
               marginTop: "10px",
               display: "flex",
               flexDirection: "column",
@@ -150,7 +124,15 @@ export default function endCall() {
               alignItems: "center",
             }}
           >
-            <Typography>
+            <Typography
+              sx={{
+                fontSize: "21px",
+                lineHeight: "26px",
+                fontWeight: "bold",
+                mb: "10px",
+                textAlign: "center",
+              }}
+            >
               Berikan penilaian kamu atas layanan BSI Call
             </Typography>
             <Box sx={{ marginTop: "10px" }}>
@@ -159,7 +141,20 @@ export default function endCall() {
                 id="rating"
                 onChange={(_, v) => setScore(v)}
                 value={score}
-                IconContainerComponent={IconContainer}
+                icon={
+                  <img
+                    src={StarActive}
+                    alt="Star Active"
+                    style={{ padding: "8px" }}
+                  />
+                }
+                emptyIcon={
+                  <img
+                    src={StarInactive}
+                    alt="Star Active"
+                    style={{ padding: "8px" }}
+                  />
+                }
                 // getLabelText={(value) => customIcons[value].label}
               />
             </Box>
@@ -173,7 +168,14 @@ export default function endCall() {
             }}
           >
             <Typography
-              sx={{ marginTop: "10px", marginX: "32px", textAlign: "center" }}
+              sx={{
+                marginY: "24px",
+                marginX: "32px",
+                textAlign: "center",
+                fontSize: "14px",
+                lineHeight: "20px",
+                fontWeight: "normal",
+              }}
             >
               {score > 2 || score === null
                 ? `Terimakasih atas penilaian kamu! Apa yang berkesan dari pelayanan agent kami?`
@@ -183,14 +185,32 @@ export default function endCall() {
               id="outlined-multiline-static"
               multiline
               rows={4}
-              sx={{ marginTop: "10px", width: isMobile ? "80%" : "50%" }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderRadius: "18px",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#00BFB2",
+                    borderWidth: "2px",
+                  },
+                },
+                marginTop: "10px",
+                width: isMobile ? "80%" : "50%",
+              }}
               onChange={(e) => setRatingReview(e.target.value)}
               value={rating_review}
+              placeholder="Tulis penilaianmu"
             />
             <Button
               type="submit"
-              variant="outlined"
-              sx={{ width: isMobile ? "80%" : "50%", marginTop: "15px" }}
+              variant="contained"
+              sx={{
+                width: isMobile ? "80%" : "50%",
+                marginTop: "15px",
+                backgroundColor: "#00BFB2",
+                borderRadius: "50px",
+              }}
               onClick={handleSubmitReview}
             >
               {!isLoading ? (

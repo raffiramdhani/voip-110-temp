@@ -70,7 +70,6 @@ export default function phoneCall() {
   }
 
   useEffect(() => {
-    console.log("is fired");
     initFlashphoner();
     // console.log("1.0.0");
   }, []);
@@ -395,8 +394,11 @@ export default function phoneCall() {
           display="flex"
           flexDirection="column"
           boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
-          backgroundColor="#b3b3b3"
           height="100vh"
+          sx={{
+            background:
+              "linear-gradient(0deg, #001489 0%, #0047BB 69.00%, #0047BB 100%)",
+          }}
         >
           {isKeypad ? (
             <>
@@ -411,10 +413,13 @@ export default function phoneCall() {
             <Box
               width="100%"
               height="100%"
-              bgcolor="#b3b3b3"
               display="flex"
               position="relative"
               flexDirection="column"
+              sx={{
+                background:
+                  "linear-gradient(0deg, #001489 0%, #0047BB 69.00%, #0047BB 100%)",
+              }}
             >
               <Typography
                 sx={{
@@ -511,11 +516,43 @@ export default function phoneCall() {
                   position: "absolute",
                   bottom: 64,
                   alignSelf: "center",
-                  width: "90%",
+                  width: "100%",
                 }}
               >
-                <Grid item xs={5} textAlign="center" />
-                <Grid item xs={2} textAlign="center">
+                <Grid item xs={6} textAlign="center">
+                  <Box
+                    sx={{
+                      width: "100%",
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <IconButton
+                      sx={{
+                        borderRadius: "12px !important",
+                        overflow: "hidden",
+                        bgcolor: !isLoudSpeaker
+                          ? "transparent"
+                          : "white !important",
+                        border: "2px solid #fff",
+                        width: 64,
+                        height: 64,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                      onClick={() => toggleLoudSpeaker()}
+                    >
+                      <SpeakerIcon
+                        sx={{
+                          color: !isLoudSpeaker ? "white" : "#b3b3b3",
+                          width: 39,
+                          height: 39,
+                        }}
+                      />
+                    </IconButton>
+                  </Box>
+                </Grid>
+                <Grid item xs={6} textAlign="center">
                   <Box
                     sx={{
                       width: "100%",
@@ -536,40 +573,6 @@ export default function phoneCall() {
                       onClick={() => endCall()}
                     >
                       <img src={EndCall} />
-                    </IconButton>
-                  </Box>
-                </Grid>
-
-                <Grid item xs={5}>
-                  <Box
-                    sx={{
-                      width: "100%",
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <IconButton
-                      sx={{
-                        borderRadius: "12px !important",
-                        overflow: "hidden",
-                        bgcolor: !isLoudSpeaker
-                          ? "#b3b3b3 !important"
-                          : "white !important",
-                        border: "2px solid #fff",
-                        width: 64,
-                        height: 64,
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                      onClick={() => toggleLoudSpeaker()}
-                    >
-                      <SpeakerIcon
-                        sx={{
-                          color: !isLoudSpeaker ? "white" : "black",
-                          width: 39,
-                          height: 39,
-                        }}
-                      />
                     </IconButton>
                   </Box>
                 </Grid>
