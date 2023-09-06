@@ -14,14 +14,16 @@ import EndCall from "../assets/end-call.png";
 import Keypad from "../components/Keypad";
 import useRouteStore from "@/store/routeStore";
 import SpeakerIcon from "@mui/icons-material/VolumeUp";
+import LOGO from "../assets/logo.svg";
+import ButtonLoudSpeakerActive from "../assets/button-loud-speaker-active.svg";
+import ButtonLoudSpeakerInactive from "../assets/button-loud-speaker-inactive.svg";
+import ButtonHangup from "../assets/button-hangup.svg";
 
 const env = import.meta.env;
 const toMatch = [
   /Android/i,
   /webOS/i,
-  /iPhone/i,
-  /iPad/i,
-  /iPod/i,
+  /iP(ad|od|hone)/i,
   /BlackBerry/i,
   /Windows Phone/i,
 ];
@@ -78,7 +80,7 @@ export default function phoneCall() {
   const initFlashphoner = () => {
     try {
       Flashphoner.init();
-      connect();
+      // connect(); // XXX
     } catch (error) {
       console.log("ERROR ==>>", error);
     }
@@ -240,6 +242,9 @@ export default function phoneCall() {
         remoteVideoDisplay: remoteVideo.current,
         constraints: constraints,
       })
+      .on(CALL_STATUS.PENDING, function (call) {
+        call.setVolume(isMobile ? 25 : 100);
+      })
       .on(CALL_STATUS.RING, function (call) {
         // console.log("CALL_STATUS ==>> " + CALL_STATUS.RING);
         setStatusCall(CALL_STATUS.RING);
@@ -265,9 +270,9 @@ export default function phoneCall() {
       });
 
     outCall.call();
+    outCall.setVolume(isMobile ? 25 : 100);
     // console.log("outCall", outCall);
     currentCall.current = outCall;
-    currentCall.current.setVolume(isMobile ? 25 : 100);
   };
 
   // console.log(isFinish, isEstablished, statusCall);
@@ -296,7 +301,7 @@ export default function phoneCall() {
     if (!change) {
       currentCall.current.setVolume(25);
     }
-    setIsLoudSpeaker((_) => change);
+    setIsLoudSpeaker(change);
   };
 
   const handleHangup = () => {
@@ -440,18 +445,7 @@ export default function phoneCall() {
                   marginBottom: "40px",
                 }}
               >
-                <Box
-                  sx={{
-                    display: "flex",
-                    width: 150,
-                    height: 80,
-                    bgcolor: "white",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Typography>LOGO</Typography>
-                </Box>
+                <img src={LOGO} style={{ width: "100px", height: "100px" }} />
               </Box>
               <Box textAlign="center">
                 <Typography
@@ -462,10 +456,24 @@ export default function phoneCall() {
                   }}
                 >
                   {statusCall === "waiting" ? (
-                    "Calling..."
+                    params?.bahasa === "ENG" ? (
+                      "Calling"
+                    ) : (
+                      "Sedang Menghubungi"
+                    )
                   ) : statusCall === "RING" ? (
-                    "Ringing"
-                  ) : statusCall === "ESTABLISHED" ? (
+                    params?.bahasa === "ENG" ? (
+                      "Ringing"
+                    ) : (
+                      "Berdering"
+                    )
+                  ) : statusCall === "End Call" ? (
+                    params?.bahasa === "ENG" ? (
+                      "End Call"
+                    ) : (
+                      "Panggilan Berakhir"
+                    )
+                  ) : (
                     <Typography
                       sx={{
                         display: "flex",
@@ -485,14 +493,7 @@ export default function phoneCall() {
                       <Typography className="digits" variant="inherit">
                         {("0" + Math.floor((time / 1000) % 60)).slice(-2)}
                       </Typography>
-                      {/* <span className="digits mili-sec">
-                        {("0" + ((time / 10) % 100)).slice(-2)}
-                      </span> */}
                     </Typography>
-                  ) : statusCall === "End Call" ? (
-                    "End Call"
-                  ) : (
-                    ""
                   )}
                 </Typography>
                 <Typography
@@ -502,11 +503,9 @@ export default function phoneCall() {
                     marginX: "24px",
                   }}
                 >
-                  {statusCall.match(/waiting|RING/)
+                  {statusCall.match(/waiting|RING|FAILED/)
                     ? "Mohon tunggu ya kami sedang berusaha menghubungkan dengan Agent kami"
-                    : statusCall === "ESTABLISHED"
-                    ? "Kamu telah terhubung dengan Agent kami"
-                    : ""}
+                    : "Kamu telah terhubung dengan Agent kami"}
                 </Typography>
               </Box>
 
@@ -527,29 +526,31 @@ export default function phoneCall() {
                       justifyContent: "center",
                     }}
                   >
-                    <IconButton
+                    <Box
                       sx={{
-                        borderRadius: "12px !important",
-                        overflow: "hidden",
-                        bgcolor: !isLoudSpeaker
-                          ? "transparent"
-                          : "white !important",
-                        border: "2px solid #fff",
+                        backgroundColor: "transparent",
+                        backgroundImage: isLoudSpeaker
+                          ? "url(" + ButtonLoudSpeakerActive + ")"
+                          : "url(" + ButtonLoudSpeakerInactive + ")",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                        backgroundRepeat: "no-repeat",
                         width: 64,
                         height: 64,
                         alignItems: "center",
                         justifyContent: "center",
+                        display: "flex",
                       }}
                       onClick={() => toggleLoudSpeaker()}
                     >
                       <SpeakerIcon
                         sx={{
-                          color: !isLoudSpeaker ? "white" : "#b3b3b3",
+                          color: "white",
                           width: 39,
                           height: 39,
                         }}
                       />
-                    </IconButton>
+                    </Box>
                   </Box>
                 </Grid>
                 <Grid item xs={6} textAlign="center">
@@ -560,20 +561,23 @@ export default function phoneCall() {
                       justifyContent: "center",
                     }}
                   >
-                    <IconButton
+                    <Box
                       sx={{
-                        borderRadius: "12px !important",
-                        overflow: "hidden",
-                        backgroundColor: "#FF3B30",
+                        backgroundColor: "transparent",
+                        backgroundImage: "url(" + ButtonHangup + ")",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                        backgroundRepeat: "no-repeat",
                         width: 64,
                         height: 64,
                         alignItems: "center",
                         justifyContent: "center",
+                        display: "flex",
                       }}
                       onClick={() => endCall()}
                     >
                       <img src={EndCall} />
-                    </IconButton>
+                    </Box>
                   </Box>
                 </Grid>
               </Grid>
