@@ -43,7 +43,7 @@ export default function login(props) {
   const [form, setForm] = useState({
     username: "",
     phone: "",
-    email: "",
+    // email: "dummyvoipbjb@gmail.com",
   });
   const [openModalAgree, setOpenModalAgree] = useState(false);
   const [openFloating, setOpenFloating] = useState(false);
@@ -181,12 +181,11 @@ export default function login(props) {
       "key"
     );
 
-    const params = 
-      decrypt(
-        encryptedParams,
-        env.VITE_VOIP_DECODE_IV,
-        env.VITE_VOIP_DECODE_KEY
-      )
+    const params = decrypt(
+      encryptedParams,
+      env.VITE_VOIP_DECODE_IV,
+      env.VITE_VOIP_DECODE_KEY
+    );
 
     var dataFromUrl = JSON.stringify({
       username: params?.user?.fullname,
@@ -364,8 +363,8 @@ export default function login(props) {
                   sx={styling.TextField}
                 />
 
-                <Typography marginTop={1}>Email</Typography>
-                <TextField
+                {/* <Typography marginTop={1}>Email</Typography> */}
+                {/* <TextField
                   value={form.email}
                   onChange={(e) => handleInput(e)}
                   // disabled={form.isLoadingSetupWebphone}
@@ -380,7 +379,8 @@ export default function login(props) {
                   size="small"
                   margin="dense"
                   sx={styling.TextField}
-                />
+                /> */}
+
                 <Typography marginTop={1}>Phone number</Typography>
                 <TextField
                   value={form.phone}
@@ -407,91 +407,95 @@ export default function login(props) {
                     listingAdditionalField.map((e) => {
                       return (
                         <>
-                        {e.display_type === "show" && e.is_mandatory?
-                        <>
-                        <Typography marginTop={1}>{e.label}</Typography>
-                          {e.type === "select" ? (
+                          {e.display_type === "show" && e.is_mandatory ? (
                             <>
-                              <Select
-                                name={e.key}
-                                id={`form-${e.key}`}
-                                placeholder={e.label}
-                                required={e.is_mandatory ? true : false}
-                                size="small"
-                                // value={age}
-                                onChange={(event) => handleInput(event)}
-                                label={e.label}
-                                sx={{ width: "100%" }}
-                              >
-                                {e?.option.map((e) => {
-                                  return <MenuItem value={e}>{e}</MenuItem>;
-                                })}
-                              </Select>
+                              <Typography marginTop={1}>{e.label}</Typography>
+                              {e.type === "select" ? (
+                                <>
+                                  <Select
+                                    name={e.key}
+                                    id={`form-${e.key}`}
+                                    placeholder={e.label}
+                                    required={e.is_mandatory ? true : false}
+                                    size="small"
+                                    // value={age}
+                                    onChange={(event) => handleInput(event)}
+                                    label={e.label}
+                                    sx={{ width: "100%" }}
+                                  >
+                                    {e?.option.map((e) => {
+                                      return <MenuItem value={e}>{e}</MenuItem>;
+                                    })}
+                                  </Select>
+                                </>
+                              ) : (
+                                <TextField
+                                  // value={form.e.label}
+                                  onChange={(event) => handleInput(event)}
+                                  // disabled={form.isLoadingSetupWebphone}
+                                  fullWidth
+                                  multiline={
+                                    e.type === "textarea" ? true : false
+                                  }
+                                  rows={e.type === "textarea" ? 3 : 1}
+                                  placeholder={e.label}
+                                  required={e.is_mandatory ? true : false}
+                                  color="info"
+                                  id={`form-${e.key}`}
+                                  // label="Email"
+                                  name={e.key}
+                                  type={e.type}
+                                  size="small"
+                                  margin="dense"
+                                  sx={styling.TextField}
+                                />
+                              )}
                             </>
-                          ) : (
-                            <TextField
-                              // value={form.e.label}
-                              onChange={(event) => handleInput(event)}
-                              // disabled={form.isLoadingSetupWebphone}
-                              fullWidth
-                              multiline={e.type === "textarea" ? true : false}
-                              rows={e.type === "textarea" ? 3 : 1}
-                              placeholder={e.label}
-                              required={e.is_mandatory ? true : false}
-                              color="info"
-                              id={`form-${e.key}`}
-                              // label="Email"
-                              name={e.key}
-                              type={e.type}
-                              size="small"
-                              margin="dense"
-                              sx={styling.TextField}
-                            />
-                          )}
-                        </> : !e.is_mandatory  && e.display_type === "show" ? 
-                        <>
-                        <Typography marginTop={1}>{e.label}</Typography>
-                          {e.type === "select" ? (
+                          ) : !e.is_mandatory && e.display_type === "show" ? (
                             <>
-                              <Select
-                                name={e.key}
-                                id={`form-${e.key}`}
-                                placeholder={e.label}
-                                // required={e.is_mandatory ? true : false}
-                                size="small"
-                                // value={age}
-                                onChange={(event) => handleInput(event)}
-                                label={e.label}
-                                sx={{ width: "100%" }}
-                              >
-                                {e?.option.map((e) => {
-                                  return <MenuItem value={e}>{e}</MenuItem>;
-                                })}
-                              </Select>
+                              <Typography marginTop={1}>{e.label}</Typography>
+                              {e.type === "select" ? (
+                                <>
+                                  <Select
+                                    name={e.key}
+                                    id={`form-${e.key}`}
+                                    placeholder={e.label}
+                                    // required={e.is_mandatory ? true : false}
+                                    size="small"
+                                    // value={age}
+                                    onChange={(event) => handleInput(event)}
+                                    label={e.label}
+                                    sx={{ width: "100%" }}
+                                  >
+                                    {e?.option.map((e) => {
+                                      return <MenuItem value={e}>{e}</MenuItem>;
+                                    })}
+                                  </Select>
+                                </>
+                              ) : (
+                                <TextField
+                                  // value={form.e.label}
+                                  onChange={(event) => handleInput(event)}
+                                  // disabled={form.isLoadingSetupWebphone}
+                                  fullWidth
+                                  multiline={
+                                    e.type === "textarea" ? true : false
+                                  }
+                                  rows={e.type === "textarea" ? 3 : 1}
+                                  placeholder={e.label}
+                                  // required={e.is_mandatory ? true : false}
+                                  color="info"
+                                  id={`form-${e.key}`}
+                                  // label="Email"
+                                  name={e.key}
+                                  type={e.type}
+                                  size="small"
+                                  margin="dense"
+                                  sx={styling.TextField}
+                                />
+                              )}
                             </>
-                          ) : (
-                            <TextField
-                              // value={form.e.label}
-                              onChange={(event) => handleInput(event)}
-                              // disabled={form.isLoadingSetupWebphone}
-                              fullWidth
-                              multiline={e.type === "textarea" ? true : false}
-                              rows={e.type === "textarea" ? 3 : 1}
-                              placeholder={e.label}
-                              // required={e.is_mandatory ? true : false}
-                              color="info"
-                              id={`form-${e.key}`}
-                              // label="Email"
-                              name={e.key}
-                              type={e.type}
-                              size="small"
-                              margin="dense"
-                              sx={styling.TextField}
-                            />
-                          )}
-                        </> : e.display_type === "hidden" ? null : null
-                        }
-                          
+                          ) : e.display_type === "hidden" ? null : null}
                         </>
                       );
                     })
