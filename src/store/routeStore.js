@@ -4,7 +4,7 @@ import { devtools, persist } from "zustand/middleware";
 
 const encryptedParams = new URLSearchParams(window.location.search).get("key");
 // const payload = {
-//   menu: "Umum-Perbankan",
+//   menu: "Layanan Umum Perbankan",
 //   is_postlogin: 1,
 //   user: {
 //     fullname: "Test",

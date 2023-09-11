@@ -11,6 +11,7 @@ import {
   Typography,
   styled,
 } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import axios from "axios";
 import useRouteStore from "@/store/routeStore";
 import useProfileStore from "@/store/profileStore";
@@ -40,6 +41,7 @@ const StyledRating = styled(Rating)(({ theme }) => ({
 }));
 
 export default function endCall() {
+  const { t, i18n } = useTranslation();
   const route = useRouteStore((state) => state);
   const profile = useProfileStore((state) => state);
   const [score, setScore] = React.useState(null);
@@ -93,6 +95,10 @@ export default function endCall() {
       });
   };
 
+  React.useEffect(() => {
+    i18n.changeLanguage(profile?.profile?.bahasa === "ENG" ? "en" : "id");
+  }, []);
+
   return (
     <Box
       display="flex"
@@ -133,7 +139,7 @@ export default function endCall() {
                 textAlign: "center",
               }}
             >
-              Berikan penilaian kamu atas layanan BSI Call
+              {t("rating.headline")}
             </Typography>
             <Box sx={{ marginTop: "10px" }}>
               <StyledRating
@@ -178,8 +184,8 @@ export default function endCall() {
               }}
             >
               {score > 2 || score === null
-                ? `Terimakasih atas penilaian kamu! Apa yang berkesan dari pelayanan agent kami?`
-                : "Beritahu kami apa yang bisa di tingkatkan dari pelayanan agent kami?"}
+                ? t("rating.impression")
+                : t("rating.suggestion")}
             </Typography>
             <TextField
               id="outlined-multiline-static"
@@ -200,7 +206,7 @@ export default function endCall() {
               }}
               onChange={(e) => setRatingReview(e.target.value)}
               value={rating_review}
-              placeholder="Tulis penilaianmu"
+              placeholder={t("rating.inputPlaceholder")}
             />
             <Button
               type="submit"
@@ -214,7 +220,7 @@ export default function endCall() {
               onClick={handleSubmitReview}
             >
               {!isLoading ? (
-                <span className="indicator-label">KIRIM</span>
+                <span className="indicator-label">{t("rating.send")}</span>
               ) : (
                 <Box
                   sx={{

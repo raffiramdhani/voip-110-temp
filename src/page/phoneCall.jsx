@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Box, Grid, Typography, IconButton } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import RemoveIcon from "@mui/icons-material/Remove";
 import * as Flashphoner from "@flashphoner/websdk";
 import DTMFSound from "../assets/dtmf.wav";
@@ -35,6 +36,7 @@ export default function phoneCall() {
   let SESSION_STATUS = Flashphoner.constants.SESSION_STATUS;
   let CALL_STATUS = Flashphoner.constants.CALL_STATUS;
   let Browser = Flashphoner.Browser;
+  const { t, i18n } = useTranslation();
 
   const encryptedParams = new URLSearchParams(window.location.search)
     ?.get("key")
@@ -72,6 +74,7 @@ export default function phoneCall() {
   }
 
   useEffect(() => {
+    i18n.changeLanguage(params?.bahasa === "ENG" ? "en" : "id");
     initFlashphoner();
     // console.log("1.0.0");
   }, []);
@@ -80,7 +83,7 @@ export default function phoneCall() {
   const initFlashphoner = () => {
     try {
       Flashphoner.init();
-      // connect(); // XXX
+      connect();
     } catch (error) {
       console.log("ERROR ==>>", error);
     }
@@ -133,6 +136,7 @@ export default function phoneCall() {
     });
 
     profile.setProfile({
+      bahasa: params?.bahasa || "ID",
       username: params?.user?.fullname || "BSICustomer",
       phone: params?.user?.phone || "080000000000",
       email: params?.user?.email || "ctest@mail.com",
@@ -435,7 +439,7 @@ export default function phoneCall() {
                   marginBottom: "20px",
                 }}
               >
-                {params?.menu?.replaceAll("-", " ")}
+                {t(`call.headline.${params?.menu?.replaceAll("-", " ")}`)}
               </Typography>
               <Box
                 sx={{
@@ -456,23 +460,11 @@ export default function phoneCall() {
                   }}
                 >
                   {statusCall === "waiting" ? (
-                    params?.bahasa === "ENG" ? (
-                      "Calling"
-                    ) : (
-                      "Sedang Menghubungi"
-                    )
+                    t(`call.descOne.Sedang Menghubungi`)
                   ) : statusCall === "RING" ? (
-                    params?.bahasa === "ENG" ? (
-                      "Ringing"
-                    ) : (
-                      "Berdering"
-                    )
+                    t(`call.descOne.Berdering`)
                   ) : statusCall === "End Call" ? (
-                    params?.bahasa === "ENG" ? (
-                      "End Call"
-                    ) : (
-                      "Panggilan Berakhir"
-                    )
+                    t(`call.descOne.Panggilan Berakhir`)
                   ) : (
                     <Typography
                       sx={{
@@ -504,8 +496,8 @@ export default function phoneCall() {
                   }}
                 >
                   {statusCall.match(/waiting|RING|FAILED/)
-                    ? "Mohon tunggu ya kami sedang berusaha menghubungkan dengan Agent kami"
-                    : "Kamu telah terhubung dengan Agent kami"}
+                    ? t(`call.descTwo.RINGING`)
+                    : t("call.descTwo.ESTABLISHED")}
                 </Typography>
               </Box>
 

@@ -16,10 +16,12 @@
     "@mui/material": "^5.10.11",
     "axios": "^1.2.3",
     "crypto-js": "^4.1.1",
+    "i18next": "^23.5.1",
     "react": "^18.2.0",
     "react-device-detect": "^2.2.2",
     "react-dom": "^18.2.0",
     "react-google-recaptcha": "^2.1.0",
+    "react-i18next": "^13.2.2",
     "uuid": "^9.0.0",
     "zustand": "^4.1.3"
   },

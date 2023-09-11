@@ -5,6 +5,8 @@ import Theme from "@/styles/theme";
 import { ThemeProvider } from "@mui/material/styles";
 import GlobalStyle from "@/styles/GlobalStyle";
 
+import "./utils/i18n";
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <div>
