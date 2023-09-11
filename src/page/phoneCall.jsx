@@ -246,9 +246,6 @@ export default function phoneCall() {
         remoteVideoDisplay: remoteVideo.current,
         constraints: constraints,
       })
-      .on(CALL_STATUS.PENDING, function (call) {
-        call.setVolume(isMobile ? 25 : 100);
-      })
       .on(CALL_STATUS.RING, function (call) {
         // console.log("CALL_STATUS ==>> " + CALL_STATUS.RING);
         setStatusCall(CALL_STATUS.RING);
@@ -277,6 +274,7 @@ export default function phoneCall() {
     outCall.setVolume(isMobile ? 25 : 100);
     // console.log("outCall", outCall);
     currentCall.current = outCall;
+    currentCall.current.setVolume(isMobile ? 25 : 100);
   };
 
   // console.log(isFinish, isEstablished, statusCall);
@@ -313,6 +311,7 @@ export default function phoneCall() {
   };
 
   const endCall = () => {
+    currentCall.current.hangup();
     setStatusCall("End Call");
     // const toMatch = [
     //   /Android/i,
@@ -364,6 +363,7 @@ export default function phoneCall() {
   }, [isActive, isPaused]);
 
   const handleStart = () => {
+    currentCall.current.setVolume(isMobile ? 25 : 100);
     setIsActive(true);
     setIsPaused(false);
   };

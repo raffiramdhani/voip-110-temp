@@ -51,7 +51,15 @@ export default function endCall() {
 
   const handleNavigateNext = () => {
     setTimeout(() => {
-      route.push("login");
+      if (isMobile) {
+        if (env.VITE_APP_HREF_URL) {
+          window.location = env.VITE_APP_HREF_URL;
+        } else {
+          route.push("login");
+        }
+      } else {
+        route.push("login");
+      }
     }, 5000);
   };
 
