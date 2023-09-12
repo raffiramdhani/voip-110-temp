@@ -562,14 +562,9 @@ export default function phoneCall() {
                         backgroundRepeat: "no-repeat",
                         width: 64,
                         height: 64,
-                        alignItems: "center",
-                        justifyContent: "center",
-                        display: "flex",
                       }}
                       onClick={() => endCall()}
-                    >
-                      <img src={EndCall} />
-                    </Box>
+                    />
                   </Box>
                 </Grid>
               </Grid>
