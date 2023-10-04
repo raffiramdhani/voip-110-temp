@@ -297,21 +297,21 @@ export default function phoneCall() {
 
   const toggleLoudSpeaker = () => {
     const change = !isLoudSpeaker;
-    if (change) {
-      currentCall.current.setVolume(100);
-    }
-    if (!change) {
-      currentCall.current.setVolume(25);
+    if (currentCall?.current?.setVolume) {
+      if (change) {
+        currentCall.current.setVolume(100);
+      }
+      if (!change) {
+        currentCall.current.setVolume(25);
+      }
     }
     setIsLoudSpeaker(change);
   };
 
-  const handleHangup = () => {
-    currentCall.current.hangup();
-  };
-
   const endCall = () => {
-    currentCall.current.hangup();
+    if (currentCall?.current?.hangup) {
+      currentCall?.current?.hangup();
+    }
     setStatusCall("End Call");
     // const toMatch = [
     //   /Android/i,
