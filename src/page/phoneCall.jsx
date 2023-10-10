@@ -439,7 +439,7 @@ export default function phoneCall() {
                   marginBottom: "20px",
                 }}
               >
-                {t(`call.headline.${params?.menu?.replaceAll("-", " ")}`)}
+                {t(`call.headline.${params?.menu}`)}
               </Typography>
               <Box
                 sx={{
