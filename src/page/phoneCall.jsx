@@ -15,10 +15,14 @@ import EndCall from "../assets/end-call.png";
 import Keypad from "../components/Keypad";
 import useRouteStore from "@/store/routeStore";
 import SpeakerIcon from "@mui/icons-material/VolumeUp";
-import LOGO from "../assets/logo.svg";
+import LogoLayanan from "../assets/logo-layanan.png";
+import LogoPrioritas from "../assets/logo-prioritas.png";
+import ButtonLoudSpeakerDisabled from "../assets/button-loud-speaker-disabled.svg";
 import ButtonLoudSpeakerActive from "../assets/button-loud-speaker-active.svg";
 import ButtonLoudSpeakerInactive from "../assets/button-loud-speaker-inactive.svg";
 import ButtonHangup from "../assets/button-hangup.svg";
+
+import RatingDrawer from "../components/BottomSheet";
 
 const env = import.meta.env;
 const toMatch = [
@@ -66,6 +70,7 @@ export default function phoneCall() {
   const [isParamError, setIsParamError] = useState(false);
 
   const [isKeypad, setIsKeypad] = useState(false);
+  const [isRatingOpen, setIsRatingOpen] = useState(false);
 
   if (statusCall === "RING") {
     ringingSounds.play();
@@ -74,7 +79,7 @@ export default function phoneCall() {
   }
 
   useEffect(() => {
-    i18n.changeLanguage(params?.bahasa === "ENG" ? "en" : "id");
+    i18n.changeLanguage(params?.bahasa === "EN" ? "en" : "id");
     initFlashphoner();
     // console.log("1.0.0");
   }, []);
@@ -313,30 +318,11 @@ export default function phoneCall() {
       currentCall?.current?.hangup();
     }
     setStatusCall("End Call");
-    // const toMatch = [
-    //   /Android/i,
-    //   /webOS/i,
-    //   /iPhone/i,
-    //   /iPad/i,
-    //   /iPod/i,
-    //   /BlackBerry/i,
-    //   /Windows Phone/i,
-    // ];
-    // const isMobile = toMatch.some((toMatchItem) => {
-    //   return navigator.userAgent.match(toMatchItem);
-    // });
-    // if (isMobile) {
-    //   if (env.VITE_APP_HREF_URL) {
-    //     window.location = env.VITE_APP_HREF_URL;
-    //   } else {
-    //     window.location.reload();
-    //   }
-    // } else {
-    //   window.location.reload();
-    // }
     setIsFinish(true);
     setIsEstablished(false);
-    route.push("end");
+    if (isMobile) {
+      setIsRatingOpen(true);
+    } else route.push("end");
   };
 
   const isCalling = statusCall === CALL_STATUS.ESTABLISHED;
@@ -389,9 +375,11 @@ export default function phoneCall() {
         flexDirection="column"
         justifyContent="center"
         alignItems="center"
-        sx={{ minHeight: "100vh" }}
+        sx={{ minHeight: "100%" }}
       >
-        <Typography>Data tidak dikirim dari SuperApp.</Typography>
+        <Typography sx={{ userSelect: "none" }}>
+          Data tidak dikirim dari SuperApp.
+        </Typography>
       </Box>
     );
   } else {
@@ -402,11 +390,11 @@ export default function phoneCall() {
           right="2rem"
           display="flex"
           flexDirection="column"
-          boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
-          height="100vh"
+          height="100%"
           sx={{
             background:
               "linear-gradient(0deg, #001489 0%, #0047BB 69.00%, #0047BB 100%)",
+            overflowY: "hidden",
           }}
         >
           {isKeypad ? (
@@ -436,7 +424,8 @@ export default function phoneCall() {
                   color: "white",
                   textAlign: "center",
                   marginTop: "64px",
-                  marginBottom: "20px",
+                  marginBottom: "10vh",
+                  userSelect: "none",
                 }}
               >
                 {t(`call.headline.${params?.menu}`)}
@@ -449,7 +438,14 @@ export default function phoneCall() {
                   marginBottom: "40px",
                 }}
               >
-                <img src={LOGO} style={{ width: "100px", height: "100px" }} />
+                <img
+                  src={
+                    params?.menu?.split("-")?.[0] === "Umum"
+                      ? LogoLayanan
+                      : LogoPrioritas
+                  }
+                  style={{ width: "167px", height: "147px" }}
+                />
               </Box>
               <Box textAlign="center">
                 <Typography
@@ -457,6 +453,7 @@ export default function phoneCall() {
                     fontWeight: "bold",
                     color: "white",
                     marginBottom: "20px",
+                    userSelect: "none",
                   }}
                 >
                   {statusCall === "waiting" ? (
@@ -493,6 +490,7 @@ export default function phoneCall() {
                     color: "white",
                     fontSize: 14,
                     marginX: "24px",
+                    userSelect: "none",
                   }}
                 >
                   {statusCall.match(/waiting|RING|FAILED/)
@@ -521,7 +519,9 @@ export default function phoneCall() {
                     <Box
                       sx={{
                         backgroundColor: "transparent",
-                        backgroundImage: isLoudSpeaker
+                        backgroundImage: !currentCall?.current
+                          ? "url(" + ButtonLoudSpeakerDisabled + ")"
+                          : isLoudSpeaker
                           ? "url(" + ButtonLoudSpeakerActive + ")"
                           : "url(" + ButtonLoudSpeakerInactive + ")",
                         backgroundPosition: "center",
@@ -533,11 +533,15 @@ export default function phoneCall() {
                         justifyContent: "center",
                         display: "flex",
                       }}
-                      onClick={() => toggleLoudSpeaker()}
+                      onClick={() => {
+                        if (currentCall?.current) {
+                          toggleLoudSpeaker();
+                        } else undefined;
+                      }}
                     >
                       <SpeakerIcon
                         sx={{
-                          color: "white",
+                          color: currentCall?.current ? "#cccccc" : "white",
                           width: 39,
                           height: 39,
                         }}
@@ -574,6 +578,7 @@ export default function phoneCall() {
             <div id="remoteVideo" ref={remoteVideo}></div>
             <div id="localVideo" ref={localVideo}></div>
           </Box>
+          <RatingDrawer open={isRatingOpen} />
         </Box>
       );
     }
@@ -582,7 +587,7 @@ export default function phoneCall() {
       <Box
         // position={`${type === "web" ? "absolute" : ""}`}
         // width={`${type === "web" ? "25%" : "100%"}`}
-        // height={`${type === "web" ? "70%" : "100vh"}`}
+        // height={`${type === "web" ? "70%" : "100%"}`}
         bottom="8rem"
         right="2rem"
         display="flex"
@@ -627,7 +632,7 @@ export default function phoneCall() {
           <>
             <Box
               width="100%"
-              height="100vh"
+              height="100%"
               bgcolor="#FFF"
               display="flex"
               position="relative"

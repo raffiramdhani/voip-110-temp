@@ -4,14 +4,14 @@ import { devtools, persist } from "zustand/middleware";
 
 const encryptedParams = new URLSearchParams(window.location.search).get("key");
 // const payload = {
-//   menu: "Layanan Umum Perbankan",
+//   menu: "Prioritas-Perbankan",
 //   is_postlogin: 1,
 //   user: {
-//     fullname: "Test",
-//     email: "test@mail.com",
+//     fullname: "Yolanda",
+//     email: "yolanda@gmail.com",
 //     phone: "081234567890",
 //   },
-//   bahasa: "ID",
+//   bahasa: "EN",
 // };
 // console.log("encryptedParams >>> ", encrypt(JSON.stringify(payload)));
 
