@@ -22,7 +22,8 @@ import ButtonLoudSpeakerActive from "../assets/button-loud-speaker-active.svg";
 import ButtonLoudSpeakerInactive from "../assets/button-loud-speaker-inactive.svg";
 import ButtonHangup from "../assets/button-hangup.svg";
 
-import RatingDrawer from "../components/BottomSheet";
+// import RatingDrawer from "../components/BottomSheet";
+import RatingPage from "./ratingPage";
 
 const env = import.meta.env;
 const toMatch = [
@@ -49,7 +50,7 @@ export default function phoneCall() {
     ?.replace(/\\/g, "");
 
   const params = JSON.parse(decrypt(encryptedParams));
-  console.log("params>>>", params);
+  // console.log("params>>>", params);
 
   const route = useRouteStore((state) => state);
   const profile = useProfileStore((state) => state);
@@ -70,7 +71,8 @@ export default function phoneCall() {
   const [isParamError, setIsParamError] = useState(false);
 
   const [isKeypad, setIsKeypad] = useState(false);
-  const [isRatingOpen, setIsRatingOpen] = useState(false);
+  // const [isRatingOpen, setIsRatingOpen] = useState(false);
+  const [isRating, setIsRating] = useState(false);
 
   if (statusCall === "RING") {
     ringingSounds.play();
@@ -321,7 +323,8 @@ export default function phoneCall() {
     setIsFinish(true);
     setIsEstablished(false);
     if (isMobile) {
-      setIsRatingOpen(true);
+      // setIsRatingOpen(true);
+      setIsRating(true)
     } else route.push("end");
   };
 
@@ -335,7 +338,6 @@ export default function phoneCall() {
 
   React.useEffect(() => {
     let interval = null;
-
     if (isActive && isPaused === false) {
       interval = setInterval(() => {
         setTime((time) => time + 10);
@@ -347,6 +349,7 @@ export default function phoneCall() {
       clearInterval(interval);
     };
   }, [isActive, isPaused]);
+
 
   const handleStart = () => {
     currentCall.current.setVolume(isMobile ? 25 : 100);
@@ -385,201 +388,210 @@ export default function phoneCall() {
   } else {
     if (isMobile) {
       return (
-        <Box
-          bottom="8rem"
-          right="2rem"
-          display="flex"
-          flexDirection="column"
-          height="100%"
-          sx={{
-            background:
-              "linear-gradient(0deg, #001489 0%, #0047BB 69.00%, #0047BB 100%)",
-            overflowY: "hidden",
-          }}
-        >
-          {isKeypad ? (
-            <>
-              <Keypad
-                setIsKeypad={setIsKeypad}
-                isCalling={isCalling}
-                endCall={endCall}
-                onDialPadPressed={onDialPadPressed}
-              />
-            </>
+        <>
+          {isRating === true ? (
+            <RatingPage
+              params={params}
+            />
           ) : (
             <Box
-              width="100%"
-              height="100%"
+              bottom="8rem"
+              right="2rem"
               display="flex"
-              position="relative"
               flexDirection="column"
+              height="100%"
               sx={{
                 background:
                   "linear-gradient(0deg, #001489 0%, #0047BB 69.00%, #0047BB 100%)",
+                overflowY: "hidden",
               }}
             >
-              <Typography
-                sx={{
-                  fontWeight: "bold",
-                  color: "white",
-                  textAlign: "center",
-                  marginTop: "64px",
-                  marginBottom: "10vh",
-                  userSelect: "none",
-                }}
-              >
-                {t(`call.headline.${params?.menu}`)}
-              </Typography>
-              <Box
-                sx={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  display: "flex",
-                  marginBottom: "40px",
-                }}
-              >
-                <img
-                  src={
-                    params?.menu?.split("-")?.[0] === "Umum"
-                      ? LogoLayanan
-                      : LogoPrioritas
-                  }
-                  style={{ width: "167px", height: "147px" }}
-                />
-              </Box>
-              <Box textAlign="center">
-                <Typography
+              {isKeypad ? (
+                <>
+                  <Keypad
+                    setIsKeypad={setIsKeypad}
+                    isCalling={isCalling}
+                    endCall={endCall}
+                    onDialPadPressed={onDialPadPressed}
+                  />
+                </>
+              ) : (
+                <Box
+                  width="100%"
+                  height="100%"
+                  display="flex"
+                  position="relative"
+                  flexDirection="column"
                   sx={{
-                    fontWeight: "bold",
-                    color: "white",
-                    marginBottom: "20px",
-                    userSelect: "none",
+                    background:
+                      "linear-gradient(0deg, #001489 0%, #0047BB 69.00%, #0047BB 100%)",
                   }}
                 >
-                  {statusCall === "waiting" ? (
-                    t(`call.descOne.Sedang Menghubungi`)
-                  ) : statusCall === "RING" ? (
-                    t(`call.descOne.Berdering`)
-                  ) : statusCall === "End Call" ? (
-                    t(`call.descOne.Panggilan Berakhir`)
-                  ) : (
-                    <Typography
-                      sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        margin: "10px 0",
-                        color: "white",
-                        fontSize: 18,
-                        fontWeight: 500,
-                      }}
-                      color="white"
-                      className="timer"
-                    >
-                      <Typography className="digits" variant="inherit">
-                        {("0" + Math.floor((time / 60000) % 60)).slice(-2)}:
-                      </Typography>
-                      <Typography className="digits" variant="inherit">
-                        {("0" + Math.floor((time / 1000) % 60)).slice(-2)}
-                      </Typography>
-                    </Typography>
-                  )}
-                </Typography>
-                <Typography
-                  sx={{
-                    color: "white",
-                    fontSize: 14,
-                    marginX: "24px",
-                    userSelect: "none",
-                  }}
-                >
-                  {statusCall.match(/waiting|RING|FAILED/)
-                    ? t(`call.descTwo.RINGING`)
-                    : t("call.descTwo.ESTABLISHED")}
-                </Typography>
-              </Box>
-
-              <Grid
-                container
-                sx={{
-                  position: "absolute",
-                  bottom: 64,
-                  alignSelf: "center",
-                  width: "100%",
-                }}
-              >
-                <Grid item xs={6} textAlign="center">
-                  <Box
+                  <Typography
                     sx={{
-                      width: "100%",
-                      display: "flex",
-                      justifyContent: "center",
+                      fontWeight: "bold",
+                      color: "white",
+                      textAlign: "center",
+                      marginTop: "64px",
+                      marginBottom: "7vh",
+                      userSelect: "none",
                     }}
                   >
-                    <Box
-                      sx={{
-                        backgroundColor: "transparent",
-                        backgroundImage: !currentCall?.current
-                          ? "url(" + ButtonLoudSpeakerDisabled + ")"
-                          : isLoudSpeaker
-                          ? "url(" + ButtonLoudSpeakerActive + ")"
-                          : "url(" + ButtonLoudSpeakerInactive + ")",
-                        backgroundPosition: "center",
-                        backgroundSize: "cover",
-                        backgroundRepeat: "no-repeat",
-                        width: 64,
-                        height: 64,
-                        alignItems: "center",
-                        justifyContent: "center",
-                        display: "flex",
-                      }}
-                      onClick={() => {
-                        if (currentCall?.current) {
-                          toggleLoudSpeaker();
-                        } else undefined;
-                      }}
-                    >
-                      <SpeakerIcon
-                        sx={{
-                          color: currentCall?.current ? "#cccccc" : "white",
-                          width: 39,
-                          height: 39,
-                        }}
-                      />
-                    </Box>
-                  </Box>
-                </Grid>
-                <Grid item xs={6} textAlign="center">
+                    {t(`call.headline.${params?.menu}`)}
+                  </Typography>
                   <Box
                     sx={{
-                      width: "100%",
-                      display: "flex",
+                      alignItems: "center",
                       justifyContent: "center",
+                      display: "flex",
+                      marginBottom: "40px",
                     }}
                   >
-                    <Box
-                      sx={{
-                        backgroundColor: "transparent",
-                        backgroundImage: "url(" + ButtonHangup + ")",
-                        backgroundPosition: "center",
-                        backgroundSize: "cover",
-                        backgroundRepeat: "no-repeat",
-                        width: 64,
-                        height: 64,
-                      }}
-                      onClick={() => endCall()}
+                    <img
+                      src={
+                        params?.menu?.split("-")?.[0] === "Umum"
+                          ? LogoLayanan
+                          : LogoPrioritas
+                      }
+                      style={{ width: "167px", height: "147px" }}
                     />
                   </Box>
-                </Grid>
-              </Grid>
+                  <Box textAlign="center">
+                    <Typography
+                      sx={{
+                        fontWeight: "bold",
+                        color: "white",
+                        marginBottom: "20px",
+                        userSelect: "none",
+                      }}
+                    >
+                      {statusCall === "waiting" ? (
+                        t(`call.descOne.Sedang Menghubungi`)
+                      ) : statusCall === "RING" ? (
+                        t(`call.descOne.Berdering`)
+                      ) : statusCall === "End Call" ? (
+                        t(`call.descOne.Panggilan Berakhir`)
+                      ) : (
+                        <Typography
+                          sx={{
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "center",
+                            margin: "10px 0",
+                            color: "white",
+                            fontSize: 18,
+                            fontWeight: 500,
+                          }}
+                          color="white"
+                          className="timer"
+                        >
+                          <Typography className="digits" variant="inherit">
+                            {("0" + Math.floor((time / 60000) % 60)).slice(-2)}:
+                          </Typography>
+                          <Typography className="digits" variant="inherit">
+                            {("0" + Math.floor((time / 1000) % 60)).slice(-2)}
+                          </Typography>
+                        </Typography>
+                      )}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        color: "white",
+                        fontSize: 14,
+                        marginX: "24px",
+                        userSelect: "none",
+                      }}
+                    >
+                      {statusCall.match(/waiting|RING|FAILED/)
+                        ? t(`call.descTwo.RINGING`)
+                        : t("call.descTwo.ESTABLISHED")}
+                    </Typography>
+                  </Box>
+
+                  <Grid
+                    container
+                    sx={{
+                      position: "absolute",
+                      bottom: 64,
+                      alignSelf: "center",
+                      width: "100%",
+                    }}
+                  >
+                    <Grid item xs={6} textAlign="center">
+                      <Box
+                        sx={{
+                          width: "100%",
+                          display: "flex",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            backgroundColor: "transparent",
+                            backgroundImage: !currentCall?.current
+                              ? "url(" + ButtonLoudSpeakerDisabled + ")"
+                              : isLoudSpeaker
+                                ? "url(" + ButtonLoudSpeakerActive + ")"
+                                : "url(" + ButtonLoudSpeakerInactive + ")",
+                            backgroundPosition: "center",
+                            backgroundSize: "cover",
+                            backgroundRepeat: "no-repeat",
+                            width: 64,
+                            height: 64,
+                            alignItems: "center",
+                            justifyContent: "center",
+                            display: "flex",
+                          }}
+                          onClick={() => {
+                            if (currentCall?.current) {
+                              toggleLoudSpeaker();
+                            } else undefined;
+                          }}
+                        >
+                          <SpeakerIcon
+                            sx={{
+                              color: currentCall?.current ? "#cccccc" : "white",
+                              width: 39,
+                              height: 39,
+                            }}
+                          />
+                        </Box>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={6} textAlign="center">
+                      <Box
+                        sx={{
+                          width: "100%",
+                          display: "flex",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            backgroundColor: "transparent",
+                            backgroundImage: "url(" + ButtonHangup + ")",
+                            backgroundPosition: "center",
+                            backgroundSize: "cover",
+                            backgroundRepeat: "no-repeat",
+                            width: 64,
+                            height: 64,
+                          }}
+                          onClick={() => endCall()}
+                        />
+                      </Box>
+                    </Grid>
+                  </Grid>
+                </Box>
+              )}
+              <Box display="none">
+                <div id="remoteVideo" ref={remoteVideo}></div>
+                <div id="localVideo" ref={localVideo}></div>
+              </Box>
+              {/* <RatingDrawer open={isRatingOpen} /> */}
             </Box>
-          )}
-          <Box display="none">
-            <div id="remoteVideo" ref={remoteVideo}></div>
-            <div id="localVideo" ref={localVideo}></div>
-          </Box>
-          <RatingDrawer open={isRatingOpen} />
-        </Box>
+          )
+          }
+        </>
       );
     }
 
@@ -673,12 +685,12 @@ export default function phoneCall() {
                   {statusCall === "waiting"
                     ? "Calling"
                     : statusCall === "RING"
-                    ? "Ringing"
-                    : statusCall === "ESTABLISHED"
-                    ? "Connected"
-                    : statusCall === "End Call"
-                    ? "End Call"
-                    : ""}
+                      ? "Ringing"
+                      : statusCall === "ESTABLISHED"
+                        ? "Connected"
+                        : statusCall === "End Call"
+                          ? "End Call"
+                          : ""}
                 </Typography>
                 <div
                   style={{
@@ -693,6 +705,7 @@ export default function phoneCall() {
                     style={{ color: "#3DCB87", fontSize: 18, fontWeight: 600 }}
                     className="digits"
                   >
+                    {console.log("time", time)}
                     {("0" + Math.floor((time / 60000) % 60)).slice(-2)}:
                   </Typography>
                   <Typography
@@ -775,7 +788,7 @@ export default function phoneCall() {
                     variant={isMuted ? "contained" : "outlined"}
                     // startIcon={isMuted ? <MicOffIcon /> : <MicIcon />}
                     color={isMuted ? "error" : "primary"}
-                    // disabled={!isCalling}
+                  // disabled={!isCalling}
                   >
                     <img src={KeypadIcon} />
                   </IconButton>
