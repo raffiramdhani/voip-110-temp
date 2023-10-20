@@ -53,8 +53,8 @@ const BottomSheet = ({ open }) => {
         ? profile?.profile?.phone?.startsWith("0")
           ? "+62" + profile?.profile?.phone?.slice(1)
           : profile?.profile?.phone?.startsWith("62")
-          ? "+" + profile?.profile?.phone
-          : profile?.profile?.phone
+            ? "+" + profile?.profile?.phone
+            : profile?.profile?.phone
         : "";
       axios
         .post(
@@ -149,7 +149,7 @@ const BottomSheet = ({ open }) => {
                   style={{ padding: "8px" }}
                 />
               }
-              // getLabelText={(value) => customIcons[value].label}
+            // getLabelText={(value) => customIcons[value].label}
             />
           </Box>
         </Container>
@@ -218,6 +218,7 @@ const BottomSheet = ({ open }) => {
               borderRadius: "50px",
             }}
             onClick={handleSubmitReview}
+            disabled={rating_review?.length > 200}
           >
             {!isLoading ? (
               <span className="indicator-label">{t("rating.send")}</span>
