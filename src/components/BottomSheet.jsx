@@ -38,7 +38,7 @@ const BottomSheet = ({ open }) => {
   }, []);
 
   const handleNavigateNext = () => {
-    console.log("handleNavigateNext", env.VITE_APP_HREF_URL);
+    // console.log("handleNavigateNext", env.VITE_APP_HREF_URL);
     if (env.VITE_APP_HREF_URL) {
       window.location.assign(env.VITE_APP_HREF_URL);
     } else {
@@ -218,8 +218,9 @@ const BottomSheet = ({ open }) => {
               borderRadius: "50px",
             }}
             onClick={handleSubmitReview}
-            disabled={rating_review?.length > 200}
+            // disabled={rating_review?.length === 200}
           >
+            {/* {console.log("cek",rating_review?.length)} */}
             {!isLoading ? (
               <span className="indicator-label">{t("rating.send")}</span>
             ) : (
