@@ -8,6 +8,7 @@ import {
   IconButton,
 } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
+import BJBLogo from "../assets/bjb-logo.png";
 import { v4 as uuidv4 } from "uuid";
 
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
@@ -347,7 +348,7 @@ export default function phoneCall() {
       boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
       backgroundColor="white"
     >
-      <Box
+      {/* <Box
         padding="12px 15px"
         display="flex"
         alignItems="center"
@@ -370,7 +371,20 @@ export default function phoneCall() {
         >
           <RemoveIcon />
         </IconButton>
-      </Box>
+      </Box> */}
+      <Grid container>
+        <Grid item xs={6} style={{ background: "#165581" }}>
+          <Box style={{
+            width: "100px",
+            height: "45px",
+            padding: "7px 15px"
+          }}>
+            <img src={BJBLogo} style={{ maxHeight: "100%", maxWidth: "100%" }} />
+          </Box>
+        </Grid>
+        <Grid item xs={3} style={{ background: "#25A9E1" }}></Grid>
+        <Grid item xs={3} style={{ background: "#FECC07" }}></Grid>
+      </Grid>
       {isKeypad ? (
         <>
           <Keypad
@@ -423,14 +437,14 @@ export default function phoneCall() {
               </Typography> */}
               <Typography>
                 {statusCall === "waiting"
-                  ? "Calling"
+                  ? "Memanggil"
                   : statusCall === "RING"
-                  ? "Ringing"
-                  : statusCall === "ESTABLISHED"
-                  ? "Connected"
-                  : statusCall === "End Call"
-                  ? "End Call"
-                  : ""}
+                    ? "Berdering"
+                    : statusCall === "ESTABLISHED"
+                      ? "Terhubung"
+                      : statusCall === "End Call"
+                        ? "Panggilan Berakhir"
+                        : ""}
               </Typography>
               <div
                 style={{
@@ -527,7 +541,7 @@ export default function phoneCall() {
                   variant={isMuted ? "contained" : "outlined"}
                   // startIcon={isMuted ? <MicOffIcon /> : <MicIcon />}
                   color={isMuted ? "error" : "primary"}
-                  // disabled={!isCalling}
+                // disabled={!isCalling}
                 >
                   <img src={KeypadIcon} />
                 </IconButton>

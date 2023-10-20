@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from "react";
 // import { Button } from "antd";
 // import { MinusOutlined } from "@ant-design/icons";
-import WelcomeIcon from "../../assets/welcome-icon.png";
-import AgentDefault from "../../assets/agent-default.png";
+// import WelcomeIcon from "../../assets/welcome-icon.png";
+// import AgentDefault from "../../assets/agent-default.png";
+// import BJBLogo from "../../assets/bjb-logo.png";
+import BJBLogo from "../../assets/bjb-logo.png";
 import useAuth from "@/store/openingStore";
 import {
   Box,
   Button,
-  Avatar,
+  Grid,
   Typography,
   TextField,
   Checkbox,
-  CircularProgress,
-  IconButton,
 } from "@mui/material";
-import RemoveIcon from "@mui/icons-material/Remove";
+// import RemoveIcon from "@mui/icons-material/Remove";
 const env = import.meta.env;
 
 const color = {
@@ -86,7 +86,7 @@ const Welcome = (props) => {
     };
   }, []);
   const label =
-    "By using this VOIP service, I agree to the  Terms & Condition Policy, and that the information I provide here is correct.";
+    "Dengan menggunakan Layanan Voip, Saya menyetujui kebijakan syarat dan ketentuan, dan bahwa informasi yang Saya berikan di sini adalah benar.";
   return (
     <>
       <Box
@@ -100,15 +100,15 @@ const Welcome = (props) => {
         right="2rem"
         display="flex"
         flexDirection="column"
-        // boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
+      // boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
       >
-        <Box
+        {/* <Box
           padding="12px 15px"
           display="flex"
           flexDirection="column"
           bgcolor={color.secondary}
-        >
-          <Box
+        > */}
+        {/* <Box
             width="100%"
             display="flex"
             flexDirection="row"
@@ -122,7 +122,6 @@ const Welcome = (props) => {
               <IconButton
                 onClick={() => {
                   setIsOpen("welcome");
-                  // props.setOpenFloating(false);
                   props.setCloseCall();
                 }}
               >
@@ -131,8 +130,8 @@ const Welcome = (props) => {
             ) : (
               <></>
             )}
-          </Box>
-          <Box marginY="10px">
+          </Box> */}
+        {/* <Box marginY="10px">
             <div
               style={{
                 display: "flex",
@@ -153,8 +152,21 @@ const Welcome = (props) => {
               </Typography>
             </div>
             <Typography fontSize={12}>What can we help you today?</Typography>
-          </Box>
-        </Box>
+          </Box> */}
+        {/* </Box> */}
+        <Grid container>
+          <Grid item xs={6} style={{ background: "#165581" }}>
+            <Box style={{
+              width: "100px",
+              height: "45px",
+              padding: "7px 15px"
+            }}>
+              <img src={BJBLogo} style={{ maxHeight: "100%", maxWidth: "100%" }} />
+            </Box>
+          </Grid>
+          <Grid item xs={3} style={{ background: "#25A9E1" }}></Grid>
+          <Grid item xs={3} style={{ background: "#FECC07" }}></Grid>
+        </Grid>
         <Box height={"359px"} backgroundColor="white" padding="55px 15px">
           <Box
             display="flex"
@@ -181,7 +193,7 @@ const Welcome = (props) => {
                 }}
                 fontSize="14px"
               >
-                Terms & Condition Policy
+                Syarat dan Ketentuan
               </Typography>
             </Box>
           </Box>
@@ -189,7 +201,7 @@ const Welcome = (props) => {
             <Button
               sx={{
                 width: "100%",
-                borderRadius: "10px",
+                borderRadius: "50px",
                 marginTop: "1em",
                 backgroundColor: `${color.main}`,
                 color: "white",
@@ -200,7 +212,7 @@ const Welcome = (props) => {
                 setIsOpen("login");
               }}
             >
-              I Agree
+              Saya setuju
             </Button>
           </Box>
         </Box>
