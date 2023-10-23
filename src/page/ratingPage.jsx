@@ -57,7 +57,7 @@ export default function ratingPage(props) {
                             alignItems: "center",
                             justifyContent: "center",
                             display: "flex",
-                            marginBottom: "40px",
+                            marginBottom: "20px",
                         }}
                     >
                         <img
@@ -78,7 +78,8 @@ export default function ratingPage(props) {
                                 userSelect: "none",
                             }}
                         >
-                            {statusCall === "waiting" ? (
+                            { t(`call.descOne.Panggilan Berakhir`)}
+                            {/* {statusCall === "waiting" ? (
                                 t(`call.descOne.Sedang Menghubungi`)
                             ) : statusCall === "RING" ? (
                                 t(`call.descOne.Berdering`)
@@ -99,16 +100,15 @@ export default function ratingPage(props) {
                                     className="timer"
                                 >
                                     <Typography className="digits" variant="inherit">
-                                        {/* {("0" + Math.floor((time / 60000) % 60)).slice(-2)}: */}
                                         {"00"}:
                                     </Typography>
                                     <Typography className="digits" variant="inherit">
                                         {"00"}
                                     </Typography>
                                 </Typography>
-                            )}
+                            )} */}
                         </Typography>
-                        <Typography
+                        {/* <Typography
                             sx={{
                                 color: "white",
                                 fontSize: 14,
@@ -119,7 +119,7 @@ export default function ratingPage(props) {
                             {statusCall.match(/waiting|RING|FAILED/)
                                 ? t(`call.descTwo.RINGING`)
                                 : t("call.descTwo.ESTABLISHED")}
-                        </Typography>
+                        </Typography> */}
                     </Box>
                 </Box>
                 <RatingDrawer open={true} />

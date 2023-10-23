@@ -88,7 +88,17 @@ const BottomSheet = ({ open }) => {
   };
 
   return (
-    <SwipeableDrawer anchor="bottom" open={open}>
+    <SwipeableDrawer
+      anchor="bottom"
+      open={open}
+      PaperProps={{
+        // square: false,
+        elevation: 0,
+        sx: {
+          borderRadius: "15px 15px 0px 0px"
+        },
+      }}
+    >
       <Box
         role="presentation"
         display="flex"
@@ -96,12 +106,12 @@ const BottomSheet = ({ open }) => {
         justifyContent="center"
         alignItems="center"
         sx={{
-          minHeight: "75vh",
+          minHeight: "53vh",
           backgroundColor: "#fff",
         }}
       >
         <IconButton
-          sx={{ position: "absolute", top: 16, right: 16 }}
+          sx={{ position: "absolute", top: 8, right: 8 }}
           onClick={() => {
             handleNavigateNext();
           }}
@@ -120,16 +130,16 @@ const BottomSheet = ({ open }) => {
         >
           <Typography
             sx={{
-              fontSize: "21px",
-              lineHeight: "26px",
+              fontSize: "20px",
+              // lineHeight: "26px",
               fontWeight: "bold",
-              mb: "10px",
+              // mb: "10px",
               textAlign: "center",
             }}
           >
             {t("rating.headline")}
           </Typography>
-          <Box sx={{ marginTop: "10px" }}>
+          <Box sx={{ marginTop: "5px" }}>
             <StyledRating
               name="rating"
               id="rating"
@@ -139,14 +149,14 @@ const BottomSheet = ({ open }) => {
                 <img
                   src={StarActive}
                   alt="Star Active"
-                  style={{ padding: "8px" }}
+                  style={{ padding: "5px" }}
                 />
               }
               emptyIcon={
                 <img
                   src={StarInactive}
                   alt="Star Active"
-                  style={{ padding: "8px" }}
+                  style={{ padding: "5px" }}
                 />
               }
             // getLabelText={(value) => customIcons[value].label}
@@ -163,8 +173,9 @@ const BottomSheet = ({ open }) => {
         >
           <Typography
             sx={{
-              marginY: "24px",
-              marginX: "32px",
+              // marginY: "24px",
+              // marginX: "32px",
+              margin: "10px 0px",
               textAlign: "center",
               fontSize: "14px",
               lineHeight: "20px",
@@ -178,7 +189,7 @@ const BottomSheet = ({ open }) => {
           <TextField
             id="outlined-multiline-static"
             multiline
-            rows={4}
+            rows={3}
             sx={{
               "& .MuiOutlinedInput-root": {
                 "& fieldset": {
@@ -189,7 +200,7 @@ const BottomSheet = ({ open }) => {
                   borderWidth: "2px",
                 },
               },
-              marginTop: "10px",
+              marginTop: "5px",
               width: "80%",
             }}
             onChange={(e) => setRatingReview(e.target.value)}
@@ -217,8 +228,9 @@ const BottomSheet = ({ open }) => {
               backgroundColor: "#00BFB2",
               borderRadius: "50px",
             }}
+            disabled={score === null && rating_review.length === 0}
             onClick={handleSubmitReview}
-            // disabled={rating_review?.length === 200}
+          // disabled={rating_review?.length === 200}
           >
             {/* {console.log("cek",rating_review?.length)} */}
             {!isLoading ? (
