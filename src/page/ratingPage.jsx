@@ -108,18 +108,6 @@ export default function ratingPage(props) {
                                 </Typography>
                             )} */}
                         </Typography>
-                        {/* <Typography
-                            sx={{
-                                color: "white",
-                                fontSize: 14,
-                                marginX: "24px",
-                                userSelect: "none",
-                            }}
-                        >
-                            {statusCall.match(/waiting|RING|FAILED/)
-                                ? t(`call.descTwo.RINGING`)
-                                : t("call.descTwo.ESTABLISHED")}
-                        </Typography> */}
                     </Box>
                 </Box>
                 <RatingDrawer open={true} />
