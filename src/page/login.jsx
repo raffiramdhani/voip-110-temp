@@ -417,7 +417,7 @@ export default function login(props) {
                     }
                   }}
                   inputProps={{
-                    maxLength: 12,
+                    maxLength: 13,
                     minLength: 9,
                     style: {
                       fontSize: 13
