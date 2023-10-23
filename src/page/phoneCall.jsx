@@ -392,6 +392,7 @@ export default function phoneCall() {
           {isRating === true ? (
             <RatingPage
               params={params}
+              statusCall={statusCall}
             />
           ) : (
             <Box
