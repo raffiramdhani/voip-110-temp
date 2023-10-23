@@ -433,7 +433,7 @@ export default function login(props) {
                   name="phone"
                   size="small"
                   margin="dense"
-                  type="number"
+                  type="text"
                   sx={styling.TextField}
                 />
 
