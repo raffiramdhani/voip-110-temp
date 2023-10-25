@@ -86,7 +86,7 @@ const Welcome = (props) => {
     };
   }, []);
   const label =
-    "Dengan menggunakan Layanan Voip, Saya menyetujui kebijakan syarat dan ketentuan, dan bahwa informasi yang Saya berikan di sini adalah benar.";
+    "Dengan menggunakan Layanan Voip, Saya menyetujui kebijakan syarat dan ketentuan, serta bahwa informasi yang Saya berikan di sini adalah benar.";
   return (
     <>
       <Box

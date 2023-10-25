@@ -6,15 +6,17 @@ import {
   Button,
   Typography,
   IconButton,
+  Avatar,
 } from "@mui/material";
-import RemoveIcon from "@mui/icons-material/Remove";
+// import RemoveIcon from "@mui/icons-material/Remove";
+import PersonIcon from '@mui/icons-material/Person';
 import BJBLogo from "../assets/bjb-logo.png";
 import { v4 as uuidv4 } from "uuid";
 
-import SupportAgentIcon from "@mui/icons-material/SupportAgent";
-import MicOffIcon from "@mui/icons-material/MicOff";
-import MicIcon from "@mui/icons-material/Mic";
-import PhoneDisabledIcon from "@mui/icons-material/PhoneDisabled";
+// import SupportAgentIcon from "@mui/icons-material/SupportAgent";
+// import MicOffIcon from "@mui/icons-material/MicOff";
+// import MicIcon from "@mui/icons-material/Mic";
+// import PhoneDisabledIcon from "@mui/icons-material/PhoneDisabled";
 
 import * as Flashphoner from "@flashphoner/websdk";
 import DTMFSound from "../assets/dtmf.wav";
@@ -23,13 +25,13 @@ import ringingSound from "../assets/phone-ringing.wav";
 import { decrypt } from "@/utils/encrypt";
 import useProfileStore from "@/store/profileStore";
 
-import NumPad from "@/styles/AlfaNumerik.jsx";
+// import NumPad from "@/styles/AlfaNumerik.jsx";
 import CallerAva from "../assets/caller-ava.png";
 
 import MuteOff from "../assets/mute-off.png";
 import MuteOn from "../assets/mute-on.png";
-import SpeakerOn from "../assets/speaker-on.png";
-import SpeakerOff from "../assets/speaker-off.png";
+// import SpeakerOn from "../assets/speaker-on.png";
+// import SpeakerOff from "../assets/speaker-off.png";
 import KeypadIcon from "../assets/keypad.png";
 import EndCall from "../assets/end-call.png";
 
@@ -411,7 +413,7 @@ export default function phoneCall() {
               alignItems="center"
               marginY="20px"
             >
-              <Box
+              {/* <Box
                 bgcolor={env.VITE_APP_MAIN_COLOR}
                 display="flex"
                 alignItems="center"
@@ -423,7 +425,15 @@ export default function phoneCall() {
                 border="none"
               >
                 <img className="my-3" src={CallerAva} />
-              </Box>
+              </Box> */}
+              <Avatar sx={{
+                background: "#9D9FB1",
+                width: 74, height: 74
+              }}>
+                <PersonIcon sx={{
+                  fontSize: "3.2rem"
+                }} />
+              </Avatar>
             </Box>
             <Box textAlign="center">
               {/* <Typography fontSize="9px" color="#c4c4c4">
