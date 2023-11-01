@@ -358,7 +358,7 @@ export default function login(props) {
               <Typography style={{
                 marginBottom: "25px"
               }}>
-                Untuk mulai panggilan, silahkan isi form di bawah ini.
+                Untuk memulai panggilan, silahkan isi form di bawah ini.
               </Typography>
               <form
                 // style={{ height: `80vh` }}
