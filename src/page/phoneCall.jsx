@@ -278,10 +278,10 @@ export default function phoneCall() {
       });
 
     outCall.call();
-    outCall.setVolume(isMobile ? 25 : 100);
+    outCall.setVolume(50);
     // console.log("outCall", outCall);
     currentCall.current = outCall;
-    currentCall.current.setVolume(isMobile ? 25 : 100);
+    currentCall.current.setVolume(50);
   };
 
   // console.log(isFinish, isEstablished, statusCall);
@@ -309,7 +309,7 @@ export default function phoneCall() {
         currentCall.current.setVolume(100);
       }
       if (!change) {
-        currentCall.current.setVolume(25);
+        currentCall.current.setVolume(50);
       }
     }
     setIsLoudSpeaker(change);
@@ -324,7 +324,7 @@ export default function phoneCall() {
     setIsEstablished(false);
     if (isMobile) {
       // setIsRatingOpen(true);
-      setIsRating(true)
+      setIsRating(true);
     } else route.push("end");
   };
 
@@ -350,9 +350,8 @@ export default function phoneCall() {
     };
   }, [isActive, isPaused]);
 
-
   const handleStart = () => {
-    currentCall.current.setVolume(isMobile ? 25 : 100);
+    currentCall.current.setVolume(50);
     setIsActive(true);
     setIsPaused(false);
   };
@@ -390,10 +389,7 @@ export default function phoneCall() {
       return (
         <>
           {isRating === true ? (
-            <RatingPage
-              params={params}
-              statusCall={statusCall}
-            />
+            <RatingPage params={params} statusCall={statusCall} />
           ) : (
             <Box
               bottom="8rem"
@@ -532,8 +528,8 @@ export default function phoneCall() {
                             backgroundImage: !currentCall?.current
                               ? "url(" + ButtonLoudSpeakerDisabled + ")"
                               : isLoudSpeaker
-                                ? "url(" + ButtonLoudSpeakerActive + ")"
-                                : "url(" + ButtonLoudSpeakerInactive + ")",
+                              ? "url(" + ButtonLoudSpeakerActive + ")"
+                              : "url(" + ButtonLoudSpeakerInactive + ")",
                             backgroundPosition: "center",
                             backgroundSize: "cover",
                             backgroundRepeat: "no-repeat",
@@ -590,8 +586,7 @@ export default function phoneCall() {
               </Box>
               {/* <RatingDrawer open={isRatingOpen} /> */}
             </Box>
-          )
-          }
+          )}
         </>
       );
     }
@@ -600,7 +595,7 @@ export default function phoneCall() {
       <Box
         // position={`${type === "web" ? "absolute" : ""}`}
         // width={`${type === "web" ? "25%" : "100%"}`}
-        // height={`${type === "web" ? "70%" : "100%"}`}
+        // height={`${type === "web" ? "70%" : "100vh"}`}
         bottom="8rem"
         right="2rem"
         display="flex"
@@ -645,7 +640,7 @@ export default function phoneCall() {
           <>
             <Box
               width="100%"
-              height="100%"
+              height="100vh"
               bgcolor="#FFF"
               display="flex"
               position="relative"
@@ -686,12 +681,12 @@ export default function phoneCall() {
                   {statusCall === "waiting"
                     ? "Calling"
                     : statusCall === "RING"
-                      ? "Ringing"
-                      : statusCall === "ESTABLISHED"
-                        ? "Connected"
-                        : statusCall === "End Call"
-                          ? "End Call"
-                          : ""}
+                    ? "Ringing"
+                    : statusCall === "ESTABLISHED"
+                    ? "Connected"
+                    : statusCall === "End Call"
+                    ? "End Call"
+                    : ""}
                 </Typography>
                 <div
                   style={{
@@ -706,7 +701,6 @@ export default function phoneCall() {
                     style={{ color: "#3DCB87", fontSize: 18, fontWeight: 600 }}
                     className="digits"
                   >
-                    {console.log("time", time)}
                     {("0" + Math.floor((time / 60000) % 60)).slice(-2)}:
                   </Typography>
                   <Typography
@@ -789,7 +783,7 @@ export default function phoneCall() {
                     variant={isMuted ? "contained" : "outlined"}
                     // startIcon={isMuted ? <MicOffIcon /> : <MicIcon />}
                     color={isMuted ? "error" : "primary"}
-                  // disabled={!isCalling}
+                    // disabled={!isCalling}
                   >
                     <img src={KeypadIcon} />
                   </IconButton>
@@ -840,3 +834,9 @@ export default function phoneCall() {
     );
   }
 }
+
+const color = {
+  textTitle: "#fff",
+  main: env.VITE_APP_MAIN_COLOR,
+  secondary: "#EBE8FF",
+};
