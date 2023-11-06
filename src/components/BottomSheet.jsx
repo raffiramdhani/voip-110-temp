@@ -53,8 +53,8 @@ const BottomSheet = ({ open }) => {
         ? profile?.profile?.phone?.startsWith("0")
           ? "+62" + profile?.profile?.phone?.slice(1)
           : profile?.profile?.phone?.startsWith("62")
-            ? "+" + profile?.profile?.phone
-            : profile?.profile?.phone
+          ? "+" + profile?.profile?.phone
+          : profile?.profile?.phone
         : "";
       axios
         .post(
@@ -95,7 +95,7 @@ const BottomSheet = ({ open }) => {
         // square: false,
         elevation: 0,
         sx: {
-          borderRadius: "15px 15px 0px 0px"
+          borderRadius: "15px 15px 0px 0px",
         },
       }}
     >
@@ -159,7 +159,7 @@ const BottomSheet = ({ open }) => {
                   style={{ padding: "5px" }}
                 />
               }
-            // getLabelText={(value) => customIcons[value].label}
+              // getLabelText={(value) => customIcons[value].label}
             />
           </Box>
         </Container>
@@ -182,7 +182,7 @@ const BottomSheet = ({ open }) => {
               fontWeight: "normal",
             }}
           >
-            {score > 2 || score === null
+            {score > 2 || score !== null
               ? t("rating.impression")
               : t("rating.suggestion")}
           </Typography>
@@ -230,7 +230,7 @@ const BottomSheet = ({ open }) => {
             }}
             disabled={score === null && rating_review.length === 0}
             onClick={handleSubmitReview}
-          // disabled={rating_review?.length === 200}
+            // disabled={rating_review?.length === 200}
           >
             {/* {console.log("cek",rating_review?.length)} */}
             {!isLoading ? (

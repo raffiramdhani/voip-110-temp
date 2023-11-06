@@ -66,7 +66,7 @@ export default function phoneCall() {
   const [statusRegiter, setStatusRegister] = useState(null);
   const [statusCall, setStatusCall] = useState("waiting");
 
-  const [isFinish, setIsFinish] = useState(true);
+  const [isFinish, setIsFinish] = useState(false);
   const [isEstablished, setIsEstablished] = useState(false);
   const [isParamError, setIsParamError] = useState(false);
 
@@ -365,7 +365,7 @@ export default function phoneCall() {
     setTime(0);
   };
 
-  if (isFinish && isEstablished && statusCall === "FINISH") {
+  if (isFinish && isEstablished && statusCall === CALL_STATUS.FINISH) {
     endCall();
   } else {
   }
@@ -482,6 +482,12 @@ export default function phoneCall() {
                           color="white"
                           className="timer"
                         >
+                          <Typography className="digits" variant="inherit">
+                            {("0" + Math.floor((time / 3600000) % 60)).slice(
+                              -2
+                            )}
+                            :
+                          </Typography>
                           <Typography className="digits" variant="inherit">
                             {("0" + Math.floor((time / 60000) % 60)).slice(-2)}:
                           </Typography>

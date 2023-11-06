@@ -29,7 +29,7 @@ i18next.use(initReactI18next).init({
           impression:
             "Terima kasih atas penilaian kamu! Apa yang berkesan dari pelayanan agent kami?",
           suggestion:
-            "Beritahu kami apa yang bisa ditingkatkan dari pelayanan Aisyah?",
+            "Beritahu kami apa yang bisa ditingkatkan dari pelayanan agent kami?",
           inputPlaceholder: "Tulis penilaianmu",
           send: "Kirim",
         },
@@ -58,7 +58,7 @@ i18next.use(initReactI18next).init({
           headline: "Give us your rating on BSI Call",
           impression:
             "Thank you for your rating! What was memorable about our agent service?",
-          suggestion: "Tell us what can be improved about Aisyah's services?",
+          suggestion: "Tell us what can be improved about our agent service?",
           inputPlaceholder: "Write your assessment",
           send: "Send",
         },
