@@ -142,6 +142,7 @@ export default function login(props) {
 
     const firstData = JSON.stringify({
       ...form,
+      name: form.username,
       additional_field: additionalField,
       date_call: new Date(),
       os: osName,
@@ -208,6 +209,7 @@ export default function login(props) {
     console.log("params", params);
 
     var dataFromUrl = JSON.stringify({
+      name: params?.user?.fullname,
       username: params?.user?.fullname,
       email: params?.user?.email,
       phone: params?.user?.phone,
@@ -220,6 +222,7 @@ export default function login(props) {
 
     const firstData = JSON.stringify({
       ...form,
+      name: form.username,
       additional_field: additionalField,
       timestamp: new Date(),
       token: env.VITE_APP_EXTEN_TOKEN,
