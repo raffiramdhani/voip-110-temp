@@ -182,7 +182,7 @@ const BottomSheet = ({ open }) => {
               fontWeight: "normal",
             }}
           >
-            {score > 2 || score !== null
+            {score > 2 && score !== null
               ? t("rating.impression")
               : t("rating.suggestion")}
           </Typography>
