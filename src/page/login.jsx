@@ -35,22 +35,30 @@ import { browserName, osName } from "react-device-detect";
 import axios from "axios";
 
 const env = import.meta.env;
-const toMatch = [
-  /Android/i,
-  /webOS/i,
-  /iPhone/i,
-  /iPad/i,
-  /iPod/i,
-  /BlackBerry/i,
-  /Windows Phone/i,
+
+const MENU = [
+  { id: "Umum-Perbankan", label: "Umum Perbankan" },
+  { id: "Umum-Hasanah", label: "Umum Hasanah" },
+  { id: "Prioritas-Perbankan", label: "Prioritas Perbankan" },
+  { id: "Prioritas-Hasanah", label: "Prioritas Hasanah" },
 ];
-const isMobile = toMatch.some((toMatchItem) => {
-  return navigator.userAgent.match(toMatchItem);
-});
+
+const LANG = [
+  {
+    id: "ID",
+    label: "Indonesia",
+  },
+  {
+    id: "EN",
+    label: "Inggris",
+  },
+];
 
 export default function login(props) {
   const route = useRouteStore((state) => state);
   const profile = useProfileStore((state) => state);
+  const isMobile = new URLSearchParams(window.location.search).get("app");
+
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     username: "",
@@ -63,7 +71,7 @@ export default function login(props) {
   const [msgError, setMsgError] = useState(null);
   const [captcha, setCaptcha] = useState(null);
   const [listingAdditionalField, setListingAdditionalField] = useState(null);
-  const [additionalField, setAdditionalField] = useState(null);
+  const [additionalField, setAdditionalField] = useState({ is_postlogin: 0 });
 
   const [phoneNumber, setPhoneNumber] = useState("");
   const [errMsg, setErrMsg] = useState(null);
@@ -223,7 +231,7 @@ export default function login(props) {
     const firstData = JSON.stringify({
       ...form,
       name: form.username,
-      additional_field: additionalField,
+      additional_field: { ...additionalField, name: form.username },
       timestamp: new Date(),
       token: env.VITE_APP_EXTEN_TOKEN,
       type: env.VITE_APP_EXTEN_TYPE,
@@ -425,55 +433,64 @@ export default function login(props) {
 
                 {listingAdditionalField
                   ? listingAdditionalField &&
-                    listingAdditionalField.map((e) => {
-                      return (
-                        <>
-                          <Typography marginTop={1}>{e.label}</Typography>
-                          {e.type === "select" ? (
-                            <>
-                              <Select
-                                name={e.key}
-                                id={`form-${e.key}`}
-                                placeholder={e.label}
-                                required={e.is_mandatory ? true : false}
-                                size="small"
-                                // value={age}
+                    listingAdditionalField
+                      .filter((v) => v.label !== "is_postlogin")
+                      .map((e) => ({ ...e, type: "select" }))
+                      .map((e) => {
+                        return (
+                          <>
+                            <Typography marginTop={1}>{e.label}</Typography>
+                            {e.type === "select" ? (
+                              <>
+                                <Select
+                                  name={e.label}
+                                  id={`form-${e.key}`}
+                                  placeholder={e.label}
+                                  required={e.is_mandatory ? true : false}
+                                  size="small"
+                                  // value={age}
+                                  onChange={(event) =>
+                                    handleAdditionalFieldInput(event)
+                                  }
+                                  label={e.label}
+                                  sx={{ width: "100%" }}
+                                >
+                                  {(e?.label === "menu" ? MENU : LANG).map(
+                                    (e) => {
+                                      return (
+                                        <MenuItem value={e.id}>
+                                          {e.label}
+                                        </MenuItem>
+                                      );
+                                    }
+                                  )}
+                                </Select>
+                              </>
+                            ) : (
+                              <TextField
+                                // value={form.e.label}
                                 onChange={(event) =>
                                   handleAdditionalFieldInput(event)
                                 }
-                                label={e.label}
-                                sx={{ width: "100%" }}
-                              >
-                                {e?.option.map((e) => {
-                                  return <MenuItem value={e}>{e}</MenuItem>;
-                                })}
-                              </Select>
-                            </>
-                          ) : (
-                            <TextField
-                              // value={form.e.label}
-                              onChange={(event) =>
-                                handleAdditionalFieldInput(event)
-                              }
-                              // disabled={form.isLoadingSetupWebphone}
-                              fullWidth
-                              multiline={e.type === "textarea" ? true : false}
-                              rows={e.type === "textarea" ? 3 : 1}
-                              placeholder={e.label}
-                              required={e.is_mandatory ? true : false}
-                              color="info"
-                              id={`form-${e.key}`}
-                              // label="Email"
-                              name={e.key}
-                              type={e.type}
-                              size="small"
-                              margin="dense"
-                              sx={styling.TextField}
-                            />
-                          )}
-                        </>
-                      );
-                    })
+                                // disabled={form.isLoadingSetupWebphone}
+                                fullWidth
+                                multiline={e.type === "textarea" ? true : false}
+                                rows={e.type === "textarea" ? 3 : 1}
+                                placeholder={e.label}
+                                required={e.is_mandatory ? true : false}
+                                color="info"
+                                id={`form-${e.key}`}
+                                // label="Email"
+                                name={e.key}
+                                type={e.type}
+                                size="small"
+                                margin="dense"
+                                sx={styling.TextField}
+                              />
+                            )}
+                          </>
+                        );
+                      })
                   : null}
 
                 <Box marginTop={1}>

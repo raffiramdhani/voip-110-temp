@@ -26,16 +26,6 @@ import ButtonHangup from "../assets/button-hangup.svg";
 import RatingPage from "./ratingPage";
 
 const env = import.meta.env;
-const toMatch = [
-  /Android/i,
-  /webOS/i,
-  /iP(ad|od|hone)/i,
-  /BlackBerry/i,
-  /Windows Phone/i,
-];
-const isMobile = toMatch.some((toMatchItem) => {
-  return navigator.userAgent.match(toMatchItem);
-});
 
 export default function phoneCall() {
   let SESSION_STATUS = Flashphoner.constants.SESSION_STATUS;
@@ -43,6 +33,7 @@ export default function phoneCall() {
   let Browser = Flashphoner.Browser;
   const { t, i18n } = useTranslation();
 
+  const isMobile = new URLSearchParams(window.location.search).get("app");
   const encryptedParams = new URLSearchParams(window.location.search)
     ?.get("key")
     ?.split(" ")
