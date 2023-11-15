@@ -1,12 +1,10 @@
-import { Grid, Typography } from "@mui/material";
 import React from "react";
-import useRouteStore from "@/store/routeStore";
+import { Grid, Typography } from "@mui/material";
 
 export default function endCall() {
-  const route = useRouteStore((state) => state);
   React.useEffect(() => {
     setTimeout(() => {
-      route.push("login");
+      window.location.reload();
     }, 5000);
   });
   return (

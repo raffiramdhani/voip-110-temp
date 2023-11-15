@@ -343,6 +343,18 @@ export default function phoneCall() {
     };
   }, [isActive, isPaused]);
 
+  React.useEffect(() => {
+    let autoEndTimeOut = null;
+    console.log("statusCall", statusCall);
+    if (statusCall === "waiting") {
+      autoEndTimeOut = setTimeout(() => {
+        endCall();
+      }, 60000);
+    } else if (statusCall === "RING") {
+      clearTimeout(autoEndTimeOut);
+    }
+  }, [statusCall]);
+
   const handleStart = () => {
     currentCall.current.setVolume(50);
     setIsActive(true);

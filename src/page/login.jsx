@@ -373,9 +373,6 @@ export default function login(props) {
                 backgroundColor: "white",
               }}
             >
-              <Typography className="mb-2">
-                To start a call, please fill the form before
-              </Typography>
               <form
                 // style={{ height: `80vh` }}
                 onSubmit={(e) => handleSubmit(e)}
@@ -469,20 +466,17 @@ export default function login(props) {
                   ? listingAdditionalField &&
                     listingAdditionalField
                       .filter((v) => v.label !== "is_postlogin")
-                      .map((e) => ({
-                        ...e,
-                        type: "select",
-                        label:
-                          e.label === "menu"
-                            ? "Layanan"
-                            : e.label === "bahasa"
-                            ? "Bahasa"
-                            : "",
-                      }))
+                      .map((e) => ({ ...e, type: "select" }))
                       .map((e) => {
                         return (
                           <>
-                            <Typography marginTop={1}>{e.label}</Typography>
+                            <Typography marginTop={1}>
+                              {e.label === "menu"
+                                ? "Layanan"
+                                : e.label === "bahasa"
+                                ? "Bahasa"
+                                : ""}
+                            </Typography>
                             {e.type === "select" ? (
                               <>
                                 <Select
@@ -498,7 +492,7 @@ export default function login(props) {
                                   label={e.label}
                                   sx={{ width: "100%" }}
                                 >
-                                  {(e?.label === "Layanan" ? MENU : LANG).map(
+                                  {(e?.label === "menu" ? MENU : LANG).map(
                                     (e) => {
                                       return (
                                         <MenuItem value={e.id}>
