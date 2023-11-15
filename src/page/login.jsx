@@ -15,7 +15,8 @@ import {
 import RemoveIcon from "@mui/icons-material/Remove";
 import { v4 as uuidv4 } from "uuid";
 
-import WelcomeIcon from "../assets/welcome-icon.png";
+// import WelcomeIcon from "../assets/welcome-icon.png";
+import LogoBSI from "../assets/logo-bsi.png";
 
 import ContactSupportIcon from "@mui/icons-material/ContactSupport";
 import PhoneInTalkIcon from "@mui/icons-material/PhoneInTalk";
@@ -38,19 +39,19 @@ const env = import.meta.env;
 
 const MENU = [
   { id: "Umum-Perbankan", label: "Umum Perbankan" },
-  { id: "Umum-Hasanah", label: "Umum Hasanah" },
-  { id: "Prioritas-Perbankan", label: "Prioritas Perbankan" },
-  { id: "Prioritas-Hasanah", label: "Prioritas Hasanah" },
+  // { id: "Umum-Hasanah", label: "Umum Hasanah" },
+  // { id: "Prioritas-Perbankan", label: "Prioritas Perbankan" },
+  // { id: "Prioritas-Hasanah", label: "Prioritas Hasanah" },
 ];
 
 const LANG = [
   {
     id: "ID",
-    label: "Indonesia",
+    label: "Bahasa Indonesia",
   },
   {
     id: "EN",
-    label: "Inggris",
+    label: "English",
   },
 ];
 
@@ -293,6 +294,12 @@ export default function login(props) {
     return data;
   };
 
+  const regexEmail = /^[a-zA-Z0-9]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/g;
+  const testEmail = regexEmail.test(form.email);
+
+  const regexPhoneNumber = /^(?:\+62\d*|0\d*|\+)$/g;
+  const testPhoneNumber = regexPhoneNumber.test(form.phone);
+
   // const regexPhoneNumber =
   // "(()?(+62|62|0)(d{2,3})?)?[ .-]?d{2,4}[ .-]?d{2,4}[ .-]?d{2,4}";
   // "(()?(+62|62|0)(d{2,3})?)?[ .-]?d{2,4}[ .-]?d{2,4}[ .-]?d{2,4}";
@@ -342,10 +349,7 @@ export default function login(props) {
                   alignItems="center"
                   gap={2}
                 >
-                  <img src={WelcomeIcon} />
-                  <Typography fontWeight={600} color={color.main}>
-                    OMNIX VoIP
-                  </Typography>
+                  <img src={LogoBSI} width={200} />
                 </Box>
                 {type === "web" ? (
                   <IconButton
@@ -376,13 +380,13 @@ export default function login(props) {
                 // style={{ height: `80vh` }}
                 onSubmit={(e) => handleSubmit(e)}
               >
-                <Typography marginTop={2}>Fullname</Typography>
+                <Typography marginTop={2}>Nama Lengkap</Typography>
                 <TextField
                   value={form.name}
                   onChange={(e) => handleInput(e)}
                   // disabled={form.isLoadingSetupWebphone}
                   fullWidth
-                  placeholder="Enter fullname"
+                  placeholder="Masukkan Nama Lengkap"
                   required
                   color="info"
                   id="form-username"
@@ -391,6 +395,12 @@ export default function login(props) {
                   margin="dense"
                   name="username"
                   sx={styling.TextField}
+                  onInput={(e) => {
+                    e.target.value = e.target.value
+                      .toString()
+                      .slice(0, 100)
+                      .replace(/[^a-zA-Z\s]/g, "");
+                  }}
                 />
 
                 <Typography marginTop={1}>Email</Typography>
@@ -399,7 +409,7 @@ export default function login(props) {
                   onChange={(e) => handleInput(e)}
                   // disabled={form.isLoadingSetupWebphone}
                   fullWidth
-                  placeholder="Email"
+                  placeholder="Masukkan Email"
                   required
                   color="info"
                   id="form-email"
@@ -409,8 +419,19 @@ export default function login(props) {
                   size="small"
                   margin="dense"
                   sx={styling.TextField}
+                  onInput={(e) => {
+                    e.target.value = e.target.value.toString().slice(0, 30);
+                  }}
+                  error={!testEmail && form.email !== ""}
                 />
-                <Typography marginTop={1}>Phone number</Typography>
+                {!testEmail && form.email !== "" ? (
+                  <Typography color="red" fontSize="12px">
+                    Email tidak valid.
+                  </Typography>
+                ) : (
+                  <></>
+                )}
+                <Typography marginTop={1}>Nomor HP</Typography>
                 <TextField
                   value={form.phone}
                   onChange={(e) => {
@@ -418,7 +439,7 @@ export default function login(props) {
                     handleInput(e);
                   }}
                   fullWidth
-                  placeholder="Phone number"
+                  placeholder="Masukkan Phone number"
                   required
                   variant="outlined"
                   color="info"
@@ -427,15 +448,37 @@ export default function login(props) {
                   name="phone"
                   size="small"
                   margin="dense"
-                  type="number"
                   sx={styling.TextField}
+                  onInput={(e) => {
+                    e.target.value = e.target.value
+                      .toString()
+                      .slice(0, 14)
+                      .replace(/[^0-9+]/g, "");
+                  }}
+                  error={!testPhoneNumber && form.phone !== ""}
                 />
+                {!testPhoneNumber && form.phone !== "" ? (
+                  <Typography color="red" fontSize="12px">
+                    Nomor HP tidak valid. harus diawali dengan 0 atau +62
+                  </Typography>
+                ) : (
+                  <></>
+                )}
 
                 {listingAdditionalField
                   ? listingAdditionalField &&
                     listingAdditionalField
                       .filter((v) => v.label !== "is_postlogin")
-                      .map((e) => ({ ...e, type: "select" }))
+                      .map((e) => ({
+                        ...e,
+                        type: "select",
+                        label:
+                          e.label === "menu"
+                            ? "Layanan"
+                            : e.label === "bahasa"
+                            ? "Bahasa"
+                            : "",
+                      }))
                       .map((e) => {
                         return (
                           <>
@@ -455,7 +498,7 @@ export default function login(props) {
                                   label={e.label}
                                   sx={{ width: "100%" }}
                                 >
-                                  {(e?.label === "menu" ? MENU : LANG).map(
+                                  {(e?.label === "Layanan" ? MENU : LANG).map(
                                     (e) => {
                                       return (
                                         <MenuItem value={e.id}>
@@ -567,7 +610,7 @@ export default function login(props) {
 const color = {
   textTitle: "#fff",
   main: env.VITE_APP_MAIN_COLOR,
-  secondary: "#EBE8FF",
+  secondary: "#01A39D",
 };
 
 const styling = {

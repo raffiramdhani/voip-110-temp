@@ -22,6 +22,8 @@ import ButtonLoudSpeakerActive from "../assets/button-loud-speaker-active.svg";
 import ButtonLoudSpeakerInactive from "../assets/button-loud-speaker-inactive.svg";
 import ButtonHangup from "../assets/button-hangup.svg";
 
+import LogoBSI from "../assets/logo-bsi.png";
+
 // import RatingDrawer from "../components/BottomSheet";
 import RatingPage from "./ratingPage";
 
@@ -613,7 +615,9 @@ export default function phoneCall() {
             justifyContent="space-between"
             alignItems="center"
           >
-            <Typography>VoIP ONX</Typography>
+            <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
+              <img src={LogoBSI} width={200} />
+            </Box>
           </Box>
           <IconButton
           // onClick={() => {
@@ -835,5 +839,5 @@ export default function phoneCall() {
 const color = {
   textTitle: "#fff",
   main: env.VITE_APP_MAIN_COLOR,
-  secondary: "#EBE8FF",
+  secondary: "#01A39D",
 };

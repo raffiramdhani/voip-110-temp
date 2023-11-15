@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 // import { Button } from "antd";
 // import { MinusOutlined } from "@ant-design/icons";
-import WelcomeIcon from "../../assets/welcome-icon.png";
+// import WelcomeIcon from "../../assets/welcome-icon.png";
+import LogoBSI from "../../assets/logo-bsi.png";
 import AgentDefault from "../../assets/agent-default.png";
 import useAuth from "@/store/openingStore";
 import {
@@ -20,7 +21,7 @@ const env = import.meta.env;
 const color = {
   textTitle: "#fff",
   main: env.VITE_APP_MAIN_COLOR,
-  secondary: "#EBE8FF",
+  secondary: "#01A39D",
 };
 
 const styling = {
@@ -116,7 +117,7 @@ const Welcome = (props) => {
             alignItems="center"
           >
             <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
-              <img src={WelcomeIcon} />
+              <img src={LogoBSI} width={200} />
             </Box>
             {type === "web" ? (
               <IconButton
@@ -132,7 +133,7 @@ const Welcome = (props) => {
               <></>
             )}
           </Box>
-          <Box marginY="10px">
+          {/* <Box marginY="10px">
             <div
               style={{
                 display: "flex",
@@ -153,9 +154,21 @@ const Welcome = (props) => {
               </Typography>
             </div>
             <Typography fontSize={12}>What can we help you today?</Typography>
-          </Box>
+          </Box> */}
         </Box>
-        <Box height={"359px"} backgroundColor="white" padding="55px 15px">
+        <Box
+          height={"359px"}
+          backgroundColor="white"
+          padding="25px 15px 55px 15px"
+        >
+          <Box sx={{ alignItems: "center", justifyContent: "center", mb: 3 }}>
+            <Typography sx={{ textAlign: "center" }}>
+              Anda mempunyai pertanyaan?
+            </Typography>
+            <Typography sx={{ textAlign: "center" }}>
+              Mari bicarakan dengan kami
+            </Typography>
+          </Box>
           <Box
             display="flex"
             flexDirection="row"
