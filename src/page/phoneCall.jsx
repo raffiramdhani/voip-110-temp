@@ -26,6 +26,8 @@ import LogoBSI from "../assets/logo-bsi.png";
 
 // import RatingDrawer from "../components/BottomSheet";
 import RatingPage from "./ratingPage";
+import useTempStore from "@/store/tempStore";
+import { intervalCheck } from "@/utils/helper";
 
 const env = import.meta.env;
 
@@ -47,6 +49,7 @@ export default function phoneCall() {
 
   const route = useRouteStore((state) => state);
   const profile = useProfileStore((state) => state);
+  const { call_start_time, setCallStartTime } = useTempStore();
   const me = useRef();
   const currentCall = useRef();
   const localVideo = useRef();
@@ -67,6 +70,9 @@ export default function phoneCall() {
   // const [isRatingOpen, setIsRatingOpen] = useState(false);
   const [isRating, setIsRating] = useState(false);
 
+  // autoHangup
+  const [_, setHangupTime] = useState(0);
+
   if (statusCall === "RING") {
     ringingSounds.play();
   } else {
@@ -76,7 +82,16 @@ export default function phoneCall() {
   useEffect(() => {
     i18n.changeLanguage(params?.bahasa === "EN" ? "en" : "id");
     initFlashphoner();
+    setCallStartTime(new Date().getTime());
     // console.log("1.0.0");
+
+    let interval = setInterval(() => {
+      setHangupTime((time) => time + 10000);
+    }, 10000);
+
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   // STEP 1
@@ -343,18 +358,6 @@ export default function phoneCall() {
     };
   }, [isActive, isPaused]);
 
-  React.useEffect(() => {
-    let autoEndTimeOut = null;
-    console.log("statusCall", statusCall);
-    if (statusCall === "waiting") {
-      autoEndTimeOut = setTimeout(() => {
-        endCall();
-      }, 60000);
-    } else if (statusCall === "RING") {
-      clearTimeout(autoEndTimeOut);
-    }
-  }, [statusCall]);
-
   const handleStart = () => {
     currentCall.current.setVolume(50);
     setIsActive(true);
@@ -371,6 +374,11 @@ export default function phoneCall() {
   };
 
   if (isFinish && isEstablished && statusCall === CALL_STATUS.FINISH) {
+    endCall();
+  } else if (
+    intervalCheck(call_start_time, new Date().getTime(), 1) &&
+    statusCall === "waiting"
+  ) {
     endCall();
   } else {
   }
