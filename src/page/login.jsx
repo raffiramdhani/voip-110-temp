@@ -65,6 +65,8 @@ export default function login(props) {
     username: "",
     phone: "",
     email: "",
+    menu: MENU[0].id,
+    bahasa: LANG[0].id,
   });
   const [openModalAgree, setOpenModalAgree] = useState(false);
   const [openFloating, setOpenFloating] = useState(false);
@@ -485,7 +487,9 @@ export default function login(props) {
                                   placeholder={e.label}
                                   required={e.is_mandatory ? true : false}
                                   size="small"
-                                  // value={age}
+                                  defaultValue={
+                                    e.label === "menu" ? MENU[0].id : LANG[0].id
+                                  }
                                   onChange={(event) =>
                                     handleAdditionalFieldInput(event)
                                   }
