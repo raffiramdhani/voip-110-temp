@@ -298,7 +298,7 @@ export default function login(props) {
     return data;
   };
 
-  const regexEmail = /^[a-zA-Z0-9]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/g;
+  const regexEmail = /^[a-zA-Z0-9.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/g;
   const testEmail = regexEmail.test(form.email);
 
   const regexPhoneNumber = /^(?:\+62\d*|0\d*|\+)$/g;
