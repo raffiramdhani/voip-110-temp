@@ -65,8 +65,6 @@ export default function login(props) {
     username: "",
     phone: "",
     email: "",
-    menu: MENU[0].id,
-    bahasa: LANG[0].id,
   });
   const [openModalAgree, setOpenModalAgree] = useState(false);
   const [openFloating, setOpenFloating] = useState(false);
@@ -74,7 +72,11 @@ export default function login(props) {
   const [msgError, setMsgError] = useState(null);
   const [captcha, setCaptcha] = useState(null);
   const [listingAdditionalField, setListingAdditionalField] = useState(null);
-  const [additionalField, setAdditionalField] = useState({ is_postlogin: 0 });
+  const [additionalField, setAdditionalField] = useState({
+    is_postlogin: 0,
+    menu: MENU[0].id,
+    bahasa: LANG[0].id,
+  });
 
   const [phoneNumber, setPhoneNumber] = useState("");
   const [errMsg, setErrMsg] = useState(null);
