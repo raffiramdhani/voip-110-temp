@@ -375,17 +375,29 @@ export default function phoneCall() {
         </IconButton>
       </Box> */}
       <Grid container>
-        <Grid item xs={6} style={{ background: "#165581" }}>
+        <Grid item xs={12} style={{ background: "#165581", display: "flex" }}>
           <Box style={{
             width: "100px",
-            height: "45px",
+            height: "40px",
             padding: "7px 15px"
           }}>
             <img src={BJBLogo} style={{ maxHeight: "100%", maxWidth: "100%" }} />
           </Box>
+          <Typography
+            variant="h6"
+            style={{
+              fontSize: "13px",
+              color: "#fff",
+              margin: "auto 16px auto auto"
+            }}
+          >
+            <span style={{
+              fontWeight: 600,
+              color: "#FCCC0E"
+            }}>bjb </span>
+            Call
+          </Typography>
         </Grid>
-        <Grid item xs={3} style={{ background: "#25A9E1" }}></Grid>
-        <Grid item xs={3} style={{ background: "#FECC07" }}></Grid>
       </Grid>
       {isKeypad ? (
         <>
