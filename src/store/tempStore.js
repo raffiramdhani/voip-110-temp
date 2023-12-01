@@ -3,7 +3,7 @@ import { devtools } from "zustand/middleware";
 
 const useTempStore = create(
   devtools((set) => ({
-    call_start_time: new Date().getTime(),
+    call_start_time: null,
     setCallStartTime: (time) => set({ call_start_time: time }),
   }))
 );

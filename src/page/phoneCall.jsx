@@ -376,6 +376,7 @@ export default function phoneCall() {
   if (isFinish && isEstablished && statusCall === CALL_STATUS.FINISH) {
     endCall();
   } else if (
+    call_start_time !== null &&
     intervalCheck(call_start_time, new Date().getTime(), 1) &&
     statusCall === "waiting"
   ) {

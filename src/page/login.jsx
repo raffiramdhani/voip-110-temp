@@ -1,37 +1,27 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import {
+  Grid,
   Box,
   Button,
-  Avatar,
   Typography,
   TextField,
-  Checkbox,
   CircularProgress,
   IconButton,
   Alert,
   Select,
   MenuItem,
 } from "@mui/material";
-import RemoveIcon from "@mui/icons-material/Remove";
-import { v4 as uuidv4 } from "uuid";
 
 // import WelcomeIcon from "../assets/welcome-icon.png";
+import SyncIcon from "@mui/icons-material/Sync";
+import RemoveIcon from "@mui/icons-material/Remove";
 import LogoBSI from "../assets/logo-bsi.png";
-
-import ContactSupportIcon from "@mui/icons-material/ContactSupport";
-import PhoneInTalkIcon from "@mui/icons-material/PhoneInTalk";
 import TermsCond from "@/components/Modals/TermsCond";
-import StartCall from "@/components/Modals/StartCall";
-
-import FloatingButton from "@/components/FloatingButton";
 import Welcome from "@/components/Welcome";
-import ReCAPTCHA from "react-google-recaptcha";
-
 import useRouteStore from "@/store/routeStore";
 import useProfileStore from "@/store/profileStore";
-import { decrypt } from "@/utils/encrypt";
 import useAuth from "@/store/openingStore";
-
+import { decrypt } from "@/utils/encrypt";
 import { browserName, osName } from "react-device-detect";
 import axios from "axios";
 
@@ -55,6 +45,8 @@ const LANG = [
   },
 ];
 
+const captcha = new Array();
+
 export default function login(props) {
   const route = useRouteStore((state) => state);
   const profile = useProfileStore((state) => state);
@@ -70,7 +62,6 @@ export default function login(props) {
   const [openFloating, setOpenFloating] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [msgError, setMsgError] = useState(null);
-  const [captcha, setCaptcha] = useState(null);
   const [listingAdditionalField, setListingAdditionalField] = useState(null);
   const [additionalField, setAdditionalField] = useState({
     is_postlogin: 0,
@@ -85,7 +76,6 @@ export default function login(props) {
   const url_string = window.location.href;
   const url_params = new URL(url_string);
   const type = url_params.searchParams.get("type");
-  let captchaRef = React.useRef();
 
   // const genID = uuidv4();
   const call_id = `BSI${isMobile ? "A" : "B"}${new Date()
@@ -121,7 +111,14 @@ export default function login(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (captcha) {
+    var recaptcha = document.getElementById("recaptcha").value;
+    var validRecaptcha = 0;
+    for (var j = 0; j < 4; j++) {
+      if (recaptcha.charAt(j) != captcha[j]) {
+        validRecaptcha++;
+      }
+    }
+    if (validRecaptcha === 0 && recaptcha.length === 4) {
       setLoading(true);
       const data = await requestExtension();
       console.log(data);
@@ -143,7 +140,7 @@ export default function login(props) {
       }
       // }
     } else {
-      setMsgError("Please, checklist captcha!");
+      setMsgError("Please solve captcha!");
     }
     setLoading(false);
   };
@@ -298,6 +295,32 @@ export default function login(props) {
     return data;
   };
 
+  // captcha
+  function createCaptcha() {
+    document.getElementById("recaptcha").value = "";
+    document.getElementById("errCaptcha").innerHTML = "";
+    for (var i = 0; i < 4; i++) {
+      captcha[i] = String.fromCharCode(Math.floor(Math.random() * 26 + 65));
+      /*
+      if (i % 2 == 0) {
+        captcha[i] = String.fromCharCode(Math.floor(Math.random() * 26 + 65));
+      } else {
+        captcha[i] = Math.floor(Math.random() * 10 + 0);
+      }*/
+    }
+
+    var thecaptcha = captcha.join("");
+    var canvas = document.getElementById("captcha");
+
+    var ctx = canvas.getContext("2d");
+    //ctx.fillStyle = "blue";
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = "18px Arial";
+
+    //ctx.fillText(thecaptcha, 10, 70);
+    ctx.fillText(thecaptcha, 130, 82);
+  }
+
   const regexEmail = /^[a-zA-Z0-9.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/g;
   const testEmail = regexEmail.test(form.email);
 
@@ -317,6 +340,12 @@ export default function login(props) {
   useEffect(() => {
     getAdditionalField();
   }, []);
+
+  useEffect(() => {
+    if (isOpen === "login") {
+      createCaptcha();
+    }
+  }, [isOpen]);
 
   return (
     <Box>
@@ -536,14 +565,77 @@ export default function login(props) {
                       })
                   : null}
 
-                <Box marginTop={1}>
-                  <ReCAPTCHA
-                    required
-                    ref={captchaRef}
-                    sitekey="6LfAbc8jAAAAAFJJXtfVkUgwyF8cPdWhI_YSwcg7"
-                    onChange={(e) => setCaptcha(e)}
-                  />
-                </Box>
+                <Grid
+                  container
+                  sx={{
+                    maxWidth: "100%",
+                    maxHeight: "80px",
+                    marginTop: "24px",
+                  }}
+                >
+                  <Grid
+                    item
+                    xs={5}
+                    lg={1}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      backgroundColor: "#cdd4e0",
+                      justifyContent: "center",
+                      height: "80px",
+                    }}
+                  >
+                    <canvas id="captcha"></canvas>
+                  </Grid>
+                  <Grid
+                    item
+                    xs={7}
+                    lg={2}
+                    sx={{
+                      pl: 1,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Typography sx={{ fontSize: "14px" }}>Captcha</Typography>
+                      <IconButton onClick={createCaptcha}>
+                        <SyncIcon color="primary" />
+                      </IconButton>
+                    </Box>
+
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <TextField
+                        id="recaptcha"
+                        type="text"
+                        placeholder="Enter your captcha"
+                        size="small"
+                        variant="standard"
+                      />
+                      {/* <input
+                              id="recaptcha"
+                              name="recaptcha"
+                              type="text"
+                              placeholder="Enter your captcha"
+                              autoComplete="off"
+                            /> */}
+
+                      <span
+                        id="errCaptcha"
+                        style={{ color: "red", fontSize: "13px" }}
+                      ></span>
+                    </Box>
+                  </Grid>
+                </Grid>
                 <Box
                   width="100%"
                   display="flex"
