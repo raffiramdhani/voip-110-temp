@@ -365,10 +365,10 @@
   resolved "https://registry.yarnpkg.com/@esbuild/linux-loong64/-/linux-loong64-0.15.12.tgz#475b33a2631a3d8ca8aa95ee127f9a61d95bf9c1"
   integrity sha512-tZEowDjvU7O7I04GYvWQOS4yyP9E/7YlsB0jjw1Ycukgr2ycEzKyIk5tms5WnLBymaewc6VmRKnn5IJWgK4eFw==
 
-"@flashphoner/websdk@^2.0.225":
-  version "2.0.225"
-  resolved "https://registry.npmjs.org/@flashphoner/websdk/-/websdk-2.0.225.tgz"
-  integrity sha512-ai1qXvzYmlp64e6lOsBagu3IPRKcHCBkGxoV8IojKVKhf2smw31lq4CY41ALoJUvD3Lkzy6HgUjwWl/7MLmlnw==
+"@flashphoner/websdk@^2.0.236":
+  version "2.0.236"
+  resolved "https://registry.yarnpkg.com/@flashphoner/websdk/-/websdk-2.0.236.tgz#2852ae358b3e2c1fc332172da50740141a8f37e5"
+  integrity sha512-3Z5I5m7TyfyYjxvlgwSVhW3qVUb6OboqlNSFxyK4/xGf2UaSJkW+8gzhLYWXhR7/mAaS7qIbIXZS1JJYfFvZ5g==
   dependencies:
     adapterjs "0.15.5"
     es6-promise "4.0.5"
@@ -576,7 +576,7 @@
 
 adapterjs@0.15.5:
   version "0.15.5"
-  resolved "https://registry.npmjs.org/adapterjs/-/adapterjs-0.15.5.tgz"
+  resolved "https://registry.yarnpkg.com/adapterjs/-/adapterjs-0.15.5.tgz#48ece82a6f4995f410373cf53a43954fceed2ef7"
   integrity sha512-DbeQ8QXx7oUR2JcXrrTF47+F4BeVQUHgxSntpalp9fdKmp/02lxcpTPEF417ZOh5gqqCB320y20znzata2LiMw==
 
 ansi-styles@^3.2.1:
@@ -722,7 +722,7 @@ error-ex@^1.3.1:
 
 es6-promise@4.0.5:
   version "4.0.5"
-  resolved "https://registry.npmjs.org/es6-promise/-/es6-promise-4.0.5.tgz"
+  resolved "https://registry.yarnpkg.com/es6-promise/-/es6-promise-4.0.5.tgz#7882f30adde5b240ccfa7f7d78c548330951ae42"
   integrity sha512-4QUVu8ljexIQebW0h+5EhEqVKvh8p7Wu3zi3AqPmX3tFL2bf6MnZ2ytC/3xuUt1mo6kE2GSYNmjWyDo2SjkAsg==
 
 esbuild-android-64@0.15.12:
@@ -968,7 +968,7 @@ json5@^2.2.1:
 
 kalmanjs@^1.1.0:
   version "1.1.0"
-  resolved "https://registry.npmjs.org/kalmanjs/-/kalmanjs-1.1.0.tgz"
+  resolved "https://registry.yarnpkg.com/kalmanjs/-/kalmanjs-1.1.0.tgz#9554566a0a7ca72722d35a23ab05915c0ddba99e"
   integrity sha512-Gkm2DAKIX8geuDcEJ92e80EmQ6TyIzWBJk6AFk+aDLofQ4G/KoDe1RCY9WMuXFe0NQxsTi7HYh9BVQneOtlvkg==
 
 lines-and-columns@^1.1.6:
@@ -1065,7 +1065,7 @@ postcss@^8.4.18:
 
 promise-polyfill@^6.0.1:
   version "6.1.0"
-  resolved "https://registry.npmjs.org/promise-polyfill/-/promise-polyfill-6.1.0.tgz"
+  resolved "https://registry.yarnpkg.com/promise-polyfill/-/promise-polyfill-6.1.0.tgz#dfa96943ea9c121fca4de9b5868cb39d3472e057"
   integrity sha512-g0LWaH0gFsxovsU7R5LrrhHhWAWiHRnh1GPrhXnPgYsDkIqjRYUYSZEsej/wtleDrz5xVSIDbeKfidztp2XHFQ==
 
 prop-types@^15.5.0, prop-types@^15.6.2, prop-types@^15.8.1:
@@ -1173,7 +1173,7 @@ rollup@^2.79.1:
 
 rtcpeerconnection-shim@^1.2.15:
   version "1.2.15"
-  resolved "https://registry.npmjs.org/rtcpeerconnection-shim/-/rtcpeerconnection-shim-1.2.15.tgz"
+  resolved "https://registry.yarnpkg.com/rtcpeerconnection-shim/-/rtcpeerconnection-shim-1.2.15.tgz#e7cc189a81b435324c4949aa3dfb51888684b243"
   integrity sha512-C6DxhXt7bssQ1nHb154lqeL0SXz5Dx4RczXZu2Aa/L1NJFnEVDxFwCBo3fqtuljhHIGceg5JKBV4XJ0gW5JKyw==
   dependencies:
     sdp "^2.6.0"
@@ -1187,7 +1187,7 @@ scheduler@^0.23.0:
 
 sdp@^2.12.0, sdp@^2.6.0:
   version "2.12.0"
-  resolved "https://registry.npmjs.org/sdp/-/sdp-2.12.0.tgz"
+  resolved "https://registry.yarnpkg.com/sdp/-/sdp-2.12.0.tgz#338a106af7560c86e4523f858349680350d53b22"
   integrity sha512-jhXqQAQVM+8Xj5EjJGVweuEzgtGWb3tmEEpl3CLP3cStInSbVHSg0QWOGQzNq8pSID4JkpeV2mPqlMDLrm0/Vw==
 
 semver@^6.3.0:
@@ -1229,7 +1229,7 @@ supports-preserve-symlinks-flag@^1.0.0:
 
 swfobject@^2.2.1:
   version "2.2.1"
-  resolved "https://registry.npmjs.org/swfobject/-/swfobject-2.2.1.tgz"
+  resolved "https://registry.yarnpkg.com/swfobject/-/swfobject-2.2.1.tgz#e55451d5dde59657335c86b01732c61a923293e2"
   integrity sha512-zcr0lueMzUum1y95CNVFpJHxjPchbFFsBHujRW4iQhAw7pwotzS0gsSGgs4O0gylCrMhTKYI899dlwsc4Eq0Bg==
 
 to-fast-properties@^2.0.0:
@@ -1257,7 +1257,7 @@ use-sync-external-store@1.2.0:
 
 uuid@^8.3.0:
   version "8.3.2"
-  resolved "https://registry.npmjs.org/uuid/-/uuid-8.3.2.tgz"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
 uuid@^9.0.0:
@@ -1279,7 +1279,7 @@ vite@^3.2.0:
 
 webrtc-adapter@^7.2.6:
   version "7.7.1"
-  resolved "https://registry.npmjs.org/webrtc-adapter/-/webrtc-adapter-7.7.1.tgz"
+  resolved "https://registry.yarnpkg.com/webrtc-adapter/-/webrtc-adapter-7.7.1.tgz#b2c227a6144983b35057df67bd984a7d4bfd17f1"
   integrity sha512-TbrbBmiQBL9n0/5bvDdORc6ZfRY/Z7JnEj+EYOD1ghseZdpJ+nF2yx14k3LgQKc7JZnG7HAcL+zHnY25So9d7A==
   dependencies:
     rtcpeerconnection-shim "^1.2.15"
