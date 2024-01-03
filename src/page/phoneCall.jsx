@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   Box,
   Grid,
@@ -6,38 +6,38 @@ import {
   Button,
   Typography,
   IconButton,
-} from "@mui/material";
-import RemoveIcon from "@mui/icons-material/Remove";
-import { v4 as uuidv4 } from "uuid";
+} from '@mui/material';
+import RemoveIcon from '@mui/icons-material/Remove';
+import { v4 as uuidv4 } from 'uuid';
 
-import SupportAgentIcon from "@mui/icons-material/SupportAgent";
-import MicOffIcon from "@mui/icons-material/MicOff";
-import MicIcon from "@mui/icons-material/Mic";
-import PhoneDisabledIcon from "@mui/icons-material/PhoneDisabled";
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+import MicOffIcon from '@mui/icons-material/MicOff';
+import MicIcon from '@mui/icons-material/Mic';
+import PhoneDisabledIcon from '@mui/icons-material/PhoneDisabled';
 
-import * as Flashphoner from "@flashphoner/websdk";
-import DTMFSound from "../assets/dtmf.wav";
-import ringingSound from "../assets/phone-ringing.wav";
+import * as Flashphoner from '@flashphoner/websdk';
+import DTMFSound from '../assets/dtmf.wav';
+import ringingSound from '../assets/phone-ringing.wav';
 
-import { decrypt } from "@/utils/encrypt";
-import useProfileStore from "@/store/profileStore";
+import { decrypt } from '@/utils/encrypt';
+import useProfileStore from '@/store/profileStore';
 
-import NumPad from "@/styles/AlfaNumerik.jsx";
-import CallerAva from "../assets/caller-ava.png";
+import NumPad from '@/styles/AlfaNumerik.jsx';
+import CallerAva from '../assets/caller-ava.png';
 
-import MuteOff from "../assets/mute-off.png";
-import MuteOn from "../assets/mute-on.png";
-import SpeakerOn from "../assets/speaker-on.png";
-import SpeakerOff from "../assets/speaker-off.png";
-import SettingIcon from "../assets/setting.png";
-import KeypadIcon from "../assets/keypad.png";
-import EndCall from "../assets/end-call.png";
+import MuteOff from '../assets/mute-off.png';
+import MuteOn from '../assets/mute-on.png';
+import SpeakerOn from '../assets/speaker-on.png';
+import SpeakerOff from '../assets/speaker-off.png';
+import SettingIcon from '../assets/setting.png';
+import KeypadIcon from '../assets/keypad.png';
+import EndCall from '../assets/end-call.png';
 
-import Keypad from "../components/Keypad";
-import useRouteStore from "@/store/routeStore";
-import { browserName, osName } from "react-device-detect";
-import { MEDIA_DEVICE_KIND } from "@flashphoner/websdk/src/constants";
-import Setting from "@/components/Modals/Setting";
+import Keypad from '../components/Keypad';
+import useRouteStore from '@/store/routeStore';
+import { browserName, osName } from 'react-device-detect';
+import { MEDIA_DEVICE_KIND } from '@flashphoner/websdk/src/constants';
+import Setting from '@/components/Modals/Setting';
 
 const env = import.meta.env;
 
@@ -59,7 +59,7 @@ export default function phoneCall() {
   const [isMuted, setIsMuted] = useState(false);
   const [reqExten, setReqExten] = useState(null);
   const [statusRegiter, setStatusRegister] = useState(null);
-  const [statusCall, setStatusCall] = useState("waiting");
+  const [statusCall, setStatusCall] = useState('waiting');
   const [lat, setLat] = useState(null);
   const [long, setLong] = useState(null);
 
@@ -76,7 +76,7 @@ export default function phoneCall() {
   const [mic, setMic] = useState(null);
   const [speaker, setSpeaker] = useState(null);
 
-  if (statusCall === "RING") {
+  if (statusCall === 'RING') {
     ringingSounds.play();
   } else {
     ringingSounds.pause();
@@ -87,22 +87,22 @@ export default function phoneCall() {
       (list) => {
         for (var type in list) {
           if (list.hasOwnProperty(type)) {
-            if (type === "audio") {
-              setMics(list.audio.filter((v) => v.type === "mic"));
-              setSpeakers(list.audio.filter((v) => v.type === "speaker"));
-              const filterMic = list.audio.filter((v) => v.type === "mic");
+            if (type === 'audio') {
+              setMics(list.audio.filter((v) => v.type === 'mic'));
+              setSpeakers(list.audio.filter((v) => v.type === 'speaker'));
+              const filterMic = list.audio.filter((v) => v.type === 'mic');
               if (filterMic?.length > 0) {
                 filterMic.forEach((filter) => {
-                  if (filter.label?.toLowerCase()?.indexOf("default") > -1) {
+                  if (filter.label?.toLowerCase()?.indexOf('default') > -1) {
                     setMic(filter.id);
                   }
                 });
               }
 
-              const filterSpeaker = list.audio.filter((v) => v.type === "mic");
+              const filterSpeaker = list.audio.filter((v) => v.type === 'mic');
               if (filterSpeaker?.length > 0) {
                 filterSpeaker.forEach((filter) => {
-                  if (filter.label?.toLowerCase()?.indexOf("default") > -1) {
+                  if (filter.label?.toLowerCase()?.indexOf('default') > -1) {
                     setSpeaker(filter.id);
                   }
                 });
@@ -130,7 +130,7 @@ export default function phoneCall() {
       Flashphoner.init();
       connect();
     } catch (error) {
-      console.log("ERROR ==>>", error);
+      console.log('ERROR ==>>', error);
     }
   };
 
@@ -139,15 +139,15 @@ export default function phoneCall() {
   const handleSubmit = async (lat, long) => {
     const data = await requestExtension(lat, long);
     const encryptedParams = new URLSearchParams(window.location.search)
-      ?.get("key")
-      ?.split(" ")
-      ?.join("+")
-      ?.replace(/\\/g, "");
+      ?.get('key')
+      ?.split(' ')
+      ?.join('+')
+      ?.replace(/\\/g, '');
 
     const params = JSON.parse(decrypt(encryptedParams));
     // console.log("is data", data);
     if (data?.failed) {
-      console.log("Call failed ==>", data?.failed);
+      console.log('Call failed ==>', data?.failed);
     }
     if (!data) {
     } else if (data.failed) {
@@ -156,7 +156,7 @@ export default function phoneCall() {
       postTransaction(data);
       setProfiles(params);
       setReqExtend(data);
-      route.push("call");
+      route.push('call');
     } else {
       setTimeout(() => {
         setMsgError(null);
@@ -166,14 +166,14 @@ export default function phoneCall() {
 
   const requestExtension = async (lat, long) => {
     let myHeaders = new Headers();
-    myHeaders.append("Authorization", env.VITE_APP_AUTHORIZATION);
-    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append('Authorization', env.VITE_APP_AUTHORIZATION);
+    myHeaders.append('Content-Type', 'application/json');
 
     const encryptedParams = new URLSearchParams(window.location.search)
-      ?.get("key")
-      ?.split(" ")
-      ?.join("+")
-      ?.replace(/\\/g, "");
+      ?.get('key')
+      ?.split(' ')
+      ?.join('+')
+      ?.replace(/\\/g, '');
 
     const params = JSON.parse(decrypt(encryptedParams));
 
@@ -197,7 +197,7 @@ export default function phoneCall() {
       menu: params?.menu_id,
       is_postlogin: params?.user?.email ? 1 : 0,
       name: params?.user?.fullname,
-      username: "bsi",
+      username: 'bsi',
       email: params?.user?.email,
       phone: params?.user?.phone,
       token: env.VITE_APP_EXTEN_TOKEN,
@@ -212,10 +212,10 @@ export default function phoneCall() {
     });
 
     var requestOptions = {
-      method: "POST",
+      method: 'POST',
       headers: myHeaders,
       body: dataFromUrl,
-      redirect: "follow",
+      redirect: 'follow',
     };
 
     const data = await fetch(
@@ -242,21 +242,21 @@ export default function phoneCall() {
           };
         }
       })
-      .catch((err) => console.log("ERROR ==>>", err));
+      .catch((err) => console.log('ERROR ==>>', err));
 
     return data;
   };
 
   const postTransaction = async (value) => {
     let myHeaders = new Headers();
-    myHeaders.append("Authorization", `${env.VITE_APP_AUTHORIZATION}`);
-    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append('Authorization', `${env.VITE_APP_AUTHORIZATION}`);
+    myHeaders.append('Content-Type', 'application/json');
 
     const encryptedParams = new URLSearchParams(window.location.search)
-      ?.get("key")
-      ?.split(" ")
-      ?.join("+")
-      ?.replace(/\\/g, "");
+      ?.get('key')
+      ?.split(' ')
+      ?.join('+')
+      ?.replace(/\\/g, '');
     const params = JSON.parse(decrypt(encryptedParams));
 
     const firstData = JSON.stringify({
@@ -286,33 +286,32 @@ export default function phoneCall() {
     });
 
     var requestOptions = {
-      method: "POST",
+      method: 'POST',
       headers: myHeaders,
       body: firstData,
-      redirect: "follow",
+      redirect: 'follow',
     };
 
     const data = await fetch(
       `${env.VITE_APP_EXTEN_URL}/voip/transaction`,
       requestOptions
     )
-      .then((res) => console.log("Success"))
+      .then((res) => console.log('Success'))
       .catch((err) => console.log(err));
     return data;
   };
 
   useEffect(() => {
     const encryptedParams = new URLSearchParams(window.location.search).get(
-      "key"
+      'key'
     );
 
-    getDevice();
     if (encryptedParams) {
       const geolocationAPI = navigator.geolocation;
       if (!geolocationAPI) {
         notification.error({
-          message: "Geolocation API is not available in your browser.",
-          placement: "bottomRight",
+          message: 'Geolocation API is not available in your browser.',
+          placement: 'bottomRight',
           duration: 5,
         });
       } else {
@@ -325,13 +324,15 @@ export default function phoneCall() {
           },
           (error) => {
             notification.error({
-              message: "Something went wrong getting your position.",
-              placement: "bottomRight",
+              message: 'Something went wrong getting your position.',
+              placement: 'bottomRight',
               duration: 5,
             });
           }
         );
       }
+    } else {
+      getDevice();
     }
   }, []);
 
@@ -339,10 +340,10 @@ export default function phoneCall() {
   const connect = async () => {
     const data = reqExtend ? reqExtend : profile.reqExten;
     // const data = await requestExtension();
-    console.log("ini data", data);
+    console.log('ini data', data);
     if (
       Browser.isSafariWebRTC() &&
-      Flashphoner.getMediaProviders()[0] === "WebRTC"
+      Flashphoner.getMediaProviders()[0] === 'WebRTC'
     ) {
       Flashphoner.playFirstVideo(localVideo.current, true);
       Flashphoner.playFirstVideo(remoteVideo.current, false);
@@ -352,9 +353,9 @@ export default function phoneCall() {
       login: data.exten,
       password: data.secret,
       authenticationName: data.exten,
-      domain: data.sip.split(":")[0],
-      outboundProxy: data.sip.split(":")[0],
-      port: data.sip.split(":")[1],
+      domain: data.sip.split(':')[0],
+      outboundProxy: data.sip.split(':')[0],
+      port: data.sip.split(':')[1],
       useProxy: true,
       registerRequired: true,
     };
@@ -455,7 +456,7 @@ export default function phoneCall() {
   };
 
   const endCall = () => {
-    setStatusCall("End Call");
+    setStatusCall('End Call');
     // handleHangup()
     const toMatch = [
       /Android/i,
@@ -470,7 +471,7 @@ export default function phoneCall() {
       return navigator.userAgent.match(toMatchItem);
     });
 
-    window.parent.postMessage("hangup", "*");
+    window.parent.postMessage('hangup', '*');
     if (isMobile) {
       if (env.VITE_APP_HREF_URL) {
         window.location = env.VITE_APP_HREF_URL;
@@ -483,7 +484,7 @@ export default function phoneCall() {
           window.location = env.VITE_APP_HREF_URL;
         } else {
           window.location.reload();
-          route.push("end");
+          route.push('end');
           setIsFinish(true);
           setIsEstablished(false);
         }
@@ -497,7 +498,7 @@ export default function phoneCall() {
         window.location = env.VITE_APP_HREF_URL;
       } else {
         window.location.reload();
-        route.push("end");
+        route.push('end');
         setIsFinish(true);
         setIsEstablished(false);
       }
@@ -541,13 +542,13 @@ export default function phoneCall() {
     setTime(0);
   };
 
-  if (isFinish && isEstablished && statusCall === "FINISH") {
+  if (isFinish && isEstablished && statusCall === 'FINISH') {
     endCall();
   } else {
   }
 
   const color = {
-    textTitle: "#fff",
+    textTitle: '#fff',
     main: env.VITE_APP_MAIN_COLOR,
     secondary: env.VITE_APP_SECONDARY_COLOR,
   };
@@ -641,36 +642,36 @@ export default function phoneCall() {
                 Dhimas
               </Typography> */}
               <Typography>
-                {statusCall === "waiting"
-                  ? "Calling"
-                  : statusCall === "RING"
-                  ? "Ringing"
-                  : statusCall === "ESTABLISHED"
-                  ? "Connected"
-                  : statusCall === "End Call"
-                  ? "End Call"
-                  : ""}
+                {statusCall === 'waiting'
+                  ? 'Calling'
+                  : statusCall === 'RING'
+                  ? 'Ringing'
+                  : statusCall === 'ESTABLISHED'
+                  ? 'Connected'
+                  : statusCall === 'End Call'
+                  ? 'End Call'
+                  : ''}
               </Typography>
               <div
                 style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  margin: "10px 0",
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  margin: '10px 0',
                 }}
                 className="timer"
               >
                 <Typography
-                  style={{ color: "#3DCB87", fontSize: 18, fontWeight: 600 }}
+                  style={{ color: '#3DCB87', fontSize: 18, fontWeight: 600 }}
                   className="digits"
                 >
-                  {("0" + Math.floor((time / 60000) % 60)).slice(-2)}:
+                  {('0' + Math.floor((time / 60000) % 60)).slice(-2)}:
                 </Typography>
                 <Typography
-                  style={{ color: "#3DCB87", fontSize: 18, fontWeight: 600 }}
+                  style={{ color: '#3DCB87', fontSize: 18, fontWeight: 600 }}
                   className="digits"
                 >
-                  {("0" + Math.floor((time / 1000) % 60)).slice(-2)}
+                  {('0' + Math.floor((time / 1000) % 60)).slice(-2)}
                 </Typography>
                 {/* <span className="digits mili-sec">
                   {("0" + ((time / 10) % 100)).slice(-2)}
@@ -687,9 +688,9 @@ export default function phoneCall() {
               <Grid item xs={4} padding={0} textAlign="center">
                 <IconButton
                   sx={{
-                    borderRadius: "50px",
-                    border: "2px solid #9D9FB1",
-                    padding: "15px",
+                    borderRadius: '50px',
+                    border: '2px solid #9D9FB1',
+                    padding: '15px',
                   }}
                   onClick={() => setOpenSetting(true)}
                   fullWidth
@@ -706,9 +707,9 @@ export default function phoneCall() {
               <Grid item xs={4} padding={0} textAlign="center">
                 <IconButton
                   sx={{
-                    borderRadius: "50px",
-                    border: "2px solid #9D9FB1",
-                    padding: "15px",
+                    borderRadius: '50px',
+                    border: '2px solid #9D9FB1',
+                    padding: '15px',
                   }}
                   onClick={() => toggleMute()}
                   fullWidth
@@ -726,15 +727,15 @@ export default function phoneCall() {
               <Grid item xs={4} textAlign="center">
                 <IconButton
                   sx={{
-                    borderRadius: "50px",
-                    border: "2px solid #9D9FB1",
-                    padding: "15px",
+                    borderRadius: '50px',
+                    border: '2px solid #9D9FB1',
+                    padding: '15px',
                   }}
                   onClick={() => setIsKeypad(true)}
                   fullWidth
-                  variant={isMuted ? "contained" : "outlined"}
+                  variant={isMuted ? 'contained' : 'outlined'}
                   // startIcon={isMuted ? <MicOffIcon /> : <MicIcon />}
-                  color={isMuted ? "error" : "primary"}
+                  color={isMuted ? 'error' : 'primary'}
                   // disabled={!isCalling}
                 >
                   <img src={KeypadIcon} />
@@ -748,11 +749,11 @@ export default function phoneCall() {
             {/* END CALL BUTTON  */}
             <Box
               sx={{
-                width: "100%",
-                display: "flex",
-                justifyContent: "center",
-                backgroundColor: "white",
-                position: "absolute",
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                backgroundColor: 'white',
+                position: 'absolute',
                 bottom: 100,
               }}
               textAlign="center"
@@ -761,9 +762,9 @@ export default function phoneCall() {
               <IconButton
                 sx={{
                   borderRadius: 50,
-                  overflow: "hidden",
-                  padding: "25px 15px",
-                  backgroundColor: "#FF3B30",
+                  overflow: 'hidden',
+                  padding: '25px 15px',
+                  backgroundColor: '#FF3B30',
                 }}
                 onClick={() => endCall()}
               >
@@ -807,7 +808,7 @@ export default function phoneCall() {
 }
 
 const color = {
-  textTitle: "#fff",
+  textTitle: '#fff',
   main: env.VITE_APP_MAIN_COLOR,
-  secondary: "#EBE8FF",
+  secondary: '#EBE8FF',
 };

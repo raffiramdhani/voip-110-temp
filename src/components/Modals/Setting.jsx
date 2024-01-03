@@ -8,8 +8,8 @@ import {
   MenuItem,
   Typography,
   Button,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 const Setting = ({
   open,
@@ -22,9 +22,17 @@ const Setting = ({
   setSpeaker,
   onSubmit,
 }) => {
+  const env = import.meta.env;
+
+  const color = {
+    textTitle: '#fff',
+    main: env.VITE_APP_MAIN_COLOR,
+    secondary: env.VITE_APP_SECONDARY_COLOR,
+  };
+
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle sx={{ fontSize: "0.95rem" }}>
+      <DialogTitle sx={{ fontSize: '0.95rem' }}>
         <div>
           <Typography fontWeight={700}>Settings</Typography>
         </div>
@@ -32,7 +40,7 @@ const Setting = ({
           aria-label="close"
           onClick={onClose}
           sx={{
-            position: "absolute",
+            position: 'absolute',
             right: 8,
             top: 8,
           }}
@@ -43,20 +51,20 @@ const Setting = ({
       <Divider />
       <Box
         sx={{
-          backgroundColor: "#f4f4f4",
-          height: "400px",
+          backgroundColor: '#f4f4f4',
+          height: '400px',
           width: 300,
-          padding: "20px",
+          padding: '20px',
         }}
       >
         <Typography marginTop={1}>Speaker</Typography>
 
         <Select
-          placeholder={"Select speaker"}
+          placeholder={'Select speaker'}
           size="small"
           onChange={(event) => setSpeaker(event)}
-          label={"Speaker"}
-          sx={{ width: "100%" }}
+          label={'Speaker'}
+          sx={{ width: '100%' }}
           value={speaker}
         >
           {speakers?.length > 0 &&
@@ -83,9 +91,9 @@ const Setting = ({
           variant="contained"
           sx={{
             backgroundColor: `${color.main}`,
-            color: "white",
-            border: "none",
-            "&:focus": { bgcolor: `${color.main}` },
+            color: 'white',
+            border: 'none',
+            '&:focus': { bgcolor: `${color.main}` },
             marginTop: 1,
           }}
           onClick={onSubmit}
