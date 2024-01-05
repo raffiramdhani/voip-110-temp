@@ -44,8 +44,7 @@ export default function phoneCall() {
     ?.join("+")
     ?.replace(/\\/g, "");
 
-  const params = JSON.parse(decrypt(encryptedParams));
-  // console.log("params>>>", params);
+  const params = !!isMobile ? JSON.parse(decrypt(encryptedParams)) : null;
 
   const route = useRouteStore((state) => state);
   const profile = useProfileStore((state) => state);
@@ -83,7 +82,6 @@ export default function phoneCall() {
     i18n.changeLanguage(params?.bahasa === "EN" ? "en" : "id");
     initFlashphoner();
     setCallStartTime(new Date().getTime());
-    // console.log("1.0.0");
 
     let interval = setInterval(() => {
       setHangupTime((time) => time + 10000);
@@ -176,7 +174,6 @@ export default function phoneCall() {
 
         if (decryptText) {
           const decrypted = JSON.parse(decryptText);
-          console.log("decrypted>>>", decrypted);
           return {
             token: decrypted.token,
             exten: decrypted.exten,

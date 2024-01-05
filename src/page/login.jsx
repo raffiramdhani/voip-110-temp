@@ -121,7 +121,6 @@ export default function login(props) {
     if (validRecaptcha === 0 && recaptcha.length === 4) {
       setLoading(true);
       const data = await requestExtension();
-      console.log(data);
       if (!data) {
         setMsgError(`Sorry, tenant failed!`);
       } else if (data.failed) {
@@ -206,30 +205,6 @@ export default function login(props) {
     myHeaders.append("Authorization", `${env.VITE_APP_AUTHORIZATION}`);
     myHeaders.append("Content-Type", "application/json");
 
-    const encryptedParams = new URLSearchParams(window.location.search).get(
-      "key"
-    );
-
-    const params = decrypt(
-      encryptedParams,
-      env.VITE_VOIP_DECODE_IV,
-      env.VITE_VOIP_DECODE_KEY
-    );
-
-    console.log("params", params);
-
-    var dataFromUrl = JSON.stringify({
-      name: params?.user?.fullname,
-      username: params?.user?.fullname,
-      email: params?.user?.email,
-      phone: params?.user?.phone,
-      token: env.VITE_APP_EXTEN_TOKEN,
-      type: env.VITE_APP_EXTEN_TYPE,
-      call_id,
-      vdn: params?.vdn,
-      timestamp: new Date(),
-    });
-
     const firstData = JSON.stringify({
       ...form,
       name: form.username,
@@ -253,7 +228,7 @@ export default function login(props) {
     var requestOptions = {
       method: "POST",
       headers: myHeaders,
-      body: encryptedParams ? dataFromUrl : firstData,
+      body: firstData,
       redirect: "follow",
     };
 
