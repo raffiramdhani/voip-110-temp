@@ -169,6 +169,13 @@ export default function phoneCall() {
 
     if (token) {
       const getProfile = await getUserProfile({ token });
+      if (!getProfile?.status) {
+        notification.error({
+          message: 'Profile Not Found.',
+          placement: 'bottomRight',
+          duration: 5,
+        });
+      }
 
       const { name, email, phone } = getProfile?.data;
 
