@@ -38,7 +38,6 @@ import useRouteStore from '@/store/routeStore';
 import { browserName, osName } from 'react-device-detect';
 import { MEDIA_DEVICE_KIND } from '@flashphoner/websdk/src/constants';
 import Setting from '@/components/Modals/Setting';
-import { getUserProfile } from '../services/polri';
 
 const env = import.meta.env;
 
@@ -50,7 +49,6 @@ export default function phoneCall() {
   let Browser = Flashphoner.Browser;
 
   const route = useRouteStore((state) => state);
-  // const { reqExten, profile, setProfile } = useProfileStore((state) => state);
   const profile = useProfileStore((state) => state);
   const me = useRef();
   const currentCall = useRef();
@@ -59,7 +57,7 @@ export default function phoneCall() {
   const dtmfSound = useMemo(() => new Audio(DTMFSound), []);
   const ringingSounds = useMemo(() => new Audio(ringingSound), []);
   const [isMuted, setIsMuted] = useState(false);
-  // const [reqExten, setReqExten] = useState(null);
+  const [reqExten, setReqExten] = useState(null);
   const [statusRegiter, setStatusRegister] = useState(null);
   const [statusCall, setStatusCall] = useState('waiting');
   const [lat, setLat] = useState(null);
@@ -67,7 +65,7 @@ export default function phoneCall() {
 
   const [isFinish, setIsFinish] = useState(true);
   const [isEstablished, setIsEstablished] = useState(true);
-  // const [profiles, setProfiles] = useState(false);
+  const [profiles, setProfiles] = useState(false);
   const [reqExtend, setReqExtend] = useState(false);
 
   const [isKeypad, setIsKeypad] = useState(false);
@@ -78,8 +76,6 @@ export default function phoneCall() {
   const [mic, setMic] = useState(null);
   const [speaker, setSpeaker] = useState(null);
 
-  // const [profile, setProfile] = useState({});
-
   if (statusCall === 'RING') {
     ringingSounds.play();
   } else {
@@ -87,6 +83,7 @@ export default function phoneCall() {
   }
 
   const getDevice = () => {
+    console.log('get Device');
     Flashphoner.getMediaDevices(null, true, MEDIA_DEVICE_KIND.ALL).then(
       (list) => {
         for (var type in list) {
@@ -125,6 +122,7 @@ export default function phoneCall() {
     if (profile.reqExten) {
       initFlashphoner();
     }
+    // console.log("1.0.0");
   }, [reqExtend, isFinish]);
 
   // STEP 1
@@ -140,8 +138,16 @@ export default function phoneCall() {
   // STEP 2
 
   const handleSubmit = async (lat, long) => {
+    console.log('handleSubmit');
     const data = await requestExtension(lat, long);
+    const encryptedParams = new URLSearchParams(window.location.search)
+      ?.get('key')
+      ?.split(' ')
+      ?.join('+')
+      ?.replace(/\\/g, '');
 
+    const params = JSON.parse(decrypt(encryptedParams));
+    // console.log("is data", data);
     if (data?.failed) {
       console.log('Call failed ==>', data?.failed);
     }
@@ -149,9 +155,9 @@ export default function phoneCall() {
     } else if (data.failed) {
       setLoading(false);
     } else if (data) {
-      const { username, phone, email, ...rest } = data;
       postTransaction(data);
-      setReqExtend(rest);
+      setProfiles(params);
+      setReqExtend(data);
       route.push('call');
     } else {
       setTimeout(() => {
@@ -165,154 +171,150 @@ export default function phoneCall() {
     myHeaders.append('Authorization', env.VITE_APP_AUTHORIZATION);
     myHeaders.append('Content-Type', 'application/json');
 
-    const token = new URLSearchParams(window.location.search).get('token');
+    const encryptedParams = new URLSearchParams(window.location.search)
+      ?.get('key')
+      ?.split(' ')
+      ?.join('+')
+      ?.replace(/\\/g, '');
 
-    if (token) {
-      const getProfile = await getUserProfile({ token });
+    console.log('encryptedParams', encryptedParams);
 
-      const { name, email, phone } = getProfile?.data;
+    const params = JSON.parse(decrypt(encryptedParams));
 
-      await profile.setProfile({
-        username: name,
-        email: email ?? 'testing@gmail.com',
-        phone: phone ? `+${phone}` : '+6281244444444',
-      });
-      const user = {
-        username: name,
-        email: email ?? 'testing@gmail.com',
-        phone: phone ? `+${phone}` : '+6281244444444',
-      };
+    console.log('params', params);
 
-      var dataFromUrl = JSON.stringify({
-        username: name,
-        email: email ?? 'testing@gmail.com',
-        phone: phone ? `+${phone}` : '+6281244444444',
-        // username: 'ANDY RACHMAWAN',
-        // email: 'verdekemang@gmail.com',
-        // phone: '+6281290007212',
-        token: env.VITE_APP_EXTEN_TOKEN,
-        type: env.VITE_APP_EXTEN_TYPE,
-        call_id: genID.slice(0, 8),
-        // vdn: params?.vdn,
-        timestamp: new Date(),
-        location: {
-          latitude: lat,
-          longitude: long,
-        },
-        // additional_field: listingAdditionalField[0],
-      });
+    var dataFromUrl = JSON.stringify({
+      username: params?.fullname,
+      email: params?.email,
+      phone: params?.phone,
+      token: env.VITE_APP_EXTEN_TOKEN,
+      type: env.VITE_APP_EXTEN_TYPE,
+      call_id: genID.slice(0, 8),
+      vdn: params?.vdn,
+      timestamp: new Date(),
+      location: {
+        latitude: lat,
+        longitude: long,
+      },
+      // additional_field: listingAdditionalField[0],
+    });
 
-      // var raw = JSON.stringify({
-      //   menu: params?.menu_id,
-      //   is_postlogin: params?.user?.email ? 1 : 0,
-      //   name: params?.user?.fullname,
-      //   username: name,
-      //   email: email ?? 'testing@gmail.com',
-      //   phone: phone ? `+${phone}` : '+6281244444444',
-      //   token: env.VITE_APP_EXTEN_TOKEN,
-      //   type: env.VITE_APP_EXTEN_TYPE,
-      //   call_id: genID.slice(0, 8),
-      //   vdn: params?.vdn,
-      //   timestamp: new Date(),
-      //   location: {
-      //     latitude: lat,
-      //     longitude: long,
-      //   },
-      // });
+    var raw = JSON.stringify({
+      menu: params?.menu_id,
+      is_postlogin: params?.user?.email ? 1 : 0,
+      name: params?.user?.fullname,
+      username: 'bsi',
+      email: params?.user?.email,
+      phone: params?.user?.phone,
+      token: env.VITE_APP_EXTEN_TOKEN,
+      type: env.VITE_APP_EXTEN_TYPE,
+      call_id: genID.slice(0, 8),
+      vdn: params?.vdn,
+      timestamp: new Date(),
+      location: {
+        latitude: lat,
+        longitude: long,
+      },
+    });
 
-      var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: dataFromUrl,
-        redirect: 'follow',
-      };
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: dataFromUrl,
+      redirect: 'follow',
+    };
 
-      const data = await fetch(
-        `${env.VITE_APP_EXTEN_URL}/voip/req_extention/${env.VITE_APP_EXTEN_TENANT}`,
-        requestOptions
-      )
-        .then((res) => res.text())
-        .then((res) => {
-          const decryptText = decrypt(res);
+    const data = await fetch(
+      `${env.VITE_APP_EXTEN_URL}/voip/req_extention/${env.VITE_APP_EXTEN_TENANT}`,
+      requestOptions
+    )
+      .then((res) => res.text())
+      .then((res) => {
+        const decryptText = decrypt(res);
 
-          if (decryptText) {
-            const decrypted = JSON.parse(decryptText);
-            // console.log('decrypted>>>', decrypted);
-            return {
-              token: decrypted.token,
-              exten: decrypted.exten,
-              secret: decrypted.secret,
-              callto: decrypted.callto,
-              sip: decrypted.sip,
-              rtc: decrypted.rtc,
-              api: decrypted.api,
-            };
-          }
-        })
-        .catch((err) => console.log('ERROR ==>>', err));
+        if (decryptText) {
+          const decrypted = JSON.parse(decryptText);
+          // console.log("decrypted>>>", decrypted);
+          return {
+            token: decrypted.token,
+            exten: decrypted.exten,
+            secret: decrypted.secret,
+            callto: params?.vdn
+              ? decrypted.callto + params?.vdn
+              : decrypted.callto,
+            sip: decrypted.sip,
+            rtc: decrypted.rtc,
+            api: decrypted.api,
+          };
+        }
+      })
+      .catch((err) => console.log('ERROR ==>>', err));
 
-      return { ...data, ...user };
-    }
+    return data;
   };
 
-  // console.log('profile.profile', profile.profile);
-  // console.log('profile.profile()', profile.profile);
-
   const postTransaction = async (value) => {
-    const { username, email, phone, ...rest } = value;
+    let myHeaders = new Headers();
+    myHeaders.append('Authorization', `${env.VITE_APP_AUTHORIZATION}`);
+    myHeaders.append('Content-Type', 'application/json');
 
-    if (username && email && phone) {
-      let myHeaders = new Headers();
-      myHeaders.append('Authorization', `${env.VITE_APP_AUTHORIZATION}`);
-      myHeaders.append('Content-Type', 'application/json');
+    const encryptedParams = new URLSearchParams(window.location.search)
+      ?.get('key')
+      ?.split(' ')
+      ?.join('+')
+      ?.replace(/\\/g, '');
+    const params = JSON.parse(decrypt(encryptedParams));
 
-      const firstData = JSON.stringify({
-        username: username,
-        email: email,
-        phone: phone,
-        date_call: new Date(),
-        os: osName,
-        browser: browserName,
-        tenant_id: 0,
-        tenant: env.VITE_APP_EXTEN_TENANT,
-        extention: parseInt(value.exten),
-        call_id: genID.slice(0, 8),
-      });
+    const firstData = JSON.stringify({
+      username: params.fullname,
+      email: params.email,
+      phone: params.phone,
+      date_call: new Date(),
+      os: osName,
+      browser: browserName,
+      tenant_id: 0,
+      tenant: env.VITE_APP_EXTEN_TENANT,
+      extention: parseInt(value.exten),
+      call_id: genID.slice(0, 8),
+    });
 
-      var raw = JSON.stringify({
-        username: username,
-        email: email,
-        phone: phone,
-        date_call: new Date(),
-        os: osName,
-        browser: browserName,
-        tenant_id: 0,
-        tenant: env.VITE_APP_EXTEN_TENANT,
-        extention: parseInt(value.exten),
-        call_id: genID.slice(0, 8),
-      });
+    var raw = JSON.stringify({
+      username: params.name,
+      email: params.email,
+      phone: params.phone,
+      date_call: new Date(),
+      os: osName,
+      browser: browserName,
+      tenant_id: 0,
+      tenant: env.VITE_APP_EXTEN_TENANT,
+      extention: parseInt(value.exten),
+      call_id: genID.slice(0, 8),
+    });
 
-      var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: firstData,
-        redirect: 'follow',
-      };
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: firstData,
+      redirect: 'follow',
+    };
 
-      const data = await fetch(
-        `${env.VITE_APP_EXTEN_URL}/voip/transaction`,
-        requestOptions
-      )
-        .then((res) => console.log('Success'))
-        .catch((err) => console.log(err));
-      return data;
-    }
+    const data = await fetch(
+      `${env.VITE_APP_EXTEN_URL}/voip/transaction`,
+      requestOptions
+    )
+      .then((res) => console.log('Success'))
+      .catch((err) => console.log(err));
+    return data;
   };
 
   useEffect(() => {
-    const token = new URLSearchParams(window.location.search).get('token');
+    const encryptedParams = new URLSearchParams(window.location.search).get(
+      'key'
+    );
 
-    if (token) {
+    console.log('encryptedParams', encryptedParams);
+
+    if (encryptedParams) {
       const geolocationAPI = navigator.geolocation;
       if (!geolocationAPI) {
         notification.error({
@@ -346,7 +348,7 @@ export default function phoneCall() {
   const connect = async () => {
     const data = reqExtend ? reqExtend : profile.reqExten;
     // const data = await requestExtension();
-    // console.log('ini data', data);
+    console.log('ini data', data);
     if (
       Browser.isSafariWebRTC() &&
       Flashphoner.getMediaProviders()[0] === 'WebRTC'
@@ -480,18 +482,14 @@ export default function phoneCall() {
     window.parent.postMessage('hangup', '*');
     if (isMobile) {
       if (env.VITE_APP_HREF_URL) {
-        window.location.reload();
-        route.push('login');
-        // window.location = env.VITE_APP_HREF_URL;
+        window.location = env.VITE_APP_HREF_URL;
       } else {
         if (reqExtend) {
           // window.close();
           // route.push("close");
           // setIsFinish(true);
           // setIsEstablished(false);
-          // window.location = env.VITE_APP_HREF_URL;
-          window.location.reload();
-          route.push('login');
+          window.location = env.VITE_APP_HREF_URL;
         } else {
           window.location.reload();
           route.push('end');
@@ -505,9 +503,7 @@ export default function phoneCall() {
         // route.push("close");
         // setIsFinish(true);
         // setIsEstablished(false);
-        // window.location = env.VITE_APP_HREF_URL;
-        window.location.reload();
-        route.push('login');
+        window.location = env.VITE_APP_HREF_URL;
       } else {
         window.location.reload();
         route.push('end');
@@ -564,6 +560,8 @@ export default function phoneCall() {
     main: env.VITE_APP_MAIN_COLOR,
     secondary: env.VITE_APP_SECONDARY_COLOR,
   };
+
+  // console.log('testing');
 
   return (
     <Box

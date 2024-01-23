@@ -1,17 +1,28 @@
-import create from "zustand";
-import { devtools, persist } from "zustand/middleware";
+import create from 'zustand';
+import { devtools, persist } from 'zustand/middleware';
 
-const encryptedParams = new URLSearchParams(window.location.search).get(
-  "key"
-)
+// const encryptedParams = new URLSearchParams(window.location.search).get(
+//   "key"
+// )
+
+// const intialValue = {
+//   curentRoute: encryptedParams ? "call" : "login",
+//   ui: {
+//     error: false,
+//     errorMessage: null,
+//   },
+// };
+
+const token = new URLSearchParams(window.location.search).get('token');
 
 const intialValue = {
-  curentRoute: encryptedParams ? "call" : "login",
+  curentRoute: token ? 'call' : 'login',
   ui: {
     error: false,
     errorMessage: null,
   },
 };
+
 const useRouteStore = create(
   devtools(
     (set) => ({
@@ -26,7 +37,7 @@ const useRouteStore = create(
         })),
     }),
     {
-      name: "route-storage",
+      name: 'route-storage',
     }
   )
 );
