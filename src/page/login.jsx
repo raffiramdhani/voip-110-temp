@@ -372,13 +372,13 @@ export default function login(props) {
                 // style={{ height: `80vh` }}
                 onSubmit={(e) => handleSubmit(e)}
               >
-                <Typography marginTop={2}>Full Name/Nama Lengkap</Typography>
+                <Typography marginTop={2}>Full Name / Nama Lengkap</Typography>
                 <TextField
                   value={form.name}
                   onChange={(e) => handleInput(e)}
                   // disabled={form.isLoadingSetupWebphone}
                   fullWidth
-                  placeholder="Full Name/Nama Lengkap"
+                  placeholder="Enter Full Name / Nama Lengkap"
                   required
                   color="info"
                   id="form-username"
@@ -395,7 +395,7 @@ export default function login(props) {
                   onChange={(e) => handleInput(e)}
                   // disabled={form.isLoadingSetupWebphone}
                   fullWidth
-                  placeholder="Email"
+                  placeholder="Enter Email"
                   required
                   color="info"
                   id="form-email"
@@ -407,7 +407,7 @@ export default function login(props) {
                   sx={styling.TextField}
                 />
                 <Typography marginTop={1}>
-                  Phone Number/Nomor Telepon
+                  Phone Number / Nomor Telepon
                 </Typography>
                 <TextField
                   value={form.phone}
@@ -416,7 +416,7 @@ export default function login(props) {
                     handleInput(e);
                   }}
                   fullWidth
-                  placeholder="Phone Number/Nomor Telepon"
+                  placeholder="Enter Phone Number / Nomor Telepon"
                   required
                   variant="outlined"
                   color="info"
