@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 // import { Button } from "antd";
 // import { MinusOutlined } from "@ant-design/icons";
-import WelcomeIcon from "../../assets/welcome-icon.png";
+import WelcomeIcon from "../../assets/logo-tmi.png";
 import AgentDefault from "../../assets/agent-default.png";
 import useAuth from "@/store/openingStore";
 import {
@@ -19,42 +19,42 @@ const env = import.meta.env;
 
 const color = {
   textTitle: "#fff",
-  main: env.VITE_APP_MAIN_COLOR,
-  secondary: "#EBE8FF",
+  main: "rgba(2, 43, 57, 0.9)",
+  secondary: "#0090A1",
 };
 
-const styling = {
-  TextField: {
-    "& label.Mui-focused": {
-      color: color.secondary,
-    },
-    "& .MuiInput-underline:after": {
-      borderBottomColor: color.secondary,
-    },
-    "& .MuiOutlinedInput-root": {
-      "& fieldset": {
-        borderColor: color.main,
-      },
-      "&:hover fieldset": {
-        borderColor: "#001219",
-      },
-      "&.Mui-focused fieldset": {
-        borderColor: color.secondary,
-      },
-    },
-  },
-  Checkbox: {
-    color: color.main,
-    "&.Mui-checked": {
-      color: color.main,
-    },
-  },
-  LabelCheckBox: {
-    color: color.secondary,
-    cursor: "pointer",
-    fontSize: "14px",
-  },
-};
+// const styling = {
+//   TextField: {
+//     "& label.Mui-focused": {
+//       color: color.secondary,
+//     },
+//     "& .MuiInput-underline:after": {
+//       borderBottomColor: color.secondary,
+//     },
+//     "& .MuiOutlinedInput-root": {
+//       "& fieldset": {
+//         borderColor: color.main,
+//       },
+//       "&:hover fieldset": {
+//         borderColor: "#001219",
+//       },
+//       "&.Mui-focused fieldset": {
+//         borderColor: color.secondary,
+//       },
+//     },
+//   },
+//   Checkbox: {
+//     color: color.main,
+//     "&.Mui-checked": {
+//       color: color.main,
+//     },
+//   },
+//   LabelCheckBox: {
+//     color: color.secondary,
+//     cursor: "pointer",
+//     fontSize: "14px",
+//   },
+// };
 
 const Welcome = (props) => {
   const { setIsOpen } = useAuth((state) => state);
@@ -103,20 +103,29 @@ const Welcome = (props) => {
         // boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
       >
         <Box
-          padding="12px 15px"
+          padding="0px 15px"
           display="flex"
           flexDirection="column"
-          bgcolor={color.secondary}
+          bgcolor={color.main}
         >
           <Box
             width="100%"
             display="flex"
-            flexDirection="row"
+            flexDirection={windowWidth < 768 ? "column-reverse" : "row"}
             justifyContent="space-between"
             alignItems="center"
           >
+            <Typography
+              fontSize={24}
+              fontWeight={400}
+              color={color.textTitle}
+              display="flex"
+              flex={1}
+            >
+              TMI VoIP
+            </Typography>
             <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
-              <img src={WelcomeIcon} />
+              <img src={WelcomeIcon} style={{ maxWidth: 200 }} />
             </Box>
             {type === "web" ? (
               <IconButton
@@ -131,28 +140,6 @@ const Welcome = (props) => {
             ) : (
               <></>
             )}
-          </Box>
-          <Box marginY="10px">
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                gap: 5,
-                marginBottom: 5,
-              }}
-            >
-              <Typography
-                sx={{
-                  fontWeight: 600,
-                }}
-              >
-                Welcome to
-              </Typography>
-              <Typography fontWeight={600} color={color.main}>
-                OMNIX VoIP
-              </Typography>
-            </div>
-            <Typography fontSize={12}>What can we help you today?</Typography>
           </Box>
         </Box>
         <Box height={"359px"} backgroundColor="white" padding="55px 15px">
@@ -191,7 +178,7 @@ const Welcome = (props) => {
                 width: "100%",
                 borderRadius: "10px",
                 marginTop: "1em",
-                backgroundColor: `${color.main}`,
+                backgroundColor: `${color.secondary}`,
                 color: "white",
               }}
               disabled={!agree}
