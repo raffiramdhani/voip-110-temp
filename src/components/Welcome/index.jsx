@@ -111,12 +111,12 @@ const Welcome = (props) => {
           <Box
             width="100%"
             display="flex"
-            flexDirection={windowWidth < 768 ? "column-reverse" : "row"}
+            flexDirection="row"
             justifyContent="space-between"
             alignItems="center"
           >
             <Typography
-              fontSize={24}
+              fontSize={windowWidth <= 425 ? 18 : 24}
               fontWeight={400}
               color={color.textTitle}
               display="flex"
@@ -125,7 +125,10 @@ const Welcome = (props) => {
               TMI VoIP
             </Typography>
             <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
-              <img src={WelcomeIcon} style={{ maxWidth: 200 }} />
+              <img
+                src={WelcomeIcon}
+                style={{ maxWidth: windowWidth <= 425 ? 150 : 200 }}
+              />
             </Box>
             {type === "web" ? (
               <IconButton

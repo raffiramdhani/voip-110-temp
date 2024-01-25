@@ -327,14 +327,13 @@ export default function login(props) {
                 <Box
                   display="flex"
                   flex={1}
-                  flexDirection={windowWidth < 768 ? "column" : "row-reverse"}
+                  flexDirection="row"
                   alignItems="center"
                   justifyContent="space-between"
-                  gap={windowWidth >= 768 ? 2 : 0}
+                  gap={2}
                 >
-                  <img src={WelcomeIcon} style={{ maxWidth: 200 }} />
                   <Typography
-                    fontSize={24}
+                    fontSize={windowWidth <= 425 ? 18 : 24}
                     fontWeight={400}
                     color={color.textTitle}
                     display="flex"
@@ -342,6 +341,10 @@ export default function login(props) {
                   >
                     TMI VoIP
                   </Typography>
+                  <img
+                    src={WelcomeIcon}
+                    style={{ maxWidth: windowWidth <= 425 ? 150 : 200 }}
+                  />
                 </Box>
                 {type === "web" ? (
                   <IconButton
