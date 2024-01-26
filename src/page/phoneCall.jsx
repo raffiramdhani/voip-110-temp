@@ -14,6 +14,7 @@ import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import MicOffIcon from "@mui/icons-material/MicOff";
 import MicIcon from "@mui/icons-material/Mic";
 import PhoneDisabledIcon from "@mui/icons-material/PhoneDisabled";
+import WelcomeIcon from "../assets/logo-tmi.png";
 
 import * as Flashphoner from "@flashphoner/websdk";
 import DTMFSound from "../assets/dtmf.wav";
@@ -61,12 +62,35 @@ export default function phoneCall() {
   const [isEstablished, setIsEstablished] = useState(false);
 
   const [isKeypad, setIsKeypad] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   if (statusCall === "RING") {
     ringingSounds.play();
   } else {
     ringingSounds.pause();
   }
+
+  // LISTEN HEIGHT WINDOW
+  useEffect(() => {
+    // window.addEventListener("message", (e) => console.log(e));
+    function handleResize() {
+      setWindowWidth(window.innerWidth);
+      if (window.innerWidth < 768) {
+        // setType("mobile");
+      }
+      if (window.innerWidth >= 768) {
+        // setType("web");
+      }
+    }
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => {
+      // window.removeEventListener("message", (e) => console.log(e));
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     initFlashphoner();
@@ -351,16 +375,29 @@ export default function phoneCall() {
         padding="12px 15px"
         display="flex"
         alignItems="center"
-        bgcolor={color.secondary}
+        bgcolor={color.main}
       >
         <Box
-          width="100%"
           display="flex"
+          flex={1}
           flexDirection="row"
-          justifyContent="space-between"
           alignItems="center"
+          justifyContent="space-between"
+          gap={2}
         >
-          <Typography>VoIP ONX</Typography>
+          <Typography
+            fontSize={windowWidth <= 425 ? 18 : 24}
+            fontWeight={400}
+            color={color.textTitle}
+            display="flex"
+            flex={1}
+          >
+            TMI VoIP
+          </Typography>
+          <img
+            src={WelcomeIcon}
+            style={{ maxWidth: windowWidth <= 425 ? 150 : 200 }}
+          />
         </Box>
         <IconButton
         // onClick={() => {
@@ -368,7 +405,7 @@ export default function phoneCall() {
         //   setOpenFloating(false);
         // }}
         >
-          <RemoveIcon />
+          <RemoveIcon style={{ color: "white" }} />
         </IconButton>
       </Box>
       {isKeypad ? (
@@ -580,6 +617,6 @@ export default function phoneCall() {
 
 const color = {
   textTitle: "#fff",
-  main: env.VITE_APP_MAIN_COLOR,
-  secondary: "#EBE8FF",
+  main: "rgba(2, 43, 57, 0.9)",
+  secondary: "#0090A1",
 };

@@ -196,7 +196,7 @@ export default function login(props) {
       call_id: genID.slice(0, 8),
       vdn: params?.vdn,
       timestamp: new Date(),
-      additional_field: listingAdditionalField[0],
+      additional_field: listingAdditionalField?.[0],
     });
 
     const firstData = JSON.stringify({
@@ -205,7 +205,7 @@ export default function login(props) {
       token: env.VITE_APP_EXTEN_TOKEN,
       type: env.VITE_APP_EXTEN_TYPE,
       call_id: genID.slice(0, 8),
-      additional_field: listingAdditionalField[0],
+      additional_field: listingAdditionalField?.[0],
     });
 
     // var raw = JSON.stringify({
@@ -392,7 +392,7 @@ export default function login(props) {
                   sx={styling.TextField}
                 />
 
-                <Typography marginTop={1}>Email</Typography>
+                {/* <Typography marginTop={1}>Email</Typography>
                 <TextField
                   value={form.email}
                   onChange={(e) => handleInput(e)}
@@ -408,7 +408,7 @@ export default function login(props) {
                   size="small"
                   margin="dense"
                   sx={styling.TextField}
-                />
+                /> */}
                 <Typography marginTop={1}>
                   Phone Number / Nomor Telepon
                 </Typography>
