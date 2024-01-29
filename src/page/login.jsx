@@ -43,7 +43,7 @@ export default function login(props) {
   const [form, setForm] = useState({
     username: "",
     phone: "",
-    email: "",
+    // email: "",
   });
   const [openModalAgree, setOpenModalAgree] = useState(false);
   const [openFloating, setOpenFloating] = useState(false);
