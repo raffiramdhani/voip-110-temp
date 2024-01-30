@@ -24,7 +24,7 @@ import { decrypt } from "@/utils/encrypt";
 import useProfileStore from "@/store/profileStore";
 
 import NumPad from "@/styles/AlfaNumerik.jsx";
-import CallerAva from "../assets/caller-ava.png";
+import CallerAva from "../assets/hikaru-logo.png";
 
 import MuteOff from "../assets/mute-off.png";
 import MuteOn from "../assets/mute-on.png";
@@ -399,14 +399,14 @@ export default function phoneCall() {
             style={{ maxWidth: windowWidth <= 425 ? 150 : 200 }}
           />
         </Box>
-        <IconButton
-        // onClick={() => {
-        //   setIsOpen("login");
-        //   setOpenFloating(false);
-        // }}
+        {/* <IconButton
+        onClick={() => {
+          setIsOpen("login");
+          setOpenFloating(false);
+        }}
         >
           <RemoveIcon style={{ color: "white" }} />
-        </IconButton>
+        </IconButton> */}
       </Box>
       {isKeypad ? (
         <>
@@ -445,7 +445,11 @@ export default function phoneCall() {
                 padding="15px"
                 border="none"
               >
-                <img className="my-3" src={CallerAva} />
+                <img
+                  className="my-3"
+                  src={CallerAva}
+                  style={{ width: 100, height: 100, borderRadius: 100 }}
+                />
               </Box>
             </Box>
             <Box textAlign="center">
