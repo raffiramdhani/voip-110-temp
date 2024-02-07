@@ -7,7 +7,7 @@ import DTMFSound from "../assets/dtmf.wav";
 import ringingSound from "../assets/phone-ringing.wav";
 import { decrypt } from "@/utils/encrypt";
 import useProfileStore from "@/store/profileStore";
-import CallerAva from "../assets/caller-ava.png";
+import CallerAva from "../assets/caller-ava-alt.png";
 import MuteOff from "../assets/mute-off.png";
 import MuteOn from "../assets/mute-on.png";
 import KeypadIcon from "../assets/keypad.png";
@@ -673,7 +673,6 @@ export default function phoneCall() {
                 marginY="20px"
               >
                 <Box
-                  bgcolor={env.VITE_APP_MAIN_COLOR}
                   display="flex"
                   alignItems="center"
                   justifyContent="center"
@@ -683,7 +682,11 @@ export default function phoneCall() {
                   padding="15px"
                   border="none"
                 >
-                  <img className="my-3" src={CallerAva} />
+                  <img
+                    className="my-3"
+                    src={CallerAva}
+                    style={{ width: 100, height: 100 }}
+                  />
                 </Box>
               </Box>
               <Box textAlign="center">
@@ -698,13 +701,13 @@ export default function phoneCall() {
               </Typography> */}
                 <Typography>
                   {statusCall === "waiting"
-                    ? "Calling"
+                    ? "Memanggil"
                     : statusCall === "RING"
-                    ? "Ringing"
+                    ? "Berdering"
                     : statusCall === "ESTABLISHED"
-                    ? "Connected"
+                    ? "Terhubung"
                     : statusCall === "End Call"
-                    ? "End Call"
+                    ? "Panggilan Berakhir"
                     : ""}
                 </Typography>
                 <div

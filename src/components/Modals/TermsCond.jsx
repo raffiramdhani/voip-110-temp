@@ -14,9 +14,7 @@ const TermsCond = (props) => {
     <Dialog open={open} onClose={onClose}>
       <DialogTitle sx={{ fontSize: "0.95rem" }}>
         <div>
-          <Typography fontWeight={700}>
-            Term & Condition
-          </Typography>
+          <Typography fontWeight={700}>Syarat & Ketentuan</Typography>
         </div>
         <IconButton
           aria-label="close"

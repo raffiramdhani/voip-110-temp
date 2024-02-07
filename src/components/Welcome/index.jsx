@@ -87,7 +87,7 @@ const Welcome = (props) => {
     };
   }, []);
   const label =
-    "By using this VOIP service, I agree to the  Terms & Condition Policy, and that the information I provide here is correct.";
+    "Dengan menggunakan layanan VOIP ini, saya menyetujui Kebijakan Syarat & Ketentuan, dan informasi yang saya berikan di sini adalah benar.";
   return (
     <>
       <Box
@@ -194,7 +194,7 @@ const Welcome = (props) => {
                 }}
                 fontSize="14px"
               >
-                Terms & Condition Policy
+                Syarat & Ketentuan
               </Typography>
             </Box>
           </Box>
@@ -204,7 +204,7 @@ const Welcome = (props) => {
                 width: "100%",
                 borderRadius: "10px",
                 marginTop: "1em",
-                backgroundColor: `${color.main}`,
+                backgroundColor: `${color.secondary}`,
                 color: "white",
               }}
               disabled={!agree}
@@ -213,7 +213,7 @@ const Welcome = (props) => {
                 setIsOpen("login");
               }}
             >
-              I Agree
+              Saya Setuju
             </Button>
           </Box>
         </Box>

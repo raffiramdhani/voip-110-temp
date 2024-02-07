@@ -592,7 +592,7 @@ export default function login(props) {
                       <TextField
                         id="recaptcha"
                         type="text"
-                        placeholder="Enter your captcha"
+                        placeholder="Masukan Captcha"
                         size="small"
                         variant="standard"
                       />
@@ -631,7 +631,7 @@ export default function login(props) {
                       width: "100%",
                       borderRadius: "10px",
                       marginTop: "1em",
-                      backgroundColor: `${color.main}`,
+                      backgroundColor: `${color.secondary}`,
                       color: "white",
                     }}
                     variant="contained"
@@ -645,7 +645,7 @@ export default function login(props) {
                         sx={{ marginX: "10px" }}
                       />
                     )}
-                    Start Call
+                    Mulai Panggilan
                   </Button>
                 </Box>
               </form>
