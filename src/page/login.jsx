@@ -139,7 +139,7 @@ export default function login(props) {
       }
       // }
     } else {
-      setMsgError("Please solve captcha!");
+      setMsgError("Maaf, Captcha tidak valid.");
     }
     setLoading(false);
   };
