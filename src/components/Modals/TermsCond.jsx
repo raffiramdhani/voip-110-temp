@@ -34,8 +34,8 @@ const TermsCond = (props) => {
       >
         <br></br>
         <Typography fontSize={12}>
-          1.Dengan menggunakan layanan Click to Dial ini, maka anda telah
-          menyetujui bahwa percakapan anda kami rekam.
+          1.Dengan menggunakan layanan VoIP ini, maka anda telah menyetujui
+          bahwa percakapan anda kami rekam.
         </Typography>
         <Typography fontSize={12}>
           2.Petugas berhak untuk mengakhiri percakapan lebih awal jika dalam
