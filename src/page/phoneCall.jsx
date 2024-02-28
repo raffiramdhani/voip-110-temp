@@ -743,7 +743,7 @@ export default function phoneCall() {
                   }}
                   onClick={() => setOpenSetting(true)}
                   fullWidth
-                  disabled={isCalling}
+                  disabled={isLoading}
                   // variant={isMuted ? "contained" : "outlined"}
                   // startIcon={isMuted ? MuteOff : MuteOn}
                   // color={isMuted ? "error" : "primary"}
@@ -786,7 +786,7 @@ export default function phoneCall() {
                   variant={isMuted ? 'contained' : 'outlined'}
                   // startIcon={isMuted ? <MicOffIcon /> : <MicIcon />}
                   color={isMuted ? 'error' : 'primary'}
-                  disabled={isCalling}
+                  disabled={isLoading}
                 >
                   <img src={KeypadIcon} />
                 </IconButton>
