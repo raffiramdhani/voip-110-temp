@@ -6,6 +6,7 @@ import {
   Button,
   Typography,
   IconButton,
+  CircularProgress,
 } from '@mui/material';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { v4 as uuidv4 } from 'uuid';
@@ -45,6 +46,7 @@ const env = import.meta.env;
 const genID = uuidv4();
 
 export default function phoneCall() {
+  const [isLoading, setIsLoading] = React.useState(true);
   let SESSION_STATUS = Flashphoner.constants.SESSION_STATUS;
   let CALL_STATUS = Flashphoner.constants.CALL_STATUS;
   let Browser = Flashphoner.Browser;
@@ -85,10 +87,11 @@ export default function phoneCall() {
   } else {
     ringingSounds.pause();
   }
-
+  // console.log('getDevice');
   const getDevice = () => {
     Flashphoner.getMediaDevices(null, true, MEDIA_DEVICE_KIND.ALL).then(
       (list) => {
+        console.log('list Devices', list);
         for (var type in list) {
           if (list.hasOwnProperty(type)) {
             if (type === 'audio') {
@@ -131,7 +134,9 @@ export default function phoneCall() {
   const initFlashphoner = () => {
     try {
       Flashphoner.init();
+      getDevice();
       connect();
+      setIsLoading(false);
     } catch (error) {
       console.log('ERROR ==>>', error);
     }
@@ -344,9 +349,10 @@ export default function phoneCall() {
           }
         );
       }
-    } else {
-      getDevice();
     }
+
+    // } else {
+    // }
   }, []);
 
   // STEP 3
@@ -397,7 +403,7 @@ export default function phoneCall() {
         // console.log("Register ==>> " + SESSION_STATUS.DISCONNECTED);
         setStatusRegister(SESSION_STATUS.DISCONNECTED);
       });
-
+    getDevice();
     // console.log("Phone - connecting");
   };
 
@@ -488,7 +494,7 @@ export default function phoneCall() {
     if (isMobile) {
       if (env.VITE_APP_HREF_URL) {
         window.location.reload();
-        route.push('login');
+        route.push('onboard');
         // window.location = env.VITE_APP_HREF_URL;
       } else {
         if (reqExtend) {
@@ -498,7 +504,7 @@ export default function phoneCall() {
           // setIsEstablished(false);
           // window.location = env.VITE_APP_HREF_URL;
           window.location.reload();
-          route.push('login');
+          route.push('onboard');
         } else {
           window.location.reload();
           route.push('end');
@@ -514,7 +520,7 @@ export default function phoneCall() {
         // setIsEstablished(false);
         // window.location = env.VITE_APP_HREF_URL;
         window.location.reload();
-        route.push('login');
+        route.push('onboard');
       } else {
         window.location.reload();
         route.push('end');
@@ -680,21 +686,45 @@ export default function phoneCall() {
                 }}
                 className="timer"
               >
-                <Typography
-                  style={{ color: '#3DCB87', fontSize: 18, fontWeight: 600 }}
-                  className="digits"
-                >
-                  {('0' + Math.floor((time / 60000) % 60)).slice(-2)}:
-                </Typography>
-                <Typography
-                  style={{ color: '#3DCB87', fontSize: 18, fontWeight: 600 }}
-                  className="digits"
-                >
-                  {('0' + Math.floor((time / 1000) % 60)).slice(-2)}
-                </Typography>
-                {/* <span className="digits mili-sec">
-                  {("0" + ((time / 10) % 100)).slice(-2)}
-                </span> */}
+                {!isLoading && (
+                  <>
+                    <Typography
+                      style={{
+                        color: '#3DCB87',
+                        fontSize: 18,
+                        fontWeight: 600,
+                      }}
+                      className="digits"
+                    >
+                      {('0' + Math.floor((time / 60000) % 60)).slice(-2)}:
+                    </Typography>
+                    <Typography
+                      style={{
+                        color: '#3DCB87',
+                        fontSize: 18,
+                        fontWeight: 600,
+                      }}
+                      className="digits"
+                    >
+                      {('0' + Math.floor((time / 1000) % 60)).slice(-2)}
+                    </Typography>
+                  </>
+                )}
+                {isLoading && (
+                  <div>
+                    <CircularProgress size={16} />
+                    <Typography
+                      style={{
+                        color: '#3DCB87',
+                        fontSize: 18,
+                        fontWeight: 600,
+                      }}
+                      className="digits"
+                    >
+                      Initialize Call
+                    </Typography>
+                  </div>
+                )}
               </div>
             </Box>
             {/* MUTE HANGUP BUTTON  */}
@@ -713,6 +743,7 @@ export default function phoneCall() {
                   }}
                   onClick={() => setOpenSetting(true)}
                   fullWidth
+                  disabled={!isCalling}
                   // variant={isMuted ? "contained" : "outlined"}
                   // startIcon={isMuted ? MuteOff : MuteOn}
                   // color={isMuted ? "error" : "primary"}
@@ -755,7 +786,7 @@ export default function phoneCall() {
                   variant={isMuted ? 'contained' : 'outlined'}
                   // startIcon={isMuted ? <MicOffIcon /> : <MicIcon />}
                   color={isMuted ? 'error' : 'primary'}
-                  // disabled={!isCalling}
+                  disabled={!isCalling}
                 >
                   <img src={KeypadIcon} />
                 </IconButton>

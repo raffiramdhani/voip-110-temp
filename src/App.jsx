@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Box, Fade, Typography } from "@mui/material";
-import useRouteStore from "@/store/routeStore";
+import React, { useEffect, useState } from 'react';
+import { Box, Fade, Typography } from '@mui/material';
+import useRouteStore from '@/store/routeStore';
 
-import Pages from "./page";
-import Button from "./page/button";
+import Pages from './page';
+import Button from './page/button';
 
-import CloseIcon from "@mui/icons-material/Close";
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function App() {
   const route = useRouteStore((state) => state);
@@ -13,11 +13,11 @@ export default function App() {
 
   const url_string = window.location.href;
   const url_params = new URL(url_string);
-  const type = url_params.searchParams.get("type");
+  const type = url_params.searchParams.get('type');
 
   let showCallPage = route.ui.openCallUI;
 
-  if (type !== "web") {
+  if (type !== 'web') {
     showCallPage = true;
   }
 
@@ -28,25 +28,25 @@ export default function App() {
       setWindowHeight(window.innerHeight);
     }
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
     handleResize();
     return () => {
       // window.removeEventListener("message", (e) => console.log(e));
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
   const setOpenCall = () => {
     if (!route.ui.openCallUI) {
       route.setOpenIframe(true);
-      window.parent.postMessage("show", "*");
+      window.parent.postMessage('show', '*');
     }
   };
 
   const setCloseCall = () => {
     if (route.ui.openCallUI) {
       route.setOpenIframe(false);
-      window.parent.postMessage("hide", "*");
+      window.parent.postMessage('hide', '*');
     }
   };
 
@@ -84,22 +84,22 @@ export default function App() {
             setCloseCall={setCloseCall}
             setOpenCall={setOpenCall}
           />
-          
-        <Typography
-          style={{
-            position: "fixed",
-            bottom: 0,
-            right: 0,
-            background: "#000",
-            fontSize: "8px",
-            padding: "3px",
-            color: "#fff",
-            borderTopLeftRadius: 5,
-            fontWeight: "bold",
-          }}
-        >
-          Version: 1.0
-        </Typography>
+
+          <Typography
+            style={{
+              position: 'fixed',
+              bottom: 0,
+              right: 0,
+              background: '#000',
+              fontSize: '8px',
+              padding: '3px',
+              color: '#fff',
+              borderTopLeftRadius: 5,
+              fontWeight: 'bold',
+            }}
+          >
+            Version: 1.0
+          </Typography>
         </Box>
       </Fade>
       {!showCallPage && <Button onClick={() => setOpenCall()} />}

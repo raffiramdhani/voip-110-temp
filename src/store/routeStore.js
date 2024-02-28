@@ -13,10 +13,10 @@ import { devtools, persist } from 'zustand/middleware';
 //   },
 // };
 
-const token = new URLSearchParams(window.location.search).get('token');
+// const token = new URLSearchParams(window.location.search).get('token');
 
 const intialValue = {
-  curentRoute: token ? 'call' : 'login',
+  curentRoute: 'onboard',
   ui: {
     error: false,
     errorMessage: null,
