@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
   Box,
   Button,
@@ -25,6 +25,7 @@ import StartCall from "@/components/Modals/StartCall";
 import FloatingButton from "@/components/FloatingButton";
 import Welcome from "@/components/Welcome";
 import ReCAPTCHA from "react-google-recaptcha";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 import useRouteStore from "@/store/routeStore";
 import useProfileStore from "@/store/profileStore";
@@ -51,7 +52,7 @@ export default function login(props) {
   const [msgError, setMsgError] = useState(null);
   const [captcha, setCaptcha] = useState(null);
   const [listingAdditionalField, setListingAdditionalField] = useState(null);
-
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const [phoneNumber, setPhoneNumber] = useState("");
   const [errMsg, setErrMsg] = useState(null);
 
@@ -75,14 +76,25 @@ export default function login(props) {
       },
     };
     const res = await axios
-      .get(
-        `${env.VITE_APP_EXTEN_URL}/additional-field-customer/widget/${env.VITE_APP_EXTEN_TENANT}`,
-        config
-      )
+      .get(`${env.VITE_APP_EXTEN_URL}/additional-field-customer/widget/${env.VITE_APP_EXTEN_TENANT}`, config)
       .then((res) => setListingAdditionalField(res.data))
       .catch((err) => console.log(err));
     return res;
   };
+
+  const handleReCaptchaVerify = useCallback(async () => {
+    if (!executeRecaptcha) {
+      console.log("Execute recaptcha not yet available");
+      return;
+    }
+
+    const token = await executeRecaptcha("login");
+    setCaptcha(token);
+  }, [executeRecaptcha]);
+
+  useEffect(() => {
+    handleReCaptchaVerify();
+  }, [handleReCaptchaVerify]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -111,7 +123,7 @@ export default function login(props) {
       }
       // }
     } else {
-      setMsgError("Please, checklist captcha!");
+      handleReCaptchaVerify();
     }
     setLoading(false);
   };
@@ -152,10 +164,7 @@ export default function login(props) {
       redirect: "follow",
     };
 
-    const data = await fetch(
-      `${env.VITE_APP_EXTEN_URL}/voip/transaction`,
-      requestOptions
-    )
+    const data = await fetch(`${env.VITE_APP_EXTEN_URL}/voip/transaction`, requestOptions)
       .then((res) => console.log("Success"))
       .catch((err) => console.log(err));
     return data;
@@ -177,15 +186,9 @@ export default function login(props) {
     myHeaders.append("Authorization", `${env.VITE_APP_AUTHORIZATION}`);
     myHeaders.append("Content-Type", "application/json");
 
-    const encryptedParams = new URLSearchParams(window.location.search).get(
-      "key"
-    );
+    const encryptedParams = new URLSearchParams(window.location.search).get("key");
 
-    const params = decrypt(
-      encryptedParams,
-      env.VITE_VOIP_DECODE_IV,
-      env.VITE_VOIP_DECODE_KEY
-    );
+    const params = decrypt(encryptedParams, env.VITE_VOIP_DECODE_IV, env.VITE_VOIP_DECODE_KEY);
 
     var dataFromUrl = JSON.stringify({
       username: params?.user?.fullname,
@@ -311,19 +314,8 @@ export default function login(props) {
             flexDirection="column"
             // boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
           >
-            <Box
-              padding="0px 15px"
-              display="flex"
-              alignItems="center"
-              bgcolor={color.main}
-            >
-              <Box
-                width="100%"
-                display="flex"
-                flexDirection="row"
-                justifyContent="space-between"
-                alignItems="center"
-              >
+            <Box padding="0px 15px" display="flex" alignItems="center" bgcolor={color.main}>
+              <Box width="100%" display="flex" flexDirection="row" justifyContent="space-between" alignItems="center">
                 <Box
                   display="flex"
                   flex={1}
@@ -341,10 +333,7 @@ export default function login(props) {
                   >
                     TMI VoIP
                   </Typography>
-                  <img
-                    src={WelcomeIcon}
-                    style={{ maxWidth: windowWidth <= 425 ? 150 : 200 }}
-                  />
+                  <img src={WelcomeIcon} style={{ maxWidth: windowWidth <= 425 ? 150 : 200 }} />
                 </Box>
                 {type === "web" ? (
                   <IconButton
@@ -368,9 +357,7 @@ export default function login(props) {
                 backgroundColor: "white",
               }}
             >
-              <Typography className="mb-2">
-                To start a call, please fill the form before
-              </Typography>
+              <Typography className="mb-2">To start a call, please fill the form before</Typography>
               <form
                 // style={{ height: `80vh` }}
                 onSubmit={(e) => handleSubmit(e)}
@@ -409,9 +396,7 @@ export default function login(props) {
                   margin="dense"
                   sx={styling.TextField}
                 /> */}
-                <Typography marginTop={1}>
-                  Phone Number / Nomor Telepon
-                </Typography>
+                <Typography marginTop={1}>Phone Number / Nomor Telepon</Typography>
                 <TextField
                   value={form.phone}
                   onChange={(e) => {
@@ -464,9 +449,7 @@ export default function login(props) {
                                   onChange={(event) => handleInput(event)}
                                   // disabled={form.isLoadingSetupWebphone}
                                   fullWidth
-                                  multiline={
-                                    e.type === "textarea" ? true : false
-                                  }
+                                  multiline={e.type === "textarea" ? true : false}
                                   rows={e.type === "textarea" ? 3 : 1}
                                   placeholder={e.label}
                                   required={e.is_mandatory ? true : false}
@@ -508,9 +491,7 @@ export default function login(props) {
                                   onChange={(event) => handleInput(event)}
                                   // disabled={form.isLoadingSetupWebphone}
                                   fullWidth
-                                  multiline={
-                                    e.type === "textarea" ? true : false
-                                  }
+                                  multiline={e.type === "textarea" ? true : false}
                                   rows={e.type === "textarea" ? 3 : 1}
                                   placeholder={e.label}
                                   // required={e.is_mandatory ? true : false}
@@ -531,14 +512,15 @@ export default function login(props) {
                     })
                   : null}
 
-                <Box marginTop={1}>
+                {/* <Box marginTop={1}>
                   <ReCAPTCHA
                     required
                     ref={captchaRef}
                     sitekey="6LfAbc8jAAAAAFJJXtfVkUgwyF8cPdWhI_YSwcg7"
                     onChange={(e) => setCaptcha(e)}
                   />
-                </Box>
+                </Box> */}
+
                 <Box
                   width="100%"
                   display="flex"
@@ -548,11 +530,7 @@ export default function login(props) {
                   bottom={5}
                   paddingY="12px"
                 >
-                  {msgError ? (
-                    <Alert severity="error">{msgError}</Alert>
-                  ) : (
-                    <></>
-                  )}
+                  {msgError ? <Alert severity="error">{msgError}</Alert> : <></>}
                   <Button
                     type="submit"
                     sx={{
@@ -566,13 +544,7 @@ export default function login(props) {
                     // startIcon={<PhoneInTalkIcon />}
                     disabled={loading}
                   >
-                    {loading && (
-                      <CircularProgress
-                        size={20}
-                        color="inherit"
-                        sx={{ marginX: "10px" }}
-                      />
-                    )}
+                    {loading && <CircularProgress size={20} color="inherit" sx={{ marginX: "10px" }} />}
                     Start Call
                   </Button>
                 </Box>
@@ -594,10 +566,7 @@ export default function login(props) {
           <StartCall handleSubmitMobile={handleSubmitMobile} />
         </>
       )} */}
-      <TermsCond
-        open={openModalAgree}
-        onClose={() => setOpenModalAgree(false)}
-      />
+      <TermsCond open={openModalAgree} onClose={() => setOpenModalAgree(false)} />
     </Box>
   );
 }
