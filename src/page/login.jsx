@@ -88,7 +88,7 @@ export default function login(props) {
       return;
     }
 
-    const token = await executeRecaptcha("login");
+    const token = await executeRecaptcha("register");
     setCaptcha(token);
   }, [executeRecaptcha]);
 
