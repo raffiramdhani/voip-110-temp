@@ -6,6 +6,7 @@ import {
   Button,
   Typography,
   IconButton,
+  CircularProgress,
 } from '@mui/material';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { v4 as uuidv4 } from 'uuid';
@@ -48,6 +49,7 @@ export default function phoneCall() {
   let CALL_STATUS = Flashphoner.constants.CALL_STATUS;
   let Browser = Flashphoner.Browser;
 
+  const [isLoading, setIsLoading] = React.useState(true);
   const route = useRouteStore((state) => state);
   const profile = useProfileStore((state) => state);
   const me = useRef();
@@ -128,7 +130,9 @@ export default function phoneCall() {
   const initFlashphoner = () => {
     try {
       Flashphoner.init();
+      getDevice();
       connect();
+      setIsLoading(false);
     } catch (error) {
       console.log('ERROR ==>>', error);
     }
@@ -331,9 +335,10 @@ export default function phoneCall() {
           }
         );
       }
-    } else {
-      getDevice();
     }
+    //  else {
+
+    // }
   }, []);
 
   // STEP 3
@@ -661,18 +666,46 @@ export default function phoneCall() {
                 }}
                 className="timer"
               >
-                <Typography
-                  style={{ color: '#3DCB87', fontSize: 18, fontWeight: 600 }}
-                  className="digits"
-                >
-                  {('0' + Math.floor((time / 60000) % 60)).slice(-2)}:
-                </Typography>
-                <Typography
-                  style={{ color: '#3DCB87', fontSize: 18, fontWeight: 600 }}
-                  className="digits"
-                >
-                  {('0' + Math.floor((time / 1000) % 60)).slice(-2)}
-                </Typography>
+                {!isLoading && (
+                  <>
+                    <Typography
+                      style={{
+                        color: '#3DCB87',
+                        fontSize: 18,
+                        fontWeight: 600,
+                      }}
+                      className="digits"
+                    >
+                      {('0' + Math.floor((time / 60000) % 60)).slice(-2)}:
+                    </Typography>
+                    <Typography
+                      style={{
+                        color: '#3DCB87',
+                        fontSize: 18,
+                        fontWeight: 600,
+                      }}
+                      className="digits"
+                    >
+                      {('0' + Math.floor((time / 1000) % 60)).slice(-2)}
+                    </Typography>
+                  </>
+                )}
+                {isLoading && (
+                  <div>
+                    <CircularProgress size={16} />
+                    <Typography
+                      style={{
+                        color: '#3DCB87',
+                        fontSize: 18,
+                        fontWeight: 600,
+                      }}
+                      className="digits"
+                    >
+                      Initialize Call
+                    </Typography>
+                  </div>
+                )}
+
                 {/* <span className="digits mili-sec">
                   {("0" + ((time / 10) % 100)).slice(-2)}
                 </span> */}
@@ -694,6 +727,7 @@ export default function phoneCall() {
                   }}
                   onClick={() => setOpenSetting(true)}
                   fullWidth
+                  disabled={!isCalling}
                   // variant={isMuted ? "contained" : "outlined"}
                   // startIcon={isMuted ? MuteOff : MuteOn}
                   // color={isMuted ? "error" : "primary"}
@@ -736,7 +770,7 @@ export default function phoneCall() {
                   variant={isMuted ? 'contained' : 'outlined'}
                   // startIcon={isMuted ? <MicOffIcon /> : <MicIcon />}
                   color={isMuted ? 'error' : 'primary'}
-                  // disabled={!isCalling}
+                  disabled={!isCalling}
                 >
                   <img src={KeypadIcon} />
                 </IconButton>
