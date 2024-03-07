@@ -526,9 +526,9 @@ export default function login(props) {
                   display="flex"
                   flexDirection="column"
                   justifyContent="center"
-                  marginTop={3}
+                  marginTop={2}
                   bottom={5}
-                  paddingY="12px"
+                  // paddingY="12px"
                 >
                   {msgError ? <Alert severity="error">{msgError}</Alert> : <></>}
                   <Button
@@ -536,7 +536,7 @@ export default function login(props) {
                     sx={{
                       width: "100%",
                       borderRadius: "10px",
-                      marginTop: "1em",
+                      // marginTop: "1em",
                       backgroundColor: `${color.secondary}`,
                       color: "white",
                     }}
