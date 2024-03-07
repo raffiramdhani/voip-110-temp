@@ -6,14 +6,7 @@ import React, { useState, useEffect } from "react";
 // import BJBLogo from "../../assets/bjb-logo.png";
 import BJBLogo from "../../assets/bjb-logo.png";
 import useAuth from "@/store/openingStore";
-import {
-  Box,
-  Button,
-  Grid,
-  Typography,
-  TextField,
-  Checkbox,
-} from "@mui/material";
+import { Box, Button, Grid, Typography, TextField, Checkbox } from "@mui/material";
 // import RemoveIcon from "@mui/icons-material/Remove";
 const env = import.meta.env;
 
@@ -100,7 +93,7 @@ const Welcome = (props) => {
         right="2rem"
         display="flex"
         flexDirection="column"
-      // boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
+        // boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
       >
         {/* <Box
           padding="12px 15px"
@@ -156,25 +149,31 @@ const Welcome = (props) => {
         {/* </Box> */}
         <Grid container>
           <Grid item xs={12} style={{ background: "#165581", display: "flex" }}>
-            <Box style={{
-              width: "100px",
-              height: "40px",
-              padding: "7px 15px"
-            }}>
+            <Box
+              style={{
+                width: "100px",
+                height: "40px",
+                padding: "7px 15px",
+              }}
+            >
               <img src={BJBLogo} style={{ maxHeight: "100%", maxWidth: "100%" }} />
             </Box>
             <Typography
               variant="h6"
               style={{
-                fontSize:"13px",
+                fontSize: "13px",
                 color: "#fff",
-                margin:"auto 16px auto auto"
+                margin: "auto 16px auto auto",
               }}
             >
-              <span style={{
-                fontWeight:600,
-                color: "#FCCC0E"
-              }}>bjb </span>
+              <span
+                style={{
+                  fontWeight: 600,
+                  color: "#FCCC0E",
+                }}
+              >
+                bjb{" "}
+              </span>
               Call
             </Typography>
           </Grid>
@@ -190,11 +189,7 @@ const Welcome = (props) => {
             borderRadius="10px"
             padding="10px"
           >
-            <Checkbox
-              checked={agree}
-              onChange={(e) => setAgree(e.target.checked)}
-              label="label"
-            />
+            <Checkbox checked={agree} onChange={(e) => setAgree(e.target.checked)} label="label" />
             <Box marginTop={1}>
               <Typography fontSize="14px" marginBottom={2}>
                 {label}
@@ -211,7 +206,7 @@ const Welcome = (props) => {
               </Typography>
             </Box>
           </Box>
-          <Box backgroundColor="white" padding="12px 15px" marginTop={25}>
+          <Box backgroundColor="white" padding="12px 15px">
             <Button
               sx={{
                 width: "100%",
