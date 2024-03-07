@@ -5,16 +5,7 @@ import React, { useState, useEffect } from "react";
 import LogoBSI from "../../assets/logo-bsi.png";
 import AgentDefault from "../../assets/agent-default.png";
 import useAuth from "@/store/openingStore";
-import {
-  Box,
-  Button,
-  Avatar,
-  Typography,
-  TextField,
-  Checkbox,
-  CircularProgress,
-  IconButton,
-} from "@mui/material";
+import { Box, Button, Avatar, Typography, TextField, Checkbox, CircularProgress, IconButton } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
 const env = import.meta.env;
 
@@ -103,19 +94,8 @@ const Welcome = (props) => {
         flexDirection="column"
         // boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
       >
-        <Box
-          padding="12px 15px"
-          display="flex"
-          flexDirection="column"
-          bgcolor={color.secondary}
-        >
-          <Box
-            width="100%"
-            display="flex"
-            flexDirection="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
+        <Box padding="12px 15px" display="flex" flexDirection="column" bgcolor={color.secondary}>
+          <Box width="100%" display="flex" flexDirection="row" justifyContent="space-between" alignItems="center">
             <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
               <img src={LogoBSI} width={200} />
             </Box>
@@ -156,18 +136,10 @@ const Welcome = (props) => {
             <Typography fontSize={12}>What can we help you today?</Typography>
           </Box> */}
         </Box>
-        <Box
-          height={"359px"}
-          backgroundColor="white"
-          padding="25px 15px 55px 15px"
-        >
+        <Box height={"359px"} backgroundColor="white" padding="25px 15px 55px 15px">
           <Box sx={{ alignItems: "center", justifyContent: "center", mb: 3 }}>
-            <Typography sx={{ textAlign: "center" }}>
-              Anda mempunyai pertanyaan?
-            </Typography>
-            <Typography sx={{ textAlign: "center" }}>
-              Mari bicarakan dengan kami
-            </Typography>
+            <Typography sx={{ textAlign: "center" }}>Anda mempunyai pertanyaan?</Typography>
+            <Typography sx={{ textAlign: "center" }}>Mari bicarakan dengan kami</Typography>
           </Box>
           <Box
             display="flex"
@@ -177,11 +149,7 @@ const Welcome = (props) => {
             borderRadius="10px"
             padding="10px"
           >
-            <Checkbox
-              checked={agree}
-              onChange={(e) => setAgree(e.target.checked)}
-              label="label"
-            />
+            <Checkbox checked={agree} onChange={(e) => setAgree(e.target.checked)} label="label" />
             <Box marginTop={1}>
               <Typography fontSize="14px" marginBottom={2}>
                 {label}
@@ -198,7 +166,7 @@ const Welcome = (props) => {
               </Typography>
             </Box>
           </Box>
-          <Box backgroundColor="white" padding="12px 15px" marginTop={25}>
+          <Box backgroundColor="white" padding="12px 15px">
             <Button
               sx={{
                 width: "100%",

@@ -24,6 +24,8 @@ import useAuth from "@/store/openingStore";
 import { decrypt } from "@/utils/encrypt";
 import { browserName, osName } from "react-device-detect";
 import axios from "axios";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { useCallback } from "react";
 
 const env = import.meta.env;
 
@@ -51,6 +53,8 @@ export default function login(props) {
   const route = useRouteStore((state) => state);
   const profile = useProfileStore((state) => state);
   const isMobile = new URLSearchParams(window.location.search).get("app");
+  const { executeRecaptcha } = useGoogleReCaptcha();
+  const [captcha, setCaptcha] = useState();
 
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
@@ -78,10 +82,10 @@ export default function login(props) {
   const type = url_params.searchParams.get("type");
 
   // const genID = uuidv4();
-  const call_id = `BSI${isMobile ? "A" : "B"}${new Date()
-    .getFullYear()
+  const call_id = `BSI${isMobile ? "A" : "B"}${new Date().getFullYear().toString().slice(2)}${new Date()
+    .getTime()
     .toString()
-    .slice(2)}${new Date().getTime().toString().slice(-8)}`;
+    .slice(-8)}`;
 
   const handleInput = (e) => {
     e.preventDefault();
@@ -100,25 +104,36 @@ export default function login(props) {
       },
     };
     const res = await axios
-      .get(
-        `${env.VITE_APP_EXTEN_URL}/additional-field-customer/widget/${env.VITE_APP_EXTEN_TENANT}`,
-        config
-      )
+      .get(`${env.VITE_APP_EXTEN_URL}/additional-field-customer/widget/${env.VITE_APP_EXTEN_TENANT}`, config)
       .then((res) => setListingAdditionalField(res.data))
       .catch((err) => console.log(err));
     return res;
   };
 
+  const handleReCaptchaVerify = useCallback(async () => {
+    if (!executeRecaptcha) {
+      console.log("Execute recaptcha not yet available");
+      return;
+    }
+
+    const token = await executeRecaptcha("register");
+    setCaptcha(token);
+  }, [executeRecaptcha]);
+
+  useEffect(() => {
+    handleReCaptchaVerify();
+  }, [handleReCaptchaVerify]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    var recaptcha = document.getElementById("recaptcha").value;
-    var validRecaptcha = 0;
-    for (var j = 0; j < 4; j++) {
-      if (recaptcha.charAt(j) != captcha[j]) {
-        validRecaptcha++;
-      }
-    }
-    if (validRecaptcha === 0 && recaptcha.length === 4) {
+    // var recaptcha = document.getElementById("recaptcha").value;
+    // var validRecaptcha = 0;
+    // for (var j = 0; j < 4; j++) {
+    //   if (recaptcha.charAt(j) != captcha[j]) {
+    //     validRecaptcha++;
+    //   }
+    // }
+    if (captcha) {
       setLoading(true);
       const data = await requestExtension();
       if (!data) {
@@ -137,9 +152,8 @@ export default function login(props) {
           setMsgError(null);
         }, 3000);
       }
-      // }
     } else {
-      setMsgError("Maaf, Captcha tidak valid.");
+      handleReCaptchaVerify();
     }
     setLoading(false);
   };
@@ -182,10 +196,7 @@ export default function login(props) {
       redirect: "follow",
     };
 
-    const data = await fetch(
-      `${env.VITE_APP_EXTEN_URL}/voip/transaction`,
-      requestOptions
-    )
+    const data = await fetch(`${env.VITE_APP_EXTEN_URL}/voip/transaction`, requestOptions)
       .then((res) => console.log("Success"))
       .catch((err) => console.log(err));
     return data;
@@ -271,30 +282,30 @@ export default function login(props) {
   };
 
   // captcha
-  function createCaptcha() {
-    document.getElementById("recaptcha").value = "";
-    document.getElementById("errCaptcha").innerHTML = "";
-    for (var i = 0; i < 4; i++) {
-      captcha[i] = String.fromCharCode(Math.floor(Math.random() * 26 + 65));
-      /*
-      if (i % 2 == 0) {
-        captcha[i] = String.fromCharCode(Math.floor(Math.random() * 26 + 65));
-      } else {
-        captcha[i] = Math.floor(Math.random() * 10 + 0);
-      }*/
-    }
+  // function createCaptcha() {
+  //   document.getElementById("recaptcha").value = "";
+  //   document.getElementById("errCaptcha").innerHTML = "";
+  //   for (var i = 0; i < 4; i++) {
+  //     captcha[i] = String.fromCharCode(Math.floor(Math.random() * 26 + 65));
+  //     /*
+  //     if (i % 2 == 0) {
+  //       captcha[i] = String.fromCharCode(Math.floor(Math.random() * 26 + 65));
+  //     } else {
+  //       captcha[i] = Math.floor(Math.random() * 10 + 0);
+  //     }*/
+  //   }
 
-    var thecaptcha = captcha.join("");
-    var canvas = document.getElementById("captcha");
+  //   var thecaptcha = captcha.join("");
+  //   var canvas = document.getElementById("captcha");
 
-    var ctx = canvas.getContext("2d");
-    //ctx.fillStyle = "blue";
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.font = "18px Arial";
+  //   var ctx = canvas.getContext("2d");
+  //   //ctx.fillStyle = "blue";
+  //   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  //   ctx.font = "18px Arial";
 
-    //ctx.fillText(thecaptcha, 10, 70);
-    ctx.fillText(thecaptcha, 130, 82);
-  }
+  //   //ctx.fillText(thecaptcha, 10, 70);
+  //   ctx.fillText(thecaptcha, 130, 82);
+  // }
 
   const regexEmail = /^[a-zA-Z0-9.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/g;
   const testEmail = regexEmail.test(form.email);
@@ -316,11 +327,11 @@ export default function login(props) {
     getAdditionalField();
   }, []);
 
-  useEffect(() => {
-    if (isOpen === "login") {
-      createCaptcha();
-    }
-  }, [isOpen]);
+  // useEffect(() => {
+  //   if (isOpen === "login") {
+  //     createCaptcha();
+  //   }
+  // }, [isOpen]);
 
   return (
     <Box>
@@ -338,25 +349,9 @@ export default function login(props) {
             flexDirection="column"
             // boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
           >
-            <Box
-              padding="12px 15px"
-              display="flex"
-              alignItems="center"
-              bgcolor={color.secondary}
-            >
-              <Box
-                width="100%"
-                display="flex"
-                flexDirection="row"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Box
-                  display="flex"
-                  flexDirection="row"
-                  alignItems="center"
-                  gap={2}
-                >
+            <Box padding="12px 15px" display="flex" alignItems="center" bgcolor={color.secondary}>
+              <Box width="100%" display="flex" flexDirection="row" justifyContent="space-between" alignItems="center">
+                <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
                   <img src={LogoBSI} width={200} />
                 </Box>
                 {type === "web" ? (
@@ -479,11 +474,7 @@ export default function login(props) {
                         return (
                           <>
                             <Typography marginTop={1}>
-                              {e.label === "menu"
-                                ? "Layanan"
-                                : e.label === "bahasa"
-                                ? "Bahasa"
-                                : ""}
+                              {e.label === "menu" ? "Layanan" : e.label === "bahasa" ? "Bahasa" : ""}
                             </Typography>
                             {e.type === "select" ? (
                               <>
@@ -493,32 +484,20 @@ export default function login(props) {
                                   placeholder={e.label}
                                   required={e.is_mandatory ? true : false}
                                   size="small"
-                                  defaultValue={
-                                    e.label === "menu" ? MENU[0].id : LANG[0].id
-                                  }
-                                  onChange={(event) =>
-                                    handleAdditionalFieldInput(event)
-                                  }
+                                  defaultValue={e.label === "menu" ? MENU[0].id : LANG[0].id}
+                                  onChange={(event) => handleAdditionalFieldInput(event)}
                                   label={e.label}
                                   sx={{ width: "100%" }}
                                 >
-                                  {(e?.label === "menu" ? MENU : LANG).map(
-                                    (e) => {
-                                      return (
-                                        <MenuItem value={e.id}>
-                                          {e.label}
-                                        </MenuItem>
-                                      );
-                                    }
-                                  )}
+                                  {(e?.label === "menu" ? MENU : LANG).map((e) => {
+                                    return <MenuItem value={e.id}>{e.label}</MenuItem>;
+                                  })}
                                 </Select>
                               </>
                             ) : (
                               <TextField
                                 // value={form.e.label}
-                                onChange={(event) =>
-                                  handleAdditionalFieldInput(event)
-                                }
+                                onChange={(event) => handleAdditionalFieldInput(event)}
                                 // disabled={form.isLoadingSetupWebphone}
                                 fullWidth
                                 multiline={e.type === "textarea" ? true : false}
@@ -548,7 +527,7 @@ export default function login(props) {
                     marginTop: "24px",
                   }}
                 >
-                  <Grid
+                  {/* <Grid
                     item
                     xs={5}
                     lg={1}
@@ -561,16 +540,16 @@ export default function login(props) {
                     }}
                   >
                     <canvas id="captcha"></canvas>
-                  </Grid>
-                  <Grid
+                  </Grid> */}
+                  {/* <Grid
                     item
                     xs={7}
                     lg={2}
                     sx={{
                       pl: 1,
                     }}
-                  >
-                    <Box
+                  > */}
+                  {/* <Box
                       sx={{
                         display: "flex",
                         alignItems: "center",
@@ -581,22 +560,22 @@ export default function login(props) {
                       <IconButton onClick={createCaptcha}>
                         <SyncIcon color="primary" />
                       </IconButton>
-                    </Box>
+                    </Box> */}
 
-                    <Box
+                  {/* <Box
                       sx={{
                         display: "flex",
                         flexDirection: "column",
                       }}
-                    >
-                      <TextField
+                    > */}
+                  {/* <TextField
                         id="recaptcha"
                         type="text"
                         placeholder="Masukan Captcha"
                         size="small"
                         variant="standard"
-                      />
-                      {/* <input
+                      /> */}
+                  {/* <input
                               id="recaptcha"
                               name="recaptcha"
                               type="text"
@@ -604,33 +583,26 @@ export default function login(props) {
                               autoComplete="off"
                             /> */}
 
-                      <span
-                        id="errCaptcha"
-                        style={{ color: "red", fontSize: "13px" }}
-                      ></span>
-                    </Box>
-                  </Grid>
+                  {/* <span id="errCaptcha" style={{ color: "red", fontSize: "13px" }}></span> */}
+                  {/* </Box> */}
+                  {/* </Grid> */}
                 </Grid>
                 <Box
                   width="100%"
                   display="flex"
                   flexDirection="column"
                   justifyContent="center"
-                  marginTop={3}
+                  // marginTop={3}
                   bottom={5}
-                  paddingY="12px"
+                  // paddingY="12px"
                 >
-                  {msgError ? (
-                    <Alert severity="error">{msgError}</Alert>
-                  ) : (
-                    <></>
-                  )}
+                  {msgError ? <Alert severity="error">{msgError}</Alert> : <></>}
                   <Button
                     type="submit"
                     sx={{
                       width: "100%",
                       borderRadius: "10px",
-                      marginTop: "1em",
+                      // marginTop: "1em",
                       backgroundColor: `${color.secondary}`,
                       color: "white",
                     }}
@@ -638,13 +610,7 @@ export default function login(props) {
                     // startIcon={<PhoneInTalkIcon />}
                     disabled={loading}
                   >
-                    {loading && (
-                      <CircularProgress
-                        size={20}
-                        color="inherit"
-                        sx={{ marginX: "10px" }}
-                      />
-                    )}
+                    {loading && <CircularProgress size={20} color="inherit" sx={{ marginX: "10px" }} />}
                     Mulai Panggilan
                   </Button>
                 </Box>
@@ -666,10 +632,7 @@ export default function login(props) {
           <StartCall handleSubmitMobile={handleSubmitMobile} />
         </>
       )} */}
-      <TermsCond
-        open={openModalAgree}
-        onClose={() => setOpenModalAgree(false)}
-      />
+      <TermsCond open={openModalAgree} onClose={() => setOpenModalAgree(false)} />
     </Box>
   );
 }
