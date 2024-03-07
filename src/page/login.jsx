@@ -55,6 +55,7 @@ export default function login(props) {
   const { executeRecaptcha } = useGoogleReCaptcha();
   const [phoneNumber, setPhoneNumber] = useState("");
   const [errMsg, setErrMsg] = useState(null);
+  const [errorPhoneNumber, setErrorPhoneNumber] = useState("");
 
   const { isOpen, setIsOpen } = useAuth((state) => state);
   const url_string = window.location.href;
@@ -126,6 +127,14 @@ export default function login(props) {
       handleReCaptchaVerify();
     }
     setLoading(false);
+  };
+
+  const validatePhoneNumber = (value) => {
+    if (value.length < 9) {
+      setErrorPhoneNumber("Nomor telepon minimal harus memiliki 9 karakter");
+    } else {
+      setErrorPhoneNumber("");
+    }
   };
 
   const postTransaction = async (value) => {
@@ -402,13 +411,20 @@ export default function login(props) {
                   onChange={(e) => {
                     setPhoneNumber(e.target.value);
                     handleInput(e);
+                    validatePhoneNumber(e.target.value);
                   }}
+                  error={!!errorPhoneNumber}
+                  helperText={errorPhoneNumber}
                   fullWidth
                   placeholder="Enter Phone Number / Nomor Telepon"
                   required
                   variant="outlined"
                   color="info"
                   id="form-phone"
+                  InputProps={{
+                    onInvalid: (e) => e.preventDefault(),
+                    pattern: ".{9,}", // Minimum 9 characters
+                  }}
                   // label="Phone"
                   name="phone"
                   size="small"
@@ -542,7 +558,7 @@ export default function login(props) {
                     }}
                     variant="contained"
                     // startIcon={<PhoneInTalkIcon />}
-                    disabled={loading}
+                    disabled={loading || !!errorPhoneNumber}
                   >
                     {loading && <CircularProgress size={20} color="inherit" sx={{ marginX: "10px" }} />}
                     Start Call
