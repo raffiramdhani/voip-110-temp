@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
   Box,
   Button,
@@ -25,6 +25,7 @@ import StartCall from "@/components/Modals/StartCall";
 import FloatingButton from "@/components/FloatingButton";
 import Welcome from "@/components/Welcome";
 import ReCAPTCHA from "react-google-recaptcha";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 import useRouteStore from "@/store/routeStore";
 import useProfileStore from "@/store/profileStore";
@@ -51,7 +52,7 @@ export default function login(props) {
   const [msgError, setMsgError] = useState(null);
   const [captcha, setCaptcha] = useState(null);
   const [listingAdditionalField, setListingAdditionalField] = useState(null);
-
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const [phoneNumber, setPhoneNumber] = useState("");
   const [errMsg, setErrMsg] = useState(null);
 
@@ -84,6 +85,21 @@ export default function login(props) {
     return res;
   };
 
+  const handleReCaptchaVerify = useCallback(async () => {
+    if (!executeRecaptcha) {
+      console.log("Execute recaptcha not yet available");
+      return;
+    }
+
+    const token = await executeRecaptcha("login");
+    setCaptcha(token);
+  }, [executeRecaptcha]);
+
+  useEffect(() => {
+    handleReCaptchaVerify();
+  }, [handleReCaptchaVerify]);
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (captcha) {
@@ -111,7 +127,8 @@ export default function login(props) {
       }
       // }
     } else {
-      setMsgError("Please, checklist captcha!");
+      // setMsgError("Please, checklist captcha!");
+      handleReCaptchaVerify();
     }
     setLoading(false);
   };
@@ -497,14 +514,14 @@ export default function login(props) {
                     })
                   : null}
 
-                <Box marginTop={1}>
+                {/* <Box marginTop={1}>
                   <ReCAPTCHA
                     required
                     ref={captchaRef}
                     sitekey="6LfAbc8jAAAAAFJJXtfVkUgwyF8cPdWhI_YSwcg7"
                     onChange={(e) => setCaptcha(e)}
                   />
-                </Box>
+                </Box> */}
                 <Box
                   width="100%"
                   display="flex"
