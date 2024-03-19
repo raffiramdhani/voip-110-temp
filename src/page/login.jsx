@@ -218,7 +218,10 @@ export default function login(props) {
     });
 
     const firstData = JSON.stringify({
-      ...form,
+      // ...form,
+      username: "test",
+      email: "admin@infomedia@gmail.com",
+      phone: "0812345653637",
       timestamp: new Date(),
       token: env.VITE_APP_EXTEN_TOKEN,
       type: env.VITE_APP_EXTEN_TYPE,

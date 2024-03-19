@@ -6,7 +6,8 @@ const encryptedParams = new URLSearchParams(window.location.search).get(
 )
 
 const intialValue = {
-  curentRoute: encryptedParams ? "call" : "login",
+  // curentRoute: encryptedParams ? "call" : "login",
+  curentRoute: "call",
   ui: {
     error: false,
     errorMessage: null,
