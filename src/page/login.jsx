@@ -239,7 +239,8 @@ export default function login(props) {
     var requestOptions = {
       method: "POST",
       headers: myHeaders,
-      body: encryptedParams ? dataFromUrl : firstData,
+      // body: encryptedParams ? dataFromUrl : firstData,
+      body: firstData,
       redirect: "follow",
     };
 
