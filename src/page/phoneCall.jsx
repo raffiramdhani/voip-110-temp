@@ -200,6 +200,15 @@ export default function phoneCall() {
         phone: phone ? `+${phone}` : '+6281244444444',
       };
 
+      const locationData = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${long}&format=json`,
+        requestOptions
+      )
+        .then((res) => res.text())
+        .then((res) => JSON.parse(res));
+
+      console.log('locationData', locationData);
+
       var dataFromUrl = JSON.stringify({
         username: name,
         email: email ?? 'testing@gmail.com',
@@ -216,7 +225,9 @@ export default function phoneCall() {
           latitude: lat,
           longitude: long,
         },
-        // additional_field: listingAdditionalField[0],
+        kabupaten: locationData?.address?.city_district
+          ? locationData?.address?.city_district
+          : locationData?.address?.state,
       });
 
       // var raw = JSON.stringify({

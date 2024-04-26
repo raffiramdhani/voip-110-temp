@@ -13,8 +13,11 @@ import {
   Checkbox,
   CircularProgress,
   IconButton,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import RemoveIcon from '@mui/icons-material/Remove';
+import { Message } from '@mui/icons-material';
 const env = import.meta.env;
 
 const color = {
@@ -63,6 +66,15 @@ const WelcomeOnboard = (props) => {
   // const [type, setType] = useState("");
   const url_string = window.location.href;
   const url_params = new URL(url_string);
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const token = new URLSearchParams(window.location.search).get('token');
+
   const type = url_params.searchParams.get('type');
   // LISTEN HEIGHT WINDOW
   useEffect(() => {
@@ -197,12 +209,22 @@ const WelcomeOnboard = (props) => {
               }}
               disabled={!agree}
               variant="contained"
-              onClick={props.openCall}
+              onClick={() => (token ? props.openCall() : handleClick())}
             >
               I Agree
             </Button>
           </Box>
         </Box>
+        <Snackbar
+          anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
+          open={open}
+          autoHideDuration={3000}
+          message="Token not include"
+        >
+          <Alert severity="error" variant="filled" sx={{ width: '100%' }}>
+            Token not include
+          </Alert>
+        </Snackbar>
       </Box>
     </>
   );
