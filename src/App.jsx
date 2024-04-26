@@ -96,7 +96,7 @@ export default function App() {
               fontWeight: 'bold',
             }}
           >
-            Version: 1.1
+            Version: 1.2
           </Typography>
         </Box>
       </Fade>
