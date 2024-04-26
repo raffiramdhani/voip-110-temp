@@ -81,7 +81,7 @@ export default function phoneCall() {
   const [speaker, setSpeaker] = useState(null);
 
   navigator.mediaDevices.getUserMedia({
-    video: true,
+    video: false,
     audio: true,
   });
 
@@ -440,27 +440,27 @@ export default function phoneCall() {
         constraints: constraints,
       })
       .on(CALL_STATUS.RING, function (call) {
-        // console.log("CALL_STATUS ==>> " + CALL_STATUS.RING);
+        // console.log('CALL_STATUS ==>> ' + CALL_STATUS.RING);
         setStatusCall(CALL_STATUS.RING);
       })
       .on(CALL_STATUS.ESTABLISHED, function (call) {
-        // console.log("CALL_STATUS ==>> " + CALL_STATUS.ESTABLISHED);
+        // console.log('CALL_STATUS ==>> ' + CALL_STATUS.ESTABLISHED);
         setStatusCall(CALL_STATUS.ESTABLISHED);
         setIsEstablished(true);
         handleStart();
       })
       .on(CALL_STATUS.HOLD, function (call) {
-        // console.log("CALL_STATUS ==>> " + CALL_STATUS.HOLD);
+        // console.log('CALL_STATUS ==>> ' + CALL_STATUS.HOLD);
         setStatusCall(CALL_STATUS.HOLD);
       })
       .on(CALL_STATUS.FINISH, function (call) {
-        // console.log("CALL_STATUS ==>> " + CALL_STATUS.FINISH);
+        // console.log('CALL_STATUS ==>> ' + CALL_STATUS.FINISH);
         setIsFinish(!isFinish);
         setStatusCall(CALL_STATUS.FINISH);
         endCall();
       })
       .on(CALL_STATUS.FAILED, function (call) {
-        // console.log("CALL_STATUS ==>> " + CALL_STATUS.FAILED);
+        // console.log('CALL_STATUS ==>> ' + CALL_STATUS.FAILED);
         setStatusCall(CALL_STATUS.FAILED);
       });
 
