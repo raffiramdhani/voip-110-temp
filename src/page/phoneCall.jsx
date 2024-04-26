@@ -80,6 +80,11 @@ export default function phoneCall() {
   const [mic, setMic] = useState(null);
   const [speaker, setSpeaker] = useState(null);
 
+  navigator.mediaDevices.getUserMedia({
+    video: true,
+    audio: true,
+  });
+
   // const [profile, setProfile] = useState({});
 
   if (statusCall === 'RING') {
@@ -441,6 +446,7 @@ export default function phoneCall() {
         // console.log("CALL_STATUS ==>> " + CALL_STATUS.FINISH);
         setIsFinish(!isFinish);
         setStatusCall(CALL_STATUS.FINISH);
+        endCall();
       })
       .on(CALL_STATUS.FAILED, function (call) {
         // console.log("CALL_STATUS ==>> " + CALL_STATUS.FAILED);
@@ -688,26 +694,41 @@ export default function phoneCall() {
               >
                 {!isLoading && (
                   <>
-                    <Typography
-                      style={{
-                        color: '#3DCB87',
-                        fontSize: 18,
-                        fontWeight: 600,
-                      }}
-                      className="digits"
-                    >
-                      {('0' + Math.floor((time / 60000) % 60)).slice(-2)}:
-                    </Typography>
-                    <Typography
-                      style={{
-                        color: '#3DCB87',
-                        fontSize: 18,
-                        fontWeight: 600,
-                      }}
-                      className="digits"
-                    >
-                      {('0' + Math.floor((time / 1000) % 60)).slice(-2)}
-                    </Typography>
+                    {time != '00' ? (
+                      <>
+                        <Typography
+                          style={{
+                            color: '#3DCB87',
+                            fontSize: 18,
+                            fontWeight: 600,
+                          }}
+                          className="digits"
+                        >
+                          {('0' + Math.floor((time / 60000) % 60)).slice(-2)}:
+                        </Typography>
+                        <Typography
+                          style={{
+                            color: '#3DCB87',
+                            fontSize: 18,
+                            fontWeight: 600,
+                          }}
+                          className="digits"
+                        >
+                          {('0' + Math.floor((time / 1000) % 60)).slice(-2)}
+                        </Typography>
+                      </>
+                    ) : (
+                      <Typography
+                        style={{
+                          color: '#3DCB87',
+                          fontSize: 18,
+                          fontWeight: 600,
+                        }}
+                        className="digits"
+                      >
+                        Waiting agent
+                      </Typography>
+                    )}
                   </>
                 )}
                 {isLoading && (
