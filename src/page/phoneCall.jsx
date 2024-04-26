@@ -81,7 +81,7 @@ export default function phoneCall() {
   const [speaker, setSpeaker] = useState(null);
 
   navigator.mediaDevices.getUserMedia({
-    video: false,
+    video: true,
     audio: true,
   });
 
