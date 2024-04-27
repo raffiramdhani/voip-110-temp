@@ -143,7 +143,7 @@ const WelcomeOnboard = (props) => {
                 >
                   Welcome to{' '}
                   <span style={{ color: color.main, fontWeight: 600 }}>
-                    OMNIX VoIP
+                    VoIP 110
                   </span>
                 </Typography>
 

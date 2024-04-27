@@ -589,7 +589,7 @@ export default function phoneCall() {
           alignItems="center"
         >
           <Typography fontWeight={600} color={color.main}>
-            VoIP ONX
+            VoIP 110
           </Typography>
         </Box>
         <IconButton

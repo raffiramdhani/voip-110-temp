@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 // import { Button } from "antd";
 // import { MinusOutlined } from "@ant-design/icons";
-import WelcomeIcon from "../../assets/polri.svg";
-import AgentDefault from "../../assets/agent-default.png";
-import useAuth from "@/store/openingStore";
+import WelcomeIcon from '../../assets/polri.svg';
+import AgentDefault from '../../assets/agent-default.png';
+import useAuth from '@/store/openingStore';
 import {
   Box,
   Button,
@@ -13,46 +13,46 @@ import {
   Checkbox,
   CircularProgress,
   IconButton,
-} from "@mui/material";
-import RemoveIcon from "@mui/icons-material/Remove";
+} from '@mui/material';
+import RemoveIcon from '@mui/icons-material/Remove';
 const env = import.meta.env;
 
 const color = {
-  textTitle: "#fff",
+  textTitle: '#fff',
   main: env.VITE_APP_MAIN_COLOR,
   secondary: env.VITE_APP_SECONDARY_COLOR,
 };
 
 const styling = {
   TextField: {
-    "& label.Mui-focused": {
+    '& label.Mui-focused': {
       color: color.secondary,
     },
-    "& .MuiInput-underline:after": {
+    '& .MuiInput-underline:after': {
       borderBottomColor: color.secondary,
     },
-    "& .MuiOutlinedInput-root": {
-      "& fieldset": {
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
         borderColor: color.main,
       },
-      "&:hover fieldset": {
-        borderColor: "#001219",
+      '&:hover fieldset': {
+        borderColor: '#001219',
       },
-      "&.Mui-focused fieldset": {
+      '&.Mui-focused fieldset': {
         borderColor: color.secondary,
       },
     },
   },
   Checkbox: {
     color: color.main,
-    "&.Mui-checked": {
+    '&.Mui-checked': {
       color: color.main,
     },
   },
   LabelCheckBox: {
     color: color.secondary,
-    cursor: "pointer",
-    fontSize: "14px",
+    cursor: 'pointer',
+    fontSize: '14px',
   },
 };
 
@@ -63,7 +63,7 @@ const Welcome = (props) => {
   // const [type, setType] = useState("");
   const url_string = window.location.href;
   const url_params = new URL(url_string);
-  const type = url_params.searchParams.get("type");
+  const type = url_params.searchParams.get('type');
   // LISTEN HEIGHT WINDOW
   useEffect(() => {
     // window.addEventListener("message", (e) => console.log(e));
@@ -77,16 +77,16 @@ const Welcome = (props) => {
       }
     }
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
     handleResize();
 
     return () => {
       // window.removeEventListener("message", (e) => console.log(e));
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
   const label =
-    "By using this VOIP service, I agree to the  Terms & Condition Policy, and that the information I provide here is correct.";
+    'By using this VOIP service, I agree to the  Terms & Condition Policy, and that the information I provide here is correct.';
   return (
     <>
       <Box
@@ -119,8 +119,8 @@ const Welcome = (props) => {
               <img src={WelcomeIcon} />
               <div
                 style={{
-                  display: "flex",
-                  flexDirection: "column",
+                  display: 'flex',
+                  flexDirection: 'column',
                   gap: 5,
                 }}
               >
@@ -129,9 +129,9 @@ const Welcome = (props) => {
                     fontWeight: 600,
                   }}
                 >
-                  Welcome to{" "}
+                  Welcome to{' '}
                   <span style={{ color: color.main, fontWeight: 600 }}>
-                    OMNIX VoIP
+                    VoIP 110
                   </span>
                 </Typography>
 
@@ -140,10 +140,10 @@ const Welcome = (props) => {
                 </Typography>
               </div>
             </Box>
-            {type === "web" ? (
+            {type === 'web' ? (
               <IconButton
                 onClick={() => {
-                  setIsOpen("welcome");
+                  setIsOpen('welcome');
                   // props.setOpenFloating(false);
                   props.setCloseCall();
                 }}
@@ -156,7 +156,7 @@ const Welcome = (props) => {
           </Box>
           <Box marginY="10px"></Box>
         </Box>
-        <Box height={"359px"} backgroundColor="white" padding="55px 15px">
+        <Box height={'359px'} backgroundColor="white" padding="55px 15px">
           <Box
             display="flex"
             flexDirection="row"
@@ -176,7 +176,7 @@ const Welcome = (props) => {
               </Typography>
               <Typography
                 color={color.main}
-                style={{ textDecoration: "underline" }}
+                style={{ textDecoration: 'underline' }}
                 onClick={() => {
                   props.setOpenModalAgree(true);
                 }}
@@ -189,16 +189,16 @@ const Welcome = (props) => {
           <Box backgroundColor="white" padding="12px 15px" marginTop={25}>
             <Button
               sx={{
-                width: "100%",
-                borderRadius: "10px",
-                marginTop: "1em",
+                width: '100%',
+                borderRadius: '10px',
+                marginTop: '1em',
                 backgroundColor: `${color.main}`,
-                color: "white",
+                color: 'white',
               }}
               disabled={!agree}
               variant="contained"
               onClick={() => {
-                setIsOpen("login");
+                setIsOpen('login');
               }}
             >
               I Agree

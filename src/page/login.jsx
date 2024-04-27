@@ -387,7 +387,7 @@ export default function login(props) {
                 >
                   <img src={WelcomeIcon} />
                   <Typography fontWeight={600} color={color.main}>
-                    OMNIX VoIP
+                    VoIP 110
                   </Typography>
                 </Box>
                 {type === 'web' ? (
