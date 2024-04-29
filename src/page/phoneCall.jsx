@@ -80,6 +80,8 @@ export default function phoneCall() {
   const [mic, setMic] = useState(null);
   const [speaker, setSpeaker] = useState(null);
 
+  const [kabupaten, setKabupaten] = useState('');
+
   navigator.mediaDevices.getUserMedia({
     video: true,
     audio: true,
@@ -229,6 +231,12 @@ export default function phoneCall() {
           ? locationData?.address?.city_district
           : locationData?.address?.state,
       });
+
+      setKabupaten(
+        locationData?.address?.city_district
+          ? locationData?.address?.city_district
+          : locationData?.address?.state
+      );
 
       // var raw = JSON.stringify({
       //   menu: params?.menu_id,
@@ -694,6 +702,7 @@ export default function phoneCall() {
                   ? 'Panggilan berakhiri'
                   : ''}
               </Typography>
+              <Typography>{kabupaten}</Typography>
               <div
                 style={{
                   display: 'flex',
