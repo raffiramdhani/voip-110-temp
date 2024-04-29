@@ -40,6 +40,7 @@ import { browserName, osName } from 'react-device-detect';
 import { MEDIA_DEVICE_KIND } from '@flashphoner/websdk/src/constants';
 import Setting from '@/components/Modals/Setting';
 import { getUserProfile } from '../services/polri';
+import { formatPhoneNumberStartWith8 } from '../utils/utilitys';
 
 const env = import.meta.env;
 
@@ -194,12 +195,12 @@ export default function phoneCall() {
       await profile.setProfile({
         username: name,
         email: email ?? 'testing@gmail.com',
-        phone: phone ? `+${phone}` : '+6281244444444',
+        phone: formatPhoneNumberStartWith8(phone),
       });
       const user = {
         username: name,
         email: email ?? 'testing@gmail.com',
-        phone: phone ? `+${phone}` : '+6281244444444',
+        phone: formatPhoneNumberStartWith8(phone),
       };
 
       const locationData = await fetch(
@@ -214,7 +215,7 @@ export default function phoneCall() {
       var dataFromUrl = JSON.stringify({
         username: name,
         email: email ?? 'testing@gmail.com',
-        phone: phone ? `+${phone}` : '+6281244444444',
+        phone: formatPhoneNumberStartWith8(phone),
         // username: 'ANDY RACHMAWAN',
         // email: 'verdekemang@gmail.com',
         // phone: '+6281290007212',
@@ -306,7 +307,7 @@ export default function phoneCall() {
       const firstData = JSON.stringify({
         username: username,
         email: email,
-        phone: phone,
+        phone: formatPhoneNumberStartWith8(phone),
         date_call: new Date(),
         os: osName,
         browser: browserName,
@@ -319,7 +320,7 @@ export default function phoneCall() {
       var raw = JSON.stringify({
         username: username,
         email: email,
-        phone: phone,
+        phone: formatPhoneNumberStartWith8(phone),
         date_call: new Date(),
         os: osName,
         browser: browserName,
@@ -437,7 +438,7 @@ export default function phoneCall() {
     // console.log("Phone - call " + reqExten.callto);
     let constraints = {
       audio: true,
-      video: false,
+      video: true,
     };
 
     var outCall = session
