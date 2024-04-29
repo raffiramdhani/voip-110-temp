@@ -227,9 +227,10 @@ export default function phoneCall() {
           latitude: lat,
           longitude: long,
         },
-        kabupaten: locationData?.address?.city_district
+        kabupaten: (locationData?.address?.city_district
           ? locationData?.address?.city_district
-          : locationData?.address?.state,
+          : locationData?.address?.state
+        ).toLowerCase(),
       });
 
       setKabupaten(
