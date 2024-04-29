@@ -203,7 +203,7 @@ export default function phoneCall() {
       };
 
       const locationData = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${long}&format=json`,
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${long}&format=json&accept-language=id`,
         requestOptions
       )
         .then((res) => res.text())
