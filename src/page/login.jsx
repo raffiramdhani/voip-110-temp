@@ -108,14 +108,14 @@ export default function login(props) {
         profile.setReqExten(data);
         route.push('call');
       } else {
-        setMsgError('Sorry, failed to call try again later!');
+        setMsgError('Maaf, gagal menelepon, coba lagi nanti!');
         setTimeout(() => {
           setMsgError(null);
         }, 3000);
       }
       // }
     } else {
-      setMsgError('Please, checklist captcha!');
+      setMsgError('Tolong, periksa captcha!');
     }
     setLoading(false);
   };
@@ -288,7 +288,7 @@ export default function login(props) {
   const geolocationAPI = navigator.geolocation;
   if (!geolocationAPI) {
     notification.error({
-      message: 'Geolocation API is not available in your browser.',
+      message: 'API Geolokasi tidak tersedia di browser Anda.',
       placement: 'bottomRight',
       duration: 5,
     });
@@ -301,7 +301,7 @@ export default function login(props) {
       },
       (error) => {
         notification.error({
-          message: 'Something went wrong getting your position.',
+          message: 'Ada yang tidak beres saat mengambil posisi Anda.',
           placement: 'bottomRight',
           duration: 5,
         });
@@ -413,7 +413,7 @@ export default function login(props) {
               }}
             >
               <Typography className="mb-2">
-                To start a call, please fill the form before
+                Untuk memulai panggilan, silakan isi formulir sebelumnya
               </Typography>
               <form
                 // style={{ height: `80vh` }}

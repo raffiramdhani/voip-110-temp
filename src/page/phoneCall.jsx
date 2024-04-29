@@ -685,13 +685,13 @@ export default function phoneCall() {
               </Typography> */}
               <Typography>
                 {statusCall === 'waiting'
-                  ? 'Calling'
+                  ? 'Panggilan'
                   : statusCall === 'RING'
-                  ? 'Ringing'
+                  ? 'Berdering'
                   : statusCall === 'ESTABLISHED'
-                  ? 'Connected'
+                  ? 'Terhubung'
                   : statusCall === 'End Call'
-                  ? 'End Call'
+                  ? 'Panggilan berakhiri'
                   : ''}
               </Typography>
               <div
@@ -737,7 +737,7 @@ export default function phoneCall() {
                         }}
                         className="digits"
                       >
-                        Waiting agent
+                        Menunggu Agen
                       </Typography>
                     )}
                   </>
@@ -753,7 +753,7 @@ export default function phoneCall() {
                       }}
                       className="digits"
                     >
-                      Initialize Call
+                      Inisialisasi Panggilan
                     </Typography>
                   </div>
                 )}
@@ -783,7 +783,7 @@ export default function phoneCall() {
                   <img src={SettingIcon} />
                 </IconButton>
                 <Typography color="#9D9FB1" fontSize="16px" marginTop="10px">
-                  Settings
+                  Pengaturan
                 </Typography>
               </Grid>
               <Grid item xs={4} padding={0} textAlign="center">
