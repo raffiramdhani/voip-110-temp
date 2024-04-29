@@ -84,8 +84,8 @@ export default function phoneCall() {
   const [kabupaten, setKabupaten] = useState('');
 
   navigator.mediaDevices.getUserMedia({
-    video: true,
     audio: true,
+    video: false,
   });
 
   // const [profile, setProfile] = useState({});
@@ -438,7 +438,7 @@ export default function phoneCall() {
     // console.log("Phone - call " + reqExten.callto);
     let constraints = {
       audio: true,
-      video: true,
+      video: false,
     };
 
     var outCall = session
