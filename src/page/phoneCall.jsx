@@ -462,10 +462,10 @@ export default function phoneCall() {
         setStatusCall(CALL_STATUS.HOLD);
       })
       .on(CALL_STATUS.FINISH, function (call) {
-        // console.log('CALL_STATUS ==>> ' + CALL_STATUS.FINISH);
+        // console.log('CALL_STATUS ==>> ' + CALL_STATUS.FINISH)  ;
         setIsFinish(!isFinish);
         setStatusCall(CALL_STATUS.FINISH);
-        endCall();
+        // endCall();
       })
       .on(CALL_STATUS.FAILED, function (call) {
         // console.log('CALL_STATUS ==>> ' + CALL_STATUS.FAILED);
