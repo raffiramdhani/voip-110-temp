@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Box,
   Button,
@@ -11,28 +11,28 @@ import {
   Alert,
   Select,
   MenuItem,
-} from "@mui/material";
-import RemoveIcon from "@mui/icons-material/Remove";
-import { v4 as uuidv4 } from "uuid";
+} from '@mui/material';
+import RemoveIcon from '@mui/icons-material/Remove';
+import { v4 as uuidv4 } from 'uuid';
 
-import WelcomeIcon from "../assets/polri.svg";
+import WelcomeIcon from '../assets/polri.svg';
 
-import ContactSupportIcon from "@mui/icons-material/ContactSupport";
-import PhoneInTalkIcon from "@mui/icons-material/PhoneInTalk";
-import TermsCond from "@/components/Modals/TermsCond";
-import StartCall from "@/components/Modals/StartCall";
+import ContactSupportIcon from '@mui/icons-material/ContactSupport';
+import PhoneInTalkIcon from '@mui/icons-material/PhoneInTalk';
+import TermsCond from '@/components/Modals/TermsCond';
+import StartCall from '@/components/Modals/StartCall';
 
-import FloatingButton from "@/components/FloatingButton";
-import Welcome from "@/components/Welcome";
-import ReCAPTCHA from "react-google-recaptcha";
+import FloatingButton from '@/components/FloatingButton';
+import Welcome from '@/components/Welcome';
+import ReCAPTCHA from 'react-google-recaptcha';
 
-import useRouteStore from "@/store/routeStore";
-import useProfileStore from "@/store/profileStore";
-import { decrypt } from "@/utils/encrypt";
-import useAuth from "@/store/openingStore";
+import useRouteStore from '@/store/routeStore';
+import useProfileStore from '@/store/profileStore';
+import { decrypt } from '@/utils/encrypt';
+import useAuth from '@/store/openingStore';
 
-import { browserName, osName } from "react-device-detect";
-import axios from "axios";
+import { browserName, osName } from 'react-device-detect';
+import axios from 'axios';
 
 const env = import.meta.env;
 
@@ -41,9 +41,9 @@ export default function login(props) {
   const profile = useProfileStore((state) => state);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
-    username: "",
-    phone: "",
-    email: "",
+    username: '',
+    phone: '',
+    email: '',
   });
   const [openModalAgree, setOpenModalAgree] = useState(false);
   const [openFloating, setOpenFloating] = useState(false);
@@ -54,15 +54,15 @@ export default function login(props) {
   const [captcha, setCaptcha] = useState(null);
   const [listingAdditionalField, setListingAdditionalField] = useState(null);
 
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [errMsg, setErrMsg] = useState(null);
 
   const { isOpen, setIsOpen } = useAuth((state) => state);
   const url_string = window.location.href;
   const url_params = new URL(url_string);
-  const type = url_params.searchParams.get("type");
+  const type = url_params.searchParams.get('type');
   let captchaRef = React.useRef();
-  
+
   const genID = uuidv4();
 
   const handleInput = (e) => {
@@ -93,7 +93,7 @@ export default function login(props) {
       const data = await requestExtension();
       // console.log("is data", data);
       if (data?.failed) {
-        console.log("Call failed ==>", data?.failed);
+        console.log('Call failed ==>', data?.failed);
       }
       if (!data) {
         setMsgError(`Sorry, tenant failed!`);
@@ -104,24 +104,24 @@ export default function login(props) {
         postTransaction(data);
         profile.setProfile(form);
         profile.setReqExten(data);
-        route.push("call");
+        route.push('call');
       } else {
-        setMsgError("Sorry, failed to call try again later!");
+        setMsgError('Sorry, failed to call try again later!');
         setTimeout(() => {
           setMsgError(null);
         }, 3000);
       }
       // }
     } else {
-      setMsgError("Please, checklist captcha!");
+      setMsgError('Please, checklist captcha!');
     }
     setLoading(false);
   };
 
   const postTransaction = async (value) => {
     let myHeaders = new Headers();
-    myHeaders.append("Authorization", `${env.VITE_APP_AUTHORIZATION}`);
-    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append('Authorization', `${env.VITE_APP_AUTHORIZATION}`);
+    myHeaders.append('Content-Type', 'application/json');
 
     const firstData = JSON.stringify({
       ...form,
@@ -148,17 +148,17 @@ export default function login(props) {
     });
 
     var requestOptions = {
-      method: "POST",
+      method: 'POST',
       headers: myHeaders,
       body: firstData,
-      redirect: "follow",
+      redirect: 'follow',
     };
 
     const data = await fetch(
       `${env.VITE_APP_EXTEN_URL}/voip/transaction`,
       requestOptions
     )
-      .then((res) => console.log("Success"))
+      .then((res) => console.log('Success'))
       .catch((err) => console.log(err));
     return data;
   };
@@ -168,7 +168,7 @@ export default function login(props) {
     if (data) {
       profile.setProfile(form);
       profile.setReqExten(data);
-      route.push("call");
+      route.push('call');
     }
   };
 
@@ -176,19 +176,18 @@ export default function login(props) {
 
   const requestExtension = async () => {
     let myHeaders = new Headers();
-    myHeaders.append("Authorization", `${env.VITE_APP_AUTHORIZATION}`);
-    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append('Authorization', `${env.VITE_APP_AUTHORIZATION}`);
+    myHeaders.append('Content-Type', 'application/json');
 
     const encryptedParams = new URLSearchParams(window.location.search).get(
-      "key"
+      'key'
     );
 
-    const params = 
-      decrypt(
-        encryptedParams,
-        env.VITE_VOIP_DECODE_IV,
-        env.VITE_VOIP_DECODE_KEY
-      )
+    const params = decrypt(
+      encryptedParams,
+      env.VITE_VOIP_DECODE_IV,
+      env.VITE_VOIP_DECODE_KEY
+    );
 
     var dataFromUrl = JSON.stringify({
       username: params?.user?.fullname,
@@ -203,7 +202,9 @@ export default function login(props) {
       },
       vdn: params?.vdn,
       timestamp: new Date(),
-      additional_field: listingAdditionalField ?  listingAdditionalField[0] : null,
+      additional_field: listingAdditionalField
+        ? listingAdditionalField[0]
+        : null,
     });
 
     const firstData = JSON.stringify({
@@ -212,7 +213,9 @@ export default function login(props) {
       token: env.VITE_APP_EXTEN_TOKEN,
       type: env.VITE_APP_EXTEN_TYPE,
       call_id: genID.slice(0, 8),
-      additional_field: listingAdditionalField ?  listingAdditionalField[0] : null,
+      additional_field: listingAdditionalField
+        ? listingAdditionalField[0]
+        : null,
       location: {
         latitude: lat,
         longitude: long,
@@ -230,10 +233,10 @@ export default function login(props) {
     // });
 
     var requestOptions = {
-      method: "POST",
+      method: 'POST',
       headers: myHeaders,
       body: encryptedParams ? dataFromUrl : firstData,
-      redirect: "follow",
+      redirect: 'follow',
     };
 
     console.log(requestOptions);
@@ -249,7 +252,7 @@ export default function login(props) {
           const decrypted = JSON.parse(decryptText);
           // console.log("decrypted>>>", decrypted);
 
-          if (decrypted.status === "failed") {
+          if (decrypted.status === 'failed') {
             return {
               failed: decrypted.message,
             };
@@ -267,9 +270,9 @@ export default function login(props) {
         }
       })
       .catch((err) => {
-        console.log("ERROR ==>>", err);
+        console.log('ERROR ==>>', err);
         return {
-          failed: "failed to call",
+          failed: 'failed to call',
         };
       });
 
@@ -277,28 +280,28 @@ export default function login(props) {
   };
 
   const geolocationAPI = navigator.geolocation;
-      if (!geolocationAPI) {
+  if (!geolocationAPI) {
+    notification.error({
+      message: 'Geolocation API is not available in your browser.',
+      placement: 'bottomRight',
+      duration: 5,
+    });
+  } else {
+    geolocationAPI.getCurrentPosition(
+      (position) => {
+        const { coords } = position;
+        setLat(coords.latitude);
+        setLong(coords.longitude);
+      },
+      (error) => {
         notification.error({
-          message: "Geolocation API is not available in your browser.",
-          placement: "bottomRight",
+          message: 'Something went wrong getting your position.',
+          placement: 'bottomRight',
           duration: 5,
         });
-      } else {
-        geolocationAPI.getCurrentPosition(
-          (position) => {
-            const { coords } = position;
-            setLat(coords.latitude);
-            setLong(coords.longitude);
-          },
-          (error) => {
-            notification.error({
-              message: "Something went wrong getting your position.",
-              placement: "bottomRight",
-              duration: 5,
-            });
-          }
-        );
       }
+    );
+  }
 
   // const regexPhoneNumber =
   // "(()?(+62|62|0)(d{2,3})?)?[ .-]?d{2,4}[ .-]?d{2,4}[ .-]?d{2,4}";
@@ -315,10 +318,10 @@ export default function login(props) {
   }, []);
 
   return (
-    <Box backgroundColor={"#FFBF00"}>
+    <Box backgroundColor={'#FFBF00'}>
       {/* {type === "web" ? ( */}
       <>
-        {props.props.showCallPage && isOpen === "login" ? (
+        {props.props.showCallPage && isOpen === 'login' ? (
           <Box
             // height="400px"
             // position="absolute"
@@ -351,13 +354,13 @@ export default function login(props) {
                 >
                   <img src={WelcomeIcon} />
                   <Typography fontWeight={600} color={color.main}>
-                    OMNIX VoIP
+                    110 VoIP
                   </Typography>
                 </Box>
-                {type === "web" ? (
+                {type === 'web' ? (
                   <IconButton
                     onClick={() => {
-                      setIsOpen("login");
+                      setIsOpen('login');
                       setOpenFloating(false);
                       props.props.setCloseCall();
                     }}
@@ -372,8 +375,8 @@ export default function login(props) {
             <Box
               sx={{
                 // height: "495px",
-                padding: "20px",
-                backgroundColor: "white",
+                padding: '20px',
+                backgroundColor: 'white',
               }}
             >
               <Typography className="mb-2">
@@ -443,91 +446,95 @@ export default function login(props) {
                     listingAdditionalField.map((e) => {
                       return (
                         <>
-                        {e.display_type === "show" && e.is_mandatory?
-                        <>
-                        <Typography marginTop={1}>{e.label}</Typography>
-                          {e.type === "select" ? (
+                          {e.display_type === 'show' && e.is_mandatory ? (
                             <>
-                              <Select
-                                name={e.key}
-                                id={`form-${e.key}`}
-                                placeholder={e.label}
-                                required={e.is_mandatory ? true : false}
-                                size="small"
-                                // value={age}
-                                onChange={(event) => handleInput(event)}
-                                label={e.label}
-                                sx={{ width: "100%" }}
-                              >
-                                {e?.option.map((e) => {
-                                  return <MenuItem value={e}>{e}</MenuItem>;
-                                })}
-                              </Select>
+                              <Typography marginTop={1}>{e.label}</Typography>
+                              {e.type === 'select' ? (
+                                <>
+                                  <Select
+                                    name={e.key}
+                                    id={`form-${e.key}`}
+                                    placeholder={e.label}
+                                    required={e.is_mandatory ? true : false}
+                                    size="small"
+                                    // value={age}
+                                    onChange={(event) => handleInput(event)}
+                                    label={e.label}
+                                    sx={{ width: '100%' }}
+                                  >
+                                    {e?.option.map((e) => {
+                                      return <MenuItem value={e}>{e}</MenuItem>;
+                                    })}
+                                  </Select>
+                                </>
+                              ) : (
+                                <TextField
+                                  // value={form.e.label}
+                                  onChange={(event) => handleInput(event)}
+                                  // disabled={form.isLoadingSetupWebphone}
+                                  fullWidth
+                                  multiline={
+                                    e.type === 'textarea' ? true : false
+                                  }
+                                  rows={e.type === 'textarea' ? 3 : 1}
+                                  placeholder={e.label}
+                                  required={e.is_mandatory ? true : false}
+                                  color="info"
+                                  id={`form-${e.key}`}
+                                  // label="Email"
+                                  name={e.key}
+                                  type={e.type}
+                                  size="small"
+                                  margin="dense"
+                                  sx={styling.TextField}
+                                />
+                              )}
                             </>
-                          ) : (
-                            <TextField
-                              // value={form.e.label}
-                              onChange={(event) => handleInput(event)}
-                              // disabled={form.isLoadingSetupWebphone}
-                              fullWidth
-                              multiline={e.type === "textarea" ? true : false}
-                              rows={e.type === "textarea" ? 3 : 1}
-                              placeholder={e.label}
-                              required={e.is_mandatory ? true : false}
-                              color="info"
-                              id={`form-${e.key}`}
-                              // label="Email"
-                              name={e.key}
-                              type={e.type}
-                              size="small"
-                              margin="dense"
-                              sx={styling.TextField}
-                            />
-                          )}
-                        </> : !e.is_mandatory  && e.display_type === "show" ? 
-                        <>
-                        <Typography marginTop={1}>{e.label}</Typography>
-                          {e.type === "select" ? (
+                          ) : !e.is_mandatory && e.display_type === 'show' ? (
                             <>
-                              <Select
-                                name={e.key}
-                                id={`form-${e.key}`}
-                                placeholder={e.label}
-                                // required={e.is_mandatory ? true : false}
-                                size="small"
-                                // value={age}
-                                onChange={(event) => handleInput(event)}
-                                label={e.label}
-                                sx={{ width: "100%" }}
-                              >
-                                {e?.option.map((e) => {
-                                  return <MenuItem value={e}>{e}</MenuItem>;
-                                })}
-                              </Select>
+                              <Typography marginTop={1}>{e.label}</Typography>
+                              {e.type === 'select' ? (
+                                <>
+                                  <Select
+                                    name={e.key}
+                                    id={`form-${e.key}`}
+                                    placeholder={e.label}
+                                    // required={e.is_mandatory ? true : false}
+                                    size="small"
+                                    // value={age}
+                                    onChange={(event) => handleInput(event)}
+                                    label={e.label}
+                                    sx={{ width: '100%' }}
+                                  >
+                                    {e?.option.map((e) => {
+                                      return <MenuItem value={e}>{e}</MenuItem>;
+                                    })}
+                                  </Select>
+                                </>
+                              ) : (
+                                <TextField
+                                  // value={form.e.label}
+                                  onChange={(event) => handleInput(event)}
+                                  // disabled={form.isLoadingSetupWebphone}
+                                  fullWidth
+                                  multiline={
+                                    e.type === 'textarea' ? true : false
+                                  }
+                                  rows={e.type === 'textarea' ? 3 : 1}
+                                  placeholder={e.label}
+                                  // required={e.is_mandatory ? true : false}
+                                  color="info"
+                                  id={`form-${e.key}`}
+                                  // label="Email"
+                                  name={e.key}
+                                  type={e.type}
+                                  size="small"
+                                  margin="dense"
+                                  sx={styling.TextField}
+                                />
+                              )}
                             </>
-                          ) : (
-                            <TextField
-                              // value={form.e.label}
-                              onChange={(event) => handleInput(event)}
-                              // disabled={form.isLoadingSetupWebphone}
-                              fullWidth
-                              multiline={e.type === "textarea" ? true : false}
-                              rows={e.type === "textarea" ? 3 : 1}
-                              placeholder={e.label}
-                              // required={e.is_mandatory ? true : false}
-                              color="info"
-                              id={`form-${e.key}`}
-                              // label="Email"
-                              name={e.key}
-                              type={e.type}
-                              size="small"
-                              margin="dense"
-                              sx={styling.TextField}
-                            />
-                          )}
-                        </> : e.display_type === "hidden" ? null : null
-                        }
-                          
+                          ) : e.display_type === 'hidden' ? null : null}
                         </>
                       );
                     })
@@ -558,11 +565,11 @@ export default function login(props) {
                   <Button
                     type="submit"
                     sx={{
-                      width: "100%",
-                      borderRadius: "10px",
-                      marginTop: "1em",
+                      width: '100%',
+                      borderRadius: '10px',
+                      marginTop: '1em',
                       backgroundColor: `${color.main}`,
-                      color: "white",
+                      color: 'white',
                     }}
                     variant="contained"
                     // startIcon={<PhoneInTalkIcon />}
@@ -572,7 +579,7 @@ export default function login(props) {
                       <CircularProgress
                         size={20}
                         color="inherit"
-                        sx={{ marginX: "10px" }}
+                        sx={{ marginX: '10px' }}
                       />
                     )}
                     Start Call
@@ -605,40 +612,40 @@ export default function login(props) {
 }
 
 const color = {
-  textTitle: "#fff",
+  textTitle: '#fff',
   main: env.VITE_APP_MAIN_COLOR,
   secondary: env.VITE_APP_SECONDARY_COLOR,
 };
 
 const styling = {
   TextField: {
-    "& label.Mui-focused": {
+    '& label.Mui-focused': {
       color: color.primary,
     },
-    "& .MuiInput-underline:after": {
+    '& .MuiInput-underline:after': {
       borderBottomColor: color.primary,
     },
-    "& .MuiOutlinedInput-root": {
-      "& fieldset": {
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
         borderColor: color.main,
       },
-      "&:hover fieldset": {
+      '&:hover fieldset': {
         borderColor: color.primary,
       },
-      "&.Mui-focused fieldset": {
+      '&.Mui-focused fieldset': {
         borderColor: color.primary,
       },
     },
   },
   Checkbox: {
     color: color.main,
-    "&.Mui-checked": {
+    '&.Mui-checked': {
       color: color.main,
     },
   },
   LabelCheckBox: {
     color: color.secondary,
-    cursor: "pointer",
-    fontSize: "14px",
+    cursor: 'pointer',
+    fontSize: '14px',
   },
 };

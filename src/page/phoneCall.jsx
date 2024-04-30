@@ -49,6 +49,7 @@ export default function phoneCall() {
   let CALL_STATUS = Flashphoner.constants.CALL_STATUS;
   let Browser = Flashphoner.Browser;
 
+  const [kabupaten, setKabupaten] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(true);
   const route = useRouteStore((state) => state);
   const profile = useProfileStore((state) => state);
@@ -181,6 +182,13 @@ export default function phoneCall() {
 
     const params = JSON.parse(decrypt(encryptedParams));
 
+    const locationData = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${long}&format=json&accept-language=id`,
+      requestOptions
+    )
+      .then((res) => res.text())
+      .then((res) => JSON.parse(res));
+
     var dataFromUrl = JSON.stringify({
       username: params?.fullname,
       email: params?.email,
@@ -194,8 +202,18 @@ export default function phoneCall() {
         latitude: lat,
         longitude: long,
       },
+      kabupaten: (locationData?.address?.city_district
+        ? locationData?.address?.city_district
+        : locationData?.address?.state
+      ).toLowerCase(),
       // additional_field: listingAdditionalField[0],
     });
+
+    setKabupaten(
+      locationData?.address?.city_district
+        ? locationData?.address?.city_district
+        : locationData?.address?.state
+    );
 
     var raw = JSON.stringify({
       menu: params?.menu_id,
@@ -584,7 +602,7 @@ export default function phoneCall() {
           alignItems="center"
         >
           <Typography fontWeight={600} color={color.main}>
-            VoIP ONX
+            VoIP 110
           </Typography>
         </Box>
         <IconButton
@@ -657,6 +675,7 @@ export default function phoneCall() {
                   ? 'End Call'
                   : ''}
               </Typography>
+              {kabupaten ?? ''}
               <div
                 style={{
                   display: 'flex',
