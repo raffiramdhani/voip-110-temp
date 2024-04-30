@@ -497,14 +497,18 @@ export default function phoneCall() {
     window.parent.postMessage('hangup', '*');
     if (isMobile) {
       if (env.VITE_APP_HREF_URL) {
-        window.location = env.VITE_APP_HREF_URL;
+        window.location.reload();
+        // route.push('onboard');
+        // window.location = env.VITE_APP_HREF_URL;
       } else {
         if (reqExtend) {
           // window.close();
           // route.push("close");
           // setIsFinish(true);
           // setIsEstablished(false);
-          window.location = env.VITE_APP_HREF_URL;
+          // window.location = env.VITE_APP_HREF_URL;
+          window.location.reload();
+          // route.push('onboard');
         } else {
           window.location.reload();
           route.push('end');
@@ -518,7 +522,9 @@ export default function phoneCall() {
         // route.push("close");
         // setIsFinish(true);
         // setIsEstablished(false);
-        window.location = env.VITE_APP_HREF_URL;
+        // window.location = env.VITE_APP_HREF_URL;
+        window.location.reload();
+        // route.push('onboard');
       } else {
         window.location.reload();
         route.push('end');
