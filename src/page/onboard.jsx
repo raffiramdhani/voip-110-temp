@@ -12,6 +12,11 @@ export default function onboard(props) {
   const [openFloating, setOpenFloating] = React.useState(false);
   const route = useRouteStore((state) => state);
 
+  navigator.mediaDevices.getUserMedia({
+    audio: true,
+    video: false,
+  });
+
   return (
     <Box backgroundColor={'#FFBF00'}>
       <WelcomeOnboard

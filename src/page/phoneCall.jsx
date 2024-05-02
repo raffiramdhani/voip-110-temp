@@ -83,11 +83,6 @@ export default function phoneCall() {
 
   const [kabupaten, setKabupaten] = useState('');
 
-  navigator.mediaDevices.getUserMedia({
-    audio: true,
-    video: false,
-  });
-
   // const [profile, setProfile] = useState({});
 
   if (statusCall === 'RING') {
