@@ -23,3 +23,15 @@ export function formatPhoneNumber(phoneNumber) {
     return `+62${numericOnly}`;
   }
 }
+
+export function getLocationDetail(address) {
+  if (address.city_district) {
+    return address.city_district.toLowerCase();
+  } else if (address.city) {
+    return address.city.toLowerCase();
+  } else if (address.state) {
+    return address.state.toLowerCase();
+  } else {
+    return 'Location detail not available';
+  }
+}

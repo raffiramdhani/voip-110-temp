@@ -40,7 +40,7 @@ import { browserName, osName } from 'react-device-detect';
 import { MEDIA_DEVICE_KIND } from '@flashphoner/websdk/src/constants';
 import Setting from '@/components/Modals/Setting';
 import { getUserProfile } from '../services/polri';
-import { formatPhoneNumber } from '../utils/utilitys';
+import { formatPhoneNumber, getLocationDetail } from '../utils/utilitys';
 
 const env = import.meta.env;
 
@@ -223,17 +223,10 @@ export default function phoneCall() {
           latitude: lat,
           longitude: long,
         },
-        kabupaten: (locationData?.address?.city_district
-          ? locationData?.address?.city_district
-          : locationData?.address?.state
-        ).toLowerCase(),
+        kabupaten: getLocationDetail(locationData?.address),
       });
 
-      setKabupaten(
-        locationData?.address?.city_district
-          ? locationData?.address?.city_district
-          : locationData?.address?.state
-      );
+      setKabupaten(getLocationDetail(locationData?.address));
 
       // var raw = JSON.stringify({
       //   menu: params?.menu_id,
