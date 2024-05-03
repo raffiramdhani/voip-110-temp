@@ -41,12 +41,14 @@ import { MEDIA_DEVICE_KIND } from '@flashphoner/websdk/src/constants';
 import Setting from '@/components/Modals/Setting';
 import { getUserProfile } from '../services/polri';
 import { formatPhoneNumber, getLocationDetail } from '../utils/utilitys';
+import useUserStore from '../store/storeUser';
 
 const env = import.meta.env;
 
 const genID = uuidv4();
 
 export default function phoneCall() {
+  const { setUser, user: userData } = useUserStore((state) => state);
   const [isLoading, setIsLoading] = React.useState(true);
   let SESSION_STATUS = Flashphoner.constants.SESSION_STATUS;
   let CALL_STATUS = Flashphoner.constants.CALL_STATUS;
@@ -176,7 +178,19 @@ export default function phoneCall() {
     const token = new URLSearchParams(window.location.search).get('token');
 
     if (token) {
-      const getProfile = await getUserProfile({ token });
+      let getProfile;
+
+      if (userData == null) {
+        getProfile = await getUserProfile({ token });
+      } else {
+        getProfile = {
+          data: {
+            ...userData,
+          },
+          status: 200,
+        };
+      }
+
       if (!getProfile?.status) {
         notification.error({
           message: 'Profile Not Found.',
@@ -197,6 +211,16 @@ export default function phoneCall() {
         email: email ?? 'testing@gmail.com',
         phone: formatPhoneNumber(phone),
       };
+
+      const postData = {
+        name,
+        email: email ? email : 'testing@email.com',
+        phone: formatPhoneNumber(phone),
+      };
+
+      if (userData == null) {
+        setUser(postData);
+      }
 
       const locationData = await fetch(
         `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${long}&format=json&accept-language=id`,
