@@ -58,7 +58,7 @@ const styling = {
 
 const Welcome = (props) => {
   const { setIsOpen } = useAuth((state) => state);
-  const [agree, setAgree] = useState(false);
+  const [agree, setAgree] = useState(true);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   // const [type, setType] = useState("");
   const url_string = window.location.href;
@@ -172,7 +172,7 @@ const Welcome = (props) => {
               <Typography fontSize="14px" marginBottom={2}>
                 {label}
               </Typography>
-              <Typography
+              {/* <Typography
                 color={color.main}
                 style={{ textDecoration: 'underline' }}
                 onClick={() => {
@@ -181,7 +181,7 @@ const Welcome = (props) => {
                 fontSize="14px"
               >
                 Kebijakan Syarat & Ketentuan
-              </Typography>
+              </Typography> */}
             </Box>
           </Box>
           <Box backgroundColor="white" padding="12px 15px" marginTop={25}>

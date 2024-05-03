@@ -61,7 +61,7 @@ const styling = {
 
 const WelcomeOnboard = (props) => {
   const { setIsOpen } = useAuth((state) => state);
-  const [agree, setAgree] = useState(false);
+  const [agree, setAgree] = useState(true);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   // const [type, setType] = useState("");
   const url_string = window.location.href;
@@ -184,7 +184,7 @@ const WelcomeOnboard = (props) => {
               <Typography fontSize="14px" marginBottom={2}>
                 {label}
               </Typography>
-              <Typography
+              {/* <Typography
                 color={color.main}
                 style={{ textDecoration: 'underline' }}
                 onClick={() => {
@@ -193,7 +193,7 @@ const WelcomeOnboard = (props) => {
                 fontSize="14px"
               >
                 Kebijakan Syarat & Ketentuan
-              </Typography>
+              </Typography> */}
             </Box>
           </Box>
           <Box backgroundColor="white" padding="12px 15px" marginTop={25}>
