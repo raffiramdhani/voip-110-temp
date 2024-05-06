@@ -38,6 +38,7 @@ import Keypad from '../components/Keypad';
 import useRouteStore from '@/store/routeStore';
 import { browserName, osName } from 'react-device-detect';
 import { MEDIA_DEVICE_KIND } from '@flashphoner/websdk/src/constants';
+import { formatPhoneNumber, getLocationDetail } from '../utils/utilitys';
 import Setting from '@/components/Modals/Setting';
 
 const env = import.meta.env;
@@ -192,7 +193,8 @@ export default function phoneCall() {
     var dataFromUrl = JSON.stringify({
       username: params?.fullname,
       email: params?.email,
-      phone: params?.phone,
+      // phone: params?.phone,
+      phone: formatPhoneNumber(params.phone),
       token: env.VITE_APP_EXTEN_TOKEN,
       type: env.VITE_APP_EXTEN_TYPE,
       call_id: genID.slice(0, 8),
@@ -202,18 +204,11 @@ export default function phoneCall() {
         latitude: lat,
         longitude: long,
       },
-      kabupaten: (locationData?.address?.city_district
-        ? locationData?.address?.city_district
-        : locationData?.address?.state
-      ).toLowerCase(),
+      kabupaten: getLocationDetail(locationData?.address),
       // additional_field: listingAdditionalField[0],
     });
 
-    setKabupaten(
-      locationData?.address?.city_district
-        ? locationData?.address?.city_district
-        : locationData?.address?.state
-    );
+    setKabupaten(getLocationDetail(locationData?.address));
 
     var raw = JSON.stringify({
       menu: params?.menu_id,
@@ -221,7 +216,8 @@ export default function phoneCall() {
       name: params?.user?.fullname,
       username: 'bsi',
       email: params?.user?.email,
-      phone: params?.user?.phone,
+      // phone: params?.user?.phone,
+      phone: formatPhoneNumber(params?.user?.phone),
       token: env.VITE_APP_EXTEN_TOKEN,
       type: env.VITE_APP_EXTEN_TYPE,
       call_id: genID.slice(0, 8),
@@ -284,7 +280,7 @@ export default function phoneCall() {
     const firstData = JSON.stringify({
       username: params.fullname,
       email: params.email,
-      phone: params.phone,
+      phone: formatPhoneNumber(params.phone),
       date_call: new Date(),
       os: osName,
       browser: browserName,
@@ -297,7 +293,7 @@ export default function phoneCall() {
     var raw = JSON.stringify({
       username: params.name,
       email: params.email,
-      phone: params.phone,
+      phone: formatPhoneNumber(params.phone),
       date_call: new Date(),
       os: osName,
       browser: browserName,
