@@ -166,6 +166,7 @@ export default function login(props) {
     const firstData = JSON.stringify({
       ...form,
       name: form.username,
+      phone: `+${form.phone}`,
       additional_field: additionalField,
       date_call: new Date(),
       os: osName,
@@ -310,7 +311,7 @@ export default function login(props) {
   const regexEmail = /^[a-zA-Z0-9.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/g;
   const testEmail = regexEmail.test(form.email);
 
-  const regexPhoneNumber = /^(?:\+62\d*|0\d*|\+)$/g;
+  const regexPhoneNumber = /^(?:62\d*|0\d*|\+)$/g;
   const testPhoneNumber = regexPhoneNumber.test(form.phone);
 
   // const regexPhoneNumber =
@@ -382,7 +383,7 @@ export default function login(props) {
               >
                 <Typography marginTop={2}>Nama Lengkap</Typography>
                 <TextField
-                  value={form.name}
+                  value={form.username}
                   onChange={(e) => handleInput(e)}
                   // disabled={form.isLoadingSetupWebphone}
                   fullWidth
@@ -394,6 +395,7 @@ export default function login(props) {
                   size="small"
                   margin="dense"
                   name="username"
+                  // error={form.username === ""}
                   sx={styling.TextField}
                   onInput={(e) => {
                     e.target.value = e.target.value
@@ -402,6 +404,13 @@ export default function login(props) {
                       .replace(/[^a-zA-Z\s]/g, "");
                   }}
                 />
+                {/* {form.username === "" ? (
+                  <Typography color="red" fontSize="12px">
+                    Nama lengkap tidak boleh kosong
+                  </Typography>
+                ) : (
+                  <></>
+                )} */}
 
                 <Typography marginTop={1}>Email</Typography>
                 <TextField
@@ -435,11 +444,13 @@ export default function login(props) {
                 <TextField
                   value={form.phone}
                   onChange={(e) => {
-                    setPhoneNumber(e.target.value);
+                    const value = e.target.value;
+                    const numericValue = value.replace(/[^0-9]/g, "");
+                    setPhoneNumber(numericValue);
                     handleInput(e);
                   }}
                   fullWidth
-                  placeholder="Masukkan Phone number"
+                  placeholder="Masukkan Nomor HP"
                   required
                   variant="outlined"
                   color="info"
@@ -453,13 +464,13 @@ export default function login(props) {
                     e.target.value = e.target.value
                       .toString()
                       .slice(0, 14)
-                      .replace(/[^0-9+]/g, "");
+                      .replace(/[^0-9]/g, "");
                   }}
                   error={!testPhoneNumber && form.phone !== ""}
                 />
                 {!testPhoneNumber && form.phone !== "" ? (
                   <Typography color="red" fontSize="12px">
-                    Nomor HP tidak valid. harus diawali dengan 0 atau +62
+                    Nomor HP tidak valid. harus diawali dengan 0 atau 62
                   </Typography>
                 ) : (
                   <></>
@@ -608,7 +619,14 @@ export default function login(props) {
                     }}
                     variant="contained"
                     // startIcon={<PhoneInTalkIcon />}
-                    disabled={loading}
+                    disabled={
+                      loading ||
+                      (!testEmail && form.email !== "") ||
+                      (!testPhoneNumber && form.phone !== "") ||
+                      !form.email ||
+                      !form.phone
+                      // form.username === ""
+                    }
                   >
                     {loading && <CircularProgress size={20} color="inherit" sx={{ marginX: "10px" }} />}
                     Mulai Panggilan
