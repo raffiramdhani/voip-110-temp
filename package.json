@@ -9,11 +9,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.3.7",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@flashphoner/websdk": "^2.0.225",
     "@mui/icons-material": "^5.10.9",
     "@mui/material": "^5.10.11",
+    "antd": "^5.17.4",
     "axios": "^1.2.3",
     "crypto-js": "^4.1.1",
     "react": "^18.2.0",

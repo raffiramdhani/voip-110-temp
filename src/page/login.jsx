@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
   Box,
-  Button,
+  // Button,
   Avatar,
-  Typography,
-  TextField,
+  // Typography,
+  // TextField,
   Checkbox,
   CircularProgress,
   IconButton,
-  Alert,
-  Select,
+  // Alert,
+  // Select,
   MenuItem,
 } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -34,6 +34,8 @@ import useAuth from "@/store/openingStore";
 
 import { browserName, osName } from "react-device-detect";
 import axios from "axios";
+import { Flex, Form, Input, Select, Button, Typography, Alert } from "antd";
+import { MinusOutlined } from "@ant-design/icons";
 
 const env = import.meta.env;
 
@@ -61,7 +63,7 @@ export default function login(props) {
   const url_params = new URL(url_string);
   const type = url_params.searchParams.get("type");
   let captchaRef = React.useRef();
-
+  const [newForm] = Form.useForm();
   const genID = uuidv4();
 
   const handleInput = (e) => {
@@ -99,9 +101,9 @@ export default function login(props) {
     handleReCaptchaVerify();
   }, [handleReCaptchaVerify]);
 
-
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    setMsgError(`Sorry, tenant failed!`);
+    // e.preventDefault();
     if (captcha) {
       setLoading(true);
       const data = await requestExtension();
@@ -198,12 +200,11 @@ export default function login(props) {
       "key"
     );
 
-    const params = 
-      decrypt(
-        encryptedParams,
-        env.VITE_VOIP_DECODE_IV,
-        env.VITE_VOIP_DECODE_KEY
-      )
+    const params = decrypt(
+      encryptedParams,
+      env.VITE_VOIP_DECODE_IV,
+      env.VITE_VOIP_DECODE_KEY
+    );
 
     var dataFromUrl = JSON.stringify({
       username: params?.user?.fullname,
@@ -300,222 +301,277 @@ export default function login(props) {
   }, []);
 
   return (
-    <Box>
+    <>
       {/* {type === "web" ? ( */}
       <>
         {props.props.showCallPage && isOpen === "login" ? (
-          <Box
+          <Flex
+            vertical
             // height="400px"
             // position="absolute"
             // width={`${type === "web" ? "25%" : "100%"}`}
             // height={`${type === "web" ? "70%" : "100%"}`}
-            bottom="8rem"
-            right="2rem"
-            display="flex"
-            flexDirection="column"
+            // bottom="8rem"
+            // right="2rem"
+            // display="flex"
+            // flexDirection="column"
             // boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
           >
-            <Box
-              padding="12px 15px"
-              display="flex"
-              alignItems="center"
-              bgcolor={color.secondary}
+            <Flex
+              style={{
+                padding: "12px 15px",
+                backgroundColor: color.secondary,
+              }}
             >
-              <Box
-                width="100%"
-                display="flex"
-                flexDirection="row"
-                justifyContent="space-between"
-                alignItems="center"
+              <Flex
+                justify="space-between"
+                style={{ width: "100%" }}
+                // width="100%"
+                // display="flex"
+                // flexDirection="row"
+                // justifyContent="space-between"
+                // alignItems="center"
               >
-                <Box
-                  display="flex"
-                  flexDirection="row"
-                  alignItems="center"
-                  gap={2}
+                <Flex
+                  // display="flex"
+                  // flexDirection="row"
+                  align="center"
+                  gap={16}
                 >
                   <img src={WelcomeIcon} />
-                  <Typography fontWeight={600} color={color.main}>
+                  <Typography.Text
+                    style={{
+                      color: color.main,
+                      fontWeight: 600,
+                    }}
+                    color={color.main}
+                  >
                     OMNIX VoIP
-                  </Typography>
-                </Box>
+                  </Typography.Text>
+                </Flex>
                 {type === "web" ? (
-                  <IconButton
+                  <MinusOutlined
                     onClick={() => {
                       setIsOpen("login");
                       setOpenFloating(false);
                       props.props.setCloseCall();
                     }}
-                  >
-                    <RemoveIcon />
-                  </IconButton>
+                  />
                 ) : (
                   <></>
                 )}
-              </Box>
-            </Box>
-            <Box
-              sx={{
+              </Flex>
+            </Flex>
+            <div
+              style={{
                 // height: "495px",
                 padding: "20px",
                 backgroundColor: "white",
               }}
             >
-              <Typography className="mb-2">
+              <Typography.Text className="mb-2" style={{ fontSize: 16 }}>
                 To start a call, please fill the form before
-              </Typography>
-              <form
+              </Typography.Text>
+              <Form
                 // style={{ height: `80vh` }}
-                onSubmit={(e) => handleSubmit(e)}
+                onFinish={(e) => handleSubmit(e)}
+                layout="vertical"
+                form={newForm}
+                initialValues={{
+                  username: "",
+                  email: "",
+                  phone: "",
+                }}
               >
-                <Typography marginTop={2}>Fullname</Typography>
-                <TextField
-                  value={form.name}
-                  onChange={(e) => handleInput(e)}
-                  // disabled={form.isLoadingSetupWebphone}
-                  fullWidth
-                  placeholder="Enter fullname"
-                  required
-                  color="info"
-                  id="form-username"
-                  // label="Name"
-                  size="small"
-                  margin="dense"
+                <Form.Item
+                  rules={[{ required: true, message: "Fullname is required" }]}
+                  label="Fullname"
                   name="username"
-                  sx={styling.TextField}
-                />
+                >
+                  {/* <Typography marginTop={2}>Fullname</Typography> */}
+                  <Input
+                    hasFeedback
+                    value={form.name}
+                    onChange={(e) => handleInput(e)}
+                    // disabled={form.isLoadingSetupWebphone}
+                    // fullWidth
+                    placeholder="Enter fullname"
+                    // required
+                    color="info"
+                    id="form-username"
+                    // label="Name"
+                    size="large"
+                    margin="dense"
+                    sx={styling.TextField}
+                  />
+                </Form.Item>
 
-                <Typography marginTop={1}>Email</Typography>
-                <TextField
-                  value={form.email}
-                  onChange={(e) => handleInput(e)}
-                  // disabled={form.isLoadingSetupWebphone}
-                  fullWidth
-                  placeholder="Email"
-                  required
-                  color="info"
-                  id="form-email"
-                  // label="Email"
+                <Form.Item
+                  rules={[{ required: true, message: "Email is required" }]}
                   name="email"
-                  type="email"
-                  size="small"
-                  margin="dense"
-                  sx={styling.TextField}
-                />
-                <Typography marginTop={1}>Phone number</Typography>
-                <TextField
-                  value={form.phone}
-                  onChange={(e) => {
-                    setPhoneNumber(e.target.value);
-                    handleInput(e);
-                  }}
-                  fullWidth
-                  placeholder="Phone number"
-                  required
-                  variant="outlined"
-                  color="info"
-                  id="form-phone"
-                  // label="Phone"
+                  label="Email"
+                >
+                  {/* <Typography marginTop={1}>Email</Typography> */}
+                  <Input
+                    value={form.email}
+                    onChange={(e) => handleInput(e)}
+                    // disabled={form.isLoadingSetupWebphone}
+                    // fullWidth
+                    placeholder="Email"
+                    // required
+                    color="info"
+                    id="form-email"
+                    // label="Email"
+                    type="email"
+                    size="large"
+                    margin="dense"
+                    sx={styling.TextField}
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  rules={[
+                    { required: true, message: "Phone number is required" },
+                  ]}
                   name="phone"
-                  size="small"
-                  margin="dense"
-                  type="number"
-                  sx={styling.TextField}
-                />
+                  label="Phone number"
+                >
+                  {/* <Typography marginTop={1}>Phone number</Typography> */}
+                  <Input
+                    value={form.phone}
+                    onChange={(e) => {
+                      setPhoneNumber(e.target.value);
+                      handleInput(e);
+                    }}
+                    // fullWidth
+                    placeholder="Phone number"
+                    // required
+                    variant="outlined"
+                    color="info"
+                    id="form-phone"
+                    // label="Phone"
+                    size="large"
+                    margin="dense"
+                    type="number"
+                    sx={styling.TextField}
+                  />
+                </Form.Item>
 
                 {listingAdditionalField
                   ? listingAdditionalField &&
-                    listingAdditionalField.map((e) => {
-                      return (
-                        <>
-                        {e.display_type === "show" && e.is_mandatory?
-                        <>
-                        <Typography marginTop={1}>{e.label}</Typography>
-                          {e.type === "select" ? (
-                            <>
-                              <Select
-                                name={e.key}
-                                id={`form-${e.key}`}
-                                placeholder={e.label}
-                                required={e.is_mandatory ? true : false}
-                                size="small"
-                                // value={age}
-                                onChange={(event) => handleInput(event)}
-                                label={e.label}
-                                sx={{ width: "100%" }}
-                              >
-                                {e?.option.map((e) => {
-                                  return <MenuItem value={e}>{e}</MenuItem>;
-                                })}
-                              </Select>
-                            </>
-                          ) : (
-                            <TextField
-                              // value={form.e.label}
-                              onChange={(event) => handleInput(event)}
-                              // disabled={form.isLoadingSetupWebphone}
-                              fullWidth
-                              multiline={e.type === "textarea" ? true : false}
-                              rows={e.type === "textarea" ? 3 : 1}
-                              placeholder={e.label}
-                              required={e.is_mandatory ? true : false}
-                              color="info"
-                              id={`form-${e.key}`}
-                              // label="Email"
-                              name={e.key}
-                              type={e.type}
-                              size="small"
-                              margin="dense"
-                              sx={styling.TextField}
-                            />
-                          )}
-                        </> : !e.is_mandatory  && e.display_type === "show" ? 
-                        <>
-                        <Typography marginTop={1}>{e.label}</Typography>
-                          {e.type === "select" ? (
-                            <>
-                              <Select
-                                name={e.key}
-                                id={`form-${e.key}`}
-                                placeholder={e.label}
-                                // required={e.is_mandatory ? true : false}
-                                size="small"
-                                // value={age}
-                                onChange={(event) => handleInput(event)}
-                                label={e.label}
-                                sx={{ width: "100%" }}
-                              >
-                                {e?.option.map((e) => {
-                                  return <MenuItem value={e}>{e}</MenuItem>;
-                                })}
-                              </Select>
-                            </>
-                          ) : (
-                            <TextField
-                              // value={form.e.label}
-                              onChange={(event) => handleInput(event)}
-                              // disabled={form.isLoadingSetupWebphone}
-                              fullWidth
-                              multiline={e.type === "textarea" ? true : false}
-                              rows={e.type === "textarea" ? 3 : 1}
-                              placeholder={e.label}
-                              // required={e.is_mandatory ? true : false}
-                              color="info"
-                              id={`form-${e.key}`}
-                              // label="Email"
-                              name={e.key}
-                              type={e.type}
-                              size="small"
-                              margin="dense"
-                              sx={styling.TextField}
-                            />
-                          )}
-                        </> : e.display_type === "hidden" ? null : null
-                        }
-                          
-                        </>
-                      );
-                    })
+                    listingAdditionalField
+                      // .map((e) => ({
+                      //   ...e,
+                      //   display_type: "show",
+                      //   is_mandatory: true,
+                      // }))
+                      .map((e) => {
+                        return (
+                          <>
+                            {e.display_type === "show" && e.is_mandatory ? (
+                              <>
+                                <Typography.Text>{e.label}</Typography.Text>
+                                {e.type === "select" ? (
+                                  <>
+                                    <Select
+                                      name={e.key}
+                                      id={`form-${e.key}`}
+                                      placeholder={e.label}
+                                      required={e.is_mandatory ? true : false}
+                                      size="large"
+                                      // value={age}
+                                      onChange={(event) => handleInput(event)}
+                                      label={e.label}
+                                      sx={{ width: "100%" }}
+                                      options={e?.option.map((v) => ({
+                                        label: v,
+                                        value: v,
+                                      }))}
+                                    >
+                                      {/* {e?.option.map((e) => {
+                                        return (
+                                          <MenuItem value={e}>{e}</MenuItem>
+                                        );
+                                      })} */}
+                                    </Select>
+                                  </>
+                                ) : (
+                                  <Input
+                                    // value={form.e.label}
+                                    onChange={(event) => handleInput(event)}
+                                    // disabled={form.isLoadingSetupWebphone}
+                                    fullWidth
+                                    multiline={
+                                      e.type === "textarea" ? true : false
+                                    }
+                                    rows={e.type === "textarea" ? 3 : 1}
+                                    placeholder={e.label}
+                                    required={e.is_mandatory ? true : false}
+                                    color="info"
+                                    id={`form-${e.key}`}
+                                    // label="Email"
+                                    name={e.key}
+                                    type={e.type}
+                                    size="large"
+                                    margin="dense"
+                                    sx={styling.TextField}
+                                  />
+                                )}
+                              </>
+                            ) : !e.is_mandatory && e.display_type === "show" ? (
+                              <>
+                                <Typography marginTop={1}>{e.label}</Typography>
+                                {e.type === "select" ? (
+                                  <>
+                                    <Select
+                                      name={e.key}
+                                      id={`form-${e.key}`}
+                                      placeholder={e.label}
+                                      // required={e.is_mandatory ? true : false}
+                                      size="small"
+                                      // value={age}
+                                      onChange={(event) => handleInput(event)}
+                                      label={e.label}
+                                      sx={{ width: "100%" }}
+                                      options={e?.option.map((v) => ({
+                                        label: v,
+                                        value: v,
+                                      }))}
+                                    >
+                                      {/* {e?.option.map((e) => {
+                                        return (
+                                          <MenuItem value={e}>{e}</MenuItem>
+                                        );
+                                      })} */}
+                                    </Select>
+                                  </>
+                                ) : (
+                                  <TextField
+                                    // value={form.e.label}
+                                    onChange={(event) => handleInput(event)}
+                                    // disabled={form.isLoadingSetupWebphone}
+                                    fullWidth
+                                    multiline={
+                                      e.type === "textarea" ? true : false
+                                    }
+                                    rows={e.type === "textarea" ? 3 : 1}
+                                    placeholder={e.label}
+                                    // required={e.is_mandatory ? true : false}
+                                    color="info"
+                                    id={`form-${e.key}`}
+                                    // label="Email"
+                                    name={e.key}
+                                    type={e.type}
+                                    size="large"
+                                    margin="dense"
+                                    sx={styling.TextField}
+                                  />
+                                )}
+                              </>
+                            ) : e.display_type === "hidden" ? null : null}
+                          </>
+                        );
+                      })
                   : null}
 
                 {/* <Box marginTop={1}>
@@ -526,46 +582,61 @@ export default function login(props) {
                     onChange={(e) => setCaptcha(e)}
                   />
                 </Box> */}
-                <Box
-                  width="100%"
-                  display="flex"
-                  flexDirection="column"
-                  justifyContent="center"
-                  marginTop={3}
-                  bottom={5}
-                  paddingY="12px"
+                <Flex
+                  // width="100%"
+                  // display="flex"
+                  // flexDirection="column"
+                  // justifyContent="center"
+                  // marginTop={3}
+                  // bottom={5}
+                  // paddingY="12px"
+                  vertical
+                  justify="center"
+                  style={{
+                    marginTop: 12,
+                    padding: "12px 0px",
+                  }}
                 >
                   {msgError ? (
-                    <Alert severity="error">{msgError}</Alert>
+                    // <Alert severity="error">{msgError}</Alert>
+                    <Alert
+                      message={msgError}
+                      type="error"
+                      showIcon
+                      style={{ marginBottom: 12 }}
+                    />
                   ) : (
                     <></>
                   )}
                   <Button
-                    type="submit"
-                    sx={{
-                      width: "100%",
-                      borderRadius: "10px",
-                      marginTop: "1em",
-                      backgroundColor: `${color.main}`,
-                      color: "white",
-                    }}
-                    variant="contained"
+                    htmlType="submit"
+                    type="primary"
+                    block
+                    // sx={{
+                    //   width: "100%",
+                    //   borderRadius: "10px",
+                    //   marginTop: "1em",
+                    //   backgroundColor: `${color.main}`,
+                    //   color: "white",
+                    // }}
+                    // variant="contained"
                     // startIcon={<PhoneInTalkIcon />}
                     disabled={loading}
+                    loading={loading}
                   >
-                    {loading && (
+                    {/* {loading && (
                       <CircularProgress
                         size={20}
                         color="inherit"
                         sx={{ marginX: "10px" }}
                       />
-                    )}
+                    )} */}
                     Start Call
                   </Button>
-                </Box>
-              </form>
-            </Box>
-          </Box>
+                </Flex>
+              </Form>
+            </div>
+          </Flex>
         ) : (
           <>
             <Welcome
@@ -585,7 +656,7 @@ export default function login(props) {
         open={openModalAgree}
         onClose={() => setOpenModalAgree(false)}
       />
-    </Box>
+    </>
   );
 }
 

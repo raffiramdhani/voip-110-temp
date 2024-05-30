@@ -6,6 +6,7 @@ import Pages from "./page";
 import Button from "./page/button";
 
 import CloseIcon from "@mui/icons-material/Close";
+import "./index.css";
 
 export default function App() {
   const route = useRouteStore((state) => state);
@@ -84,22 +85,22 @@ export default function App() {
             setCloseCall={setCloseCall}
             setOpenCall={setOpenCall}
           />
-          
-        <Typography
-          style={{
-            position: "fixed",
-            bottom: 0,
-            right: 0,
-            background: "#000",
-            fontSize: "8px",
-            padding: "3px",
-            color: "#fff",
-            borderTopLeftRadius: 5,
-            fontWeight: "bold",
-          }}
-        >
-          Version: 1.0
-        </Typography>
+
+          <Typography
+            style={{
+              position: "fixed",
+              bottom: 0,
+              right: 0,
+              background: "#000",
+              fontSize: "8px",
+              padding: "3px",
+              color: "#fff",
+              borderTopLeftRadius: 5,
+              fontWeight: "bold",
+            }}
+          >
+            Version: 1.0
+          </Typography>
         </Box>
       </Fade>
       {!showCallPage && <Button onClick={() => setOpenCall()} />}

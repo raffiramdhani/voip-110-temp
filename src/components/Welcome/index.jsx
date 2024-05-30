@@ -4,17 +4,8 @@ import React, { useState, useEffect } from "react";
 import WelcomeIcon from "../../assets/welcome-icon.png";
 import AgentDefault from "../../assets/agent-default.png";
 import useAuth from "@/store/openingStore";
-import {
-  Box,
-  Button,
-  Avatar,
-  Typography,
-  TextField,
-  Checkbox,
-  CircularProgress,
-  IconButton,
-} from "@mui/material";
-import RemoveIcon from "@mui/icons-material/Remove";
+import { Flex, Button, Typography, Checkbox } from "antd";
+import { MinusOutlined } from "@ant-design/icons";
 const env = import.meta.env;
 
 const color = {
@@ -89,50 +80,46 @@ const Welcome = (props) => {
     "By using this VOIP service, I agree to the  Terms & Condition Policy, and that the information I provide here is correct.";
   return (
     <>
-      <Box
+      <Flex
+        vertical
         // position={`${type === "web" ? "absolute" : ""}`}
         // width={`${type === "web" ? "25%" : "100%"}`}
         // height={`${type === "web" ? "70%" : "100vh"}`}
         // position="absolute"
         // width={`${type === "web" ? "25%" : "100%"}`}
         // height={`${type === "web" ? "70%" : "100vh"}`}
-        bottom="8rem"
-        right="2rem"
-        display="flex"
-        flexDirection="column"
+        // bottom="8rem"
+        // right="2rem"
+        // display="flex"
+        // flexDirection="column"
         // boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
       >
-        <Box
-          padding="12px 15px"
-          display="flex"
-          flexDirection="column"
-          bgcolor={color.secondary}
+        <Flex
+          // display="flex"
+          // flexDirection="column"
+          vertical
+          style={{
+            padding: "12px 15px",
+            backgroundColor: color.secondary,
+          }}
         >
-          <Box
-            width="100%"
-            display="flex"
-            flexDirection="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
+          <Flex align="center" justify="space-between">
+            <Flex>
               <img src={WelcomeIcon} />
-            </Box>
+            </Flex>
             {type === "web" ? (
-              <IconButton
+              <MinusOutlined
                 onClick={() => {
                   setIsOpen("welcome");
                   // props.setOpenFloating(false);
                   props.setCloseCall();
                 }}
-              >
-                <RemoveIcon />
-              </IconButton>
+              />
             ) : (
               <></>
             )}
-          </Box>
-          <Box marginY="10px">
+          </Flex>
+          <Flex style={{ margin: "10px 0px" }} vertical>
             <div
               style={{
                 display: "flex",
@@ -141,70 +128,78 @@ const Welcome = (props) => {
                 marginBottom: 5,
               }}
             >
-              <Typography
-                sx={{
-                  fontWeight: 600,
-                }}
-              >
+              <Typography.Text style={{ fontWeight: 600 }}>
                 Welcome to
-              </Typography>
-              <Typography fontWeight={600} color={color.main}>
+              </Typography.Text>
+              <Typography.Text style={{ fontWeight: 600, color: color.main }}>
                 OMNIX VoIP
-              </Typography>
+              </Typography.Text>
             </div>
-            <Typography fontSize={12}>What can we help you today?</Typography>
-          </Box>
-        </Box>
-        <Box height={"359px"} backgroundColor="white" padding="55px 15px">
-          <Box
-            display="flex"
-            flexDirection="row"
-            alignItems="start"
-            border="1px solid #C4C4C4"
-            borderRadius="10px"
-            padding="10px"
+            <Typography.Text fontSize={12}>
+              What can we help you today?
+            </Typography.Text>
+          </Flex>
+        </Flex>
+        <Flex
+          vertical
+          justify="space-between"
+          style={{
+            height: "359px",
+            backgroundColor: "white",
+            padding: "55px 15px",
+          }}
+        >
+          <Flex
+            style={{
+              border: "1px solid #C4C4C4",
+              borderRadius: "10px",
+              padding: "10px",
+            }}
           >
             <Checkbox
+              style={{ padding: "0px 8px" }}
               checked={agree}
               onChange={(e) => setAgree(e.target.checked)}
               label="label"
             />
-            <Box marginTop={1}>
-              <Typography fontSize="14px" marginBottom={2}>
+            <Flex vertical>
+              <Typography.Text fontSize="14px" marginBottom={2}>
                 {label}
-              </Typography>
-              <Typography
+              </Typography.Text>
+              <Typography.Text
                 color="#5A55D2"
-                style={{ textDecoration: "underline" }}
+                style={{
+                  textDecoration: "underline",
+                  fontSize: "14px",
+                }}
                 onClick={() => {
                   props.setOpenModalAgree(true);
                 }}
-                fontSize="14px"
               >
                 Terms & Condition Policy
-              </Typography>
-            </Box>
-          </Box>
-          <Box backgroundColor="white" padding="12px 15px" marginTop={25}>
+              </Typography.Text>
+            </Flex>
+          </Flex>
+          <Flex>
             <Button
-              sx={{
-                width: "100%",
+              block
+              style={{
                 borderRadius: "10px",
                 marginTop: "1em",
-                backgroundColor: `${color.main}`,
+                backgroundColor: !agree ? "#cccccc" : `${color.main}`,
                 color: "white",
               }}
               disabled={!agree}
-              variant="contained"
+              // variant="contained"
               onClick={() => {
                 setIsOpen("login");
               }}
             >
               I Agree
             </Button>
-          </Box>
-        </Box>
-      </Box>
+          </Flex>
+        </Flex>
+      </Flex>
     </>
   );
 };

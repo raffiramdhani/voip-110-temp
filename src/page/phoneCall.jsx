@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import {
   Box,
-  Grid,
+  // Grid,
   Paper,
-  Button,
-  Typography,
-  IconButton,
+  // Button,
+  // Typography,
+  // Button,
 } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { v4 as uuidv4 } from "uuid";
@@ -34,7 +34,8 @@ import EndCall from "../assets/end-call.png";
 
 import Keypad from "../components/Keypad";
 import useRouteStore from "@/store/routeStore";
-
+import { Flex, Typography, Button, Col, Row } from "antd";
+import { MinusOutlined } from "@ant-design/icons";
 const env = import.meta.env;
 
 const genID = uuidv4();
@@ -336,41 +337,47 @@ export default function phoneCall() {
   }
 
   return (
-    <Box
+    <Flex
       // position={`${type === "web" ? "absolute" : ""}`}
       // width={`${type === "web" ? "25%" : "100%"}`}
       // height={`${type === "web" ? "70%" : "100vh"}`}
-      bottom="8rem"
-      right="2rem"
-      display="flex"
-      flexDirection="column"
-      boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
-      backgroundColor="white"
+      // bottom="8rem"
+      // right="2rem"
+      // display="flex"
+      // flexDirection="column"
+      // boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
+      // backgroundColor="white"
+      vertical
     >
-      <Box
-        padding="12px 15px"
-        display="flex"
-        alignItems="center"
-        bgcolor={color.secondary}
+      <Flex
+        align="center"
+        style={{
+          padding: "12px 15px",
+          backgroundColor: color.secondary,
+        }}
+        // display="flex"
+        // alignItems="center"
       >
-        <Box
-          width="100%"
-          display="flex"
-          flexDirection="row"
-          justifyContent="space-between"
-          alignItems="center"
+        <Flex
+          style={{ width: "100%", padding: "12px 0px" }}
+          // width="100%"
+          // display="flex"
+          // flexDirection="row"
+          // justifyContent="space-between"
+          // alignItems="center"
         >
-          <Typography>VoIP ONX</Typography>
-        </Box>
-        <IconButton
+          <Typography.Text>VoIP ONX</Typography.Text>
+        </Flex>
+        {/* <Button
         // onClick={() => {
         //   setIsOpen("login");
         //   setOpenFloating(false);
         // }}
-        >
-          <RemoveIcon />
-        </IconButton>
-      </Box>
+        > */}
+        {/* <RemoveIcon /> */}
+        <MinusOutlined />
+        {/* </Button> */}
+      </Flex>
       {isKeypad ? (
         <>
           <Keypad
@@ -382,36 +389,45 @@ export default function phoneCall() {
         </>
       ) : (
         <>
-          <Box
-            width="100%"
-            height="100vh"
-            bgcolor="#FFF"
-            display="flex"
-            position="relative"
-            flexDirection="column"
+          <Flex
+            vertical
+            // width="100%"
+            // height="100vh"
+            // bgcolor="#FFF"
+            // display="flex"
+            // position="relative"
+            // flexDirection="column"
           >
             {/* PROFILE AGNET PIC  */}
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              marginY="20px"
+            <Flex
+              align="center"
+              justify="center"
+              style={{ margin: "20px 0px" }}
+              // display="flex"
+              // justifyContent="center"
+              // alignItems="center"
+              // marginY="20px"
             >
-              <Box
-                bgcolor={env.VITE_APP_MAIN_COLOR}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                width="70px"
-                height="70px"
-                borderRadius="100%"
-                padding="15px"
-                border="none"
+              <Flex
+                style={{
+                  width: "100px",
+                  height: "100px",
+                }}
+                // bgcolor={env.VITE_APP_MAIN_COLOR}
+                // display="flex"
+                // alignItems="center"
+                // justifyContent="center"
+                // width="70px"
+                // height="70px"
+                // borderRadius="100%"
+                // padding="15px"
+                // border="none"
               >
                 <img className="my-3" src={CallerAva} />
-              </Box>
-            </Box>
-            <Box textAlign="center">
+              </Flex>
+            </Flex>
+            {/* <Box textAlign="center"> */}
+            <Flex align="center" justify="center" vertical>
               {/* <Typography fontSize="9px" color="#c4c4c4">
               status
             </Typography>
@@ -421,7 +437,7 @@ export default function phoneCall() {
               {/* <Typography sx={{ textTransform: "capitalize" }}>
                 Dhimas
               </Typography> */}
-              <Typography>
+              <Typography.Text>
                 {statusCall === "waiting"
                   ? "Calling"
                   : statusCall === "RING"
@@ -431,7 +447,7 @@ export default function phoneCall() {
                   : statusCall === "End Call"
                   ? "End Call"
                   : ""}
-              </Typography>
+              </Typography.Text>
               <div
                 style={{
                   display: "flex",
@@ -441,52 +457,49 @@ export default function phoneCall() {
                 }}
                 className="timer"
               >
-                <Typography
+                <Typography.Text
                   style={{ color: "#3DCB87", fontSize: 18, fontWeight: 600 }}
                   className="digits"
                 >
                   {("0" + Math.floor((time / 60000) % 60)).slice(-2)}:
-                </Typography>
-                <Typography
+                </Typography.Text>
+                <Typography.Text
                   style={{ color: "#3DCB87", fontSize: 18, fontWeight: 600 }}
                   className="digits"
                 >
                   {("0" + Math.floor((time / 1000) % 60)).slice(-2)}
-                </Typography>
+                </Typography.Text>
                 {/* <span className="digits mili-sec">
                   {("0" + ((time / 10) % 100)).slice(-2)}
                 </span> */}
               </div>
-            </Box>
+            </Flex>
             {/* MUTE HANGUP BUTTON  */}
-            <Grid
-              container
-              rowSpacing={1}
-              columnSpacing={{ xs: 1 }}
-              sx={{ my: 2, paddingX: 3 }}
+            <Row
+              gutter={[8, 8]}
+              style={{ margin: "16px 0", padding: "0 24px" }}
             >
-              <Grid item xs={6} padding={0} textAlign="center">
-                <IconButton
-                  sx={{
+              <Col span={12} style={{ padding: 0, textAlign: "center" }}>
+                <Button
+                  style={{
                     borderRadius: "50px",
                     border: "2px solid #9D9FB1",
-                    padding: "15px",
+                    padding: "28px",
                   }}
                   onClick={() => toggleMute()}
-                  fullWidth
+                  // fullWidth
                   // variant={isMuted ? "contained" : "outlined"}
                   // startIcon={isMuted ? MuteOff : MuteOn}
                   // color={isMuted ? "error" : "primary"}
                   disabled={!isCalling}
-                >
-                  <img src={isMuted ? MuteOn : MuteOff} />
-                </IconButton>
+                  icon={<img src={isMuted ? MuteOn : MuteOff} />}
+                ></Button>
                 <Typography color="#9D9FB1" fontSize="16px" marginTop="10px">
                   Mute
                 </Typography>
-              </Grid>
+              </Col>
               {/* <Grid item xs={6} textAlign="center">/ */}
-              {/* <IconButton
+              {/* <Button
                   sx={{
                     borderRadius: "50px",
                     border: "2px solid #9D9FB1",
@@ -500,7 +513,7 @@ export default function phoneCall() {
                   disabled={!isCalling}
                 >
                   <img src={SpeakerOff} />
-                </IconButton> */}
+                </Button> */}
               {/* <Typography color="#9D9FB1" fontSize="16px" marginTop="10px">
                   Speaker
                 </Typography> */}
@@ -515,12 +528,12 @@ export default function phoneCall() {
                 Hangup
               </Button> */}
               {/* </Grid> */}
-              <Grid item xs={6} textAlign="center">
-                <IconButton
-                  sx={{
+              <Col span={12} style={{ textAlign: "center" }}>
+                <Button
+                  style={{
                     borderRadius: "50px",
                     border: "2px solid #9D9FB1",
-                    padding: "15px",
+                    padding: "28px",
                   }}
                   onClick={() => setIsKeypad(true)}
                   fullWidth
@@ -528,53 +541,51 @@ export default function phoneCall() {
                   // startIcon={isMuted ? <MicOffIcon /> : <MicIcon />}
                   color={isMuted ? "error" : "primary"}
                   // disabled={!isCalling}
-                >
-                  <img src={KeypadIcon} />
-                </IconButton>
+                  icon={<img src={KeypadIcon} />}
+                ></Button>
                 <Typography color="#9D9FB1" fontSize="16px" marginTop="10px">
                   Keypad
                 </Typography>
-              </Grid>
-            </Grid>
+              </Col>
+            </Row>
 
             {/* END CALL BUTTON  */}
-            <Box
-              sx={{
+            <Flex
+              style={{
                 width: "100%",
                 display: "flex",
                 justifyContent: "center",
                 backgroundColor: "white",
                 position: "absolute",
                 bottom: 100,
+                textAlign: "center",
+                margin: "20px 0px",
               }}
-              textAlign="center"
-              marginY="20px"
             >
-              <IconButton
-                sx={{
+              <Button
+                style={{
                   borderRadius: 50,
                   overflow: "hidden",
-                  padding: "25px 15px",
+                  padding: "25px 25px",
                   backgroundColor: "#FF3B30",
                 }}
                 onClick={() => endCall()}
-              >
-                <img src={EndCall} />
-              </IconButton>
-            </Box>
+                icon={<img src={EndCall} />}
+              ></Button>
+            </Flex>
             {/* <Box>
           <Typography fontSize={9} color="#c4c4c4">
             Statu register: {statusRegiter}
           </Typography>
         </Box> */}
-          </Box>
+          </Flex>
         </>
       )}
-      <Box display="none">
+      <Flex style={{ display: "none" }}>
         <div id="remoteVideo" ref={remoteVideo}></div>
         <div id="localVideo" ref={localVideo}></div>
-      </Box>
-    </Box>
+      </Flex>
+    </Flex>
   );
 }
 

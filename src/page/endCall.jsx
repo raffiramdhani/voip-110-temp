@@ -1,23 +1,23 @@
-import { Grid, Typography } from "@mui/material";
 import React from "react";
 import useRouteStore from "@/store/routeStore";
+import { Col, Row, Typography } from "antd";
 
 export default function endCall() {
   const route = useRouteStore((state) => state);
   React.useEffect(() => {
     setTimeout(() => {
-      route.push("login")
+      route.push("login");
     }, 5000);
-  })
+  });
   return (
-    <Grid
-      container
-      spacing={0}
-      justifyContent="center"
-      alignItems="center"
-      sx={{ minHeight: "100vh", backgroundColor: "white" }}
+    <Row
+      justify="center"
+      align="middle"
+      style={{ minHeight: "100vh", backgroundColor: "white" }}
     >
-      <Typography>Terima kasih telah menghubungi kami.</Typography>
-    </Grid>
+      <Col>
+        <Typography.Text>Terima kasih telah menghubungi kami.</Typography.Text>
+      </Col>
+    </Row>
   );
 }
