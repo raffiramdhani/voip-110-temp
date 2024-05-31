@@ -3,8 +3,8 @@ import {
   Box,
   Grid,
   Paper,
-  Button,
-  Typography,
+  // Button,
+  // Typography,
   IconButton,
 } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -35,6 +35,7 @@ import EndCall from "../assets/end-call.png";
 
 import Keypad from "../components/Keypad";
 import useRouteStore from "@/store/routeStore";
+import { Col, Button, Flex, Row, Typography } from "antd";
 
 const env = import.meta.env;
 
@@ -360,7 +361,8 @@ export default function phoneCall() {
   }
 
   return (
-    <Box
+    <Flex
+      vertical
       // position={`${type === "web" ? "absolute" : ""}`}
       // width={`${type === "web" ? "25%" : "100%"}`}
       // height={`${type === "web" ? "70%" : "100vh"}`}
@@ -371,34 +373,30 @@ export default function phoneCall() {
       boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
       backgroundColor="white"
     >
-      <Box
-        padding="12px 15px"
-        display="flex"
-        alignItems="center"
-        bgcolor={color.main}
+      <Flex
+        style={{
+          padding: "12px 15px",
+          backgroundColor: color.main,
+        }}
+        align="center"
       >
-        <Box
-          display="flex"
-          flex={1}
-          flexDirection="row"
-          alignItems="center"
-          justifyContent="space-between"
-          gap={2}
-        >
-          <Typography
-            fontSize={windowWidth <= 425 ? 18 : 24}
-            fontWeight={400}
-            color={color.textTitle}
-            display="flex"
-            flex={1}
+        <Flex align="center" justify="space-between" style={{ width: "100%" }}>
+          <Typography.Text
+            style={{
+              fontSize: windowWidth <= 425 ? 18 : 24,
+              fontWeight: 400,
+              color: color.textTitle,
+            }}
+            // display="flex"
+            // flex={1}
           >
             TMI VoIP
-          </Typography>
+          </Typography.Text>
           <img
             src={WelcomeIcon}
             style={{ maxWidth: windowWidth <= 425 ? 150 : 200 }}
           />
-        </Box>
+        </Flex>
         {/* <IconButton
         onClick={() => {
           setIsOpen("login");
@@ -407,7 +405,7 @@ export default function phoneCall() {
         >
           <RemoveIcon style={{ color: "white" }} />
         </IconButton> */}
-      </Box>
+      </Flex>
       {isKeypad ? (
         <>
           <Keypad
@@ -419,40 +417,43 @@ export default function phoneCall() {
         </>
       ) : (
         <>
-          <Box
-            width="100%"
-            height="100vh"
-            bgcolor="#FFF"
-            display="flex"
-            position="relative"
-            flexDirection="column"
+          <Flex
+            vertical
+            style={{
+              width: "100%",
+              height: "100vh",
+              backgroundColor: "#FFF",
+            }}
           >
             {/* PROFILE AGNET PIC  */}
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              marginY="20px"
+            <Flex
+              align="center"
+              justify="center"
+              style={{
+                margin: "20px 0px",
+              }}
             >
-              <Box
-                bgcolor={env.VITE_APP_MAIN_COLOR}
+              <Flex
+                style={{
+                  backgroundColor: env.VITE_APP_MAIN_COLOR,
+                  width: "70px",
+                  height: "70px",
+                  borderRadius: "100%",
+                  padding: "15px",
+                  border: "none",
+                }}
                 display="flex"
-                alignItems="center"
-                justifyContent="center"
-                width="70px"
-                height="70px"
-                borderRadius="100%"
-                padding="15px"
-                border="none"
+                align="center"
+                justify="center"
               >
                 <img
                   className="my-3"
                   src={CallerAva}
                   style={{ width: 100, height: 100, borderRadius: 100 }}
                 />
-              </Box>
-            </Box>
-            <Box textAlign="center">
+              </Flex>
+            </Flex>
+            <Flex justify="center" align="center" vertical textAlign="center">
               {/* <Typography fontSize="9px" color="#c4c4c4">
               status
             </Typography>
@@ -462,7 +463,7 @@ export default function phoneCall() {
               {/* <Typography sx={{ textTransform: "capitalize" }}>
                 Dhimas
               </Typography> */}
-              <Typography>
+              <Typography.Text>
                 {statusCall === "waiting"
                   ? "Calling"
                   : statusCall === "RING"
@@ -472,7 +473,7 @@ export default function phoneCall() {
                   : statusCall === "End Call"
                   ? "End Call"
                   : ""}
-              </Typography>
+              </Typography.Text>
               <div
                 style={{
                   display: "flex",
@@ -482,12 +483,12 @@ export default function phoneCall() {
                 }}
                 className="timer"
               >
-                <Typography
+                <Typography.Text
                   style={{ color: "#3DCB87", fontSize: 18, fontWeight: 600 }}
                   className="digits"
                 >
                   {("0" + Math.floor((time / 60000) % 60)).slice(-2)}:
-                </Typography>
+                </Typography.Text>
                 <Typography
                   style={{ color: "#3DCB87", fontSize: 18, fontWeight: 600 }}
                   className="digits"
@@ -498,34 +499,32 @@ export default function phoneCall() {
                   {("0" + ((time / 10) % 100)).slice(-2)}
                 </span> */}
               </div>
-            </Box>
+            </Flex>
             {/* MUTE HANGUP BUTTON  */}
-            <Grid
-              container
-              rowSpacing={1}
-              columnSpacing={{ xs: 1 }}
-              sx={{ my: 2, paddingX: 3 }}
+            <Row
+              gutter={[8, 8]}
+              style={{ margin: "16px 0", padding: "0 24px" }}
             >
-              <Grid item xs={6} padding={0} textAlign="center">
-                <IconButton
-                  sx={{
+              <Col span={12} style={{ padding: 0, textAlign: "center" }}>
+                <Button
+                  style={{
                     borderRadius: "50px",
                     border: "2px solid #9D9FB1",
-                    padding: "15px",
+                    padding: "28px",
                   }}
                   onClick={() => toggleMute()}
-                  fullWidth
+                  // fullWidth
                   // variant={isMuted ? "contained" : "outlined"}
                   // startIcon={isMuted ? MuteOff : MuteOn}
                   // color={isMuted ? "error" : "primary"}
                   disabled={!isCalling}
-                >
-                  <img src={isMuted ? MuteOn : MuteOff} />
-                </IconButton>
+                  icon={<img src={isMuted ? MuteOn : MuteOff} />}
+                ></Button>
+
                 <Typography color="#9D9FB1" fontSize="16px" marginTop="10px">
                   Mute
                 </Typography>
-              </Grid>
+              </Col>
               {/* <Grid item xs={6} textAlign="center">/ */}
               {/* <IconButton
                   sx={{
@@ -556,12 +555,12 @@ export default function phoneCall() {
                 Hangup
               </Button> */}
               {/* </Grid> */}
-              <Grid item xs={6} textAlign="center">
-                <IconButton
-                  sx={{
+              <Col span={12} style={{ textAlign: "center" }}>
+                <Button
+                  style={{
                     borderRadius: "50px",
                     border: "2px solid #9D9FB1",
-                    padding: "15px",
+                    padding: "28px",
                   }}
                   onClick={() => setIsKeypad(true)}
                   fullWidth
@@ -569,53 +568,52 @@ export default function phoneCall() {
                   // startIcon={isMuted ? <MicOffIcon /> : <MicIcon />}
                   color={isMuted ? "error" : "primary"}
                   // disabled={!isCalling}
-                >
-                  <img src={KeypadIcon} />
-                </IconButton>
+                  icon={<img src={KeypadIcon} />}
+                ></Button>
+
                 <Typography color="#9D9FB1" fontSize="16px" marginTop="10px">
                   Keypad
                 </Typography>
-              </Grid>
-            </Grid>
+              </Col>
+            </Row>
 
             {/* END CALL BUTTON  */}
-            <Box
-              sx={{
+            <Flex
+              style={{
                 width: "100%",
                 display: "flex",
                 justifyContent: "center",
                 backgroundColor: "white",
                 position: "absolute",
                 bottom: 100,
+                textAlign: "center",
+                margin: "20px 0px",
               }}
-              textAlign="center"
-              marginY="20px"
             >
-              <IconButton
-                sx={{
+              <Button
+                style={{
                   borderRadius: 50,
                   overflow: "hidden",
-                  padding: "25px 15px",
+                  padding: "25px 25px",
                   backgroundColor: "#FF3B30",
                 }}
                 onClick={() => endCall()}
-              >
-                <img src={EndCall} />
-              </IconButton>
-            </Box>
+                icon={<img src={EndCall} />}
+              ></Button>
+            </Flex>
             {/* <Box>
           <Typography fontSize={9} color="#c4c4c4">
             Statu register: {statusRegiter}
           </Typography>
         </Box> */}
-          </Box>
+          </Flex>
         </>
       )}
-      <Box display="none">
+      <Flex style={{ display: "none" }}>
         <div id="remoteVideo" ref={remoteVideo}></div>
         <div id="localVideo" ref={localVideo}></div>
-      </Box>
-    </Box>
+      </Flex>
+    </Flex>
   );
 }
 

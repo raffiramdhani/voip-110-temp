@@ -1,17 +1,18 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
   Box,
-  Button,
+  // Button,
   Avatar,
-  Typography,
+  // Typography,
   TextField,
   Checkbox,
   CircularProgress,
   IconButton,
-  Alert,
-  Select,
+  // Alert,
+  // Select,
   MenuItem,
 } from "@mui/material";
+import { Typography, Button, Input, Form, Select, Alert, Flex } from "antd";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { v4 as uuidv4 } from "uuid";
 
@@ -34,6 +35,7 @@ import useAuth from "@/store/openingStore";
 
 import { browserName, osName } from "react-device-detect";
 import axios from "axios";
+import { MinusOutlined } from "@ant-design/icons";
 
 const env = import.meta.env;
 
@@ -62,7 +64,7 @@ export default function login(props) {
   const url_params = new URL(url_string);
   const type = url_params.searchParams.get("type");
   let captchaRef = React.useRef();
-
+  const [newForm] = Form.useForm();
   const genID = uuidv4();
 
   const handleInput = (e) => {
@@ -77,7 +79,10 @@ export default function login(props) {
       },
     };
     const res = await axios
-      .get(`${env.VITE_APP_EXTEN_URL}/additional-field-customer/widget/${env.VITE_APP_EXTEN_TENANT}`, config)
+      .get(
+        `${env.VITE_APP_EXTEN_URL}/additional-field-customer/widget/${env.VITE_APP_EXTEN_TENANT}`,
+        config
+      )
       .then((res) => setListingAdditionalField(res.data))
       .catch((err) => console.log(err));
     return res;
@@ -98,7 +103,7 @@ export default function login(props) {
   }, [handleReCaptchaVerify]);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     if (captcha) {
       setLoading(true);
       const data = await requestExtension();
@@ -173,7 +178,10 @@ export default function login(props) {
       redirect: "follow",
     };
 
-    const data = await fetch(`${env.VITE_APP_EXTEN_URL}/voip/transaction`, requestOptions)
+    const data = await fetch(
+      `${env.VITE_APP_EXTEN_URL}/voip/transaction`,
+      requestOptions
+    )
       .then((res) => console.log("Success"))
       .catch((err) => console.log(err));
     return data;
@@ -195,9 +203,15 @@ export default function login(props) {
     myHeaders.append("Authorization", `${env.VITE_APP_AUTHORIZATION}`);
     myHeaders.append("Content-Type", "application/json");
 
-    const encryptedParams = new URLSearchParams(window.location.search).get("key");
+    const encryptedParams = new URLSearchParams(window.location.search).get(
+      "key"
+    );
 
-    const params = decrypt(encryptedParams, env.VITE_VOIP_DECODE_IV, env.VITE_VOIP_DECODE_KEY);
+    const params = decrypt(
+      encryptedParams,
+      env.VITE_VOIP_DECODE_IV,
+      env.VITE_VOIP_DECODE_KEY
+    );
 
     var dataFromUrl = JSON.stringify({
       username: params?.user?.fullname,
@@ -308,85 +322,111 @@ export default function login(props) {
   }, []);
 
   return (
-    <Box>
+    <Flex>
       {/* {type === "web" ? ( */}
       <>
         {props.props.showCallPage && isOpen === "login" ? (
-          <Box
+          <Flex
+            style={{ width: "100%" }}
+            vertical
             // height="400px"
             // position="absolute"
             // width={`${type === "web" ? "25%" : "100%"}`}
             // height={`${type === "web" ? "70%" : "100%"}`}
-            bottom="8rem"
-            right="2rem"
-            display="flex"
-            flexDirection="column"
+            // bottom="8rem"
+            // right="2rem"
+            // display="flex"
+            // flexDirection="column"
             // boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
           >
-            <Box padding="0px 15px" display="flex" alignItems="center" bgcolor={color.main}>
-              <Box width="100%" display="flex" flexDirection="row" justifyContent="space-between" alignItems="center">
-                <Box
-                  display="flex"
-                  flex={1}
-                  flexDirection="row"
-                  alignItems="center"
-                  justifyContent="space-between"
-                  gap={2}
+            <Flex
+              style={{
+                padding: "0px 15px",
+                backgroundColor: color.main,
+              }}
+              align="center"
+            >
+              <Flex
+                vertical
+                justify="space-between"
+                align="center"
+                style={{ width: "100%" }}
+              >
+                <Flex
+                  align="center"
+                  justify="space-between"
+                  style={{ width: "100%" }}
                 >
-                  <Typography
-                    fontSize={windowWidth <= 425 ? 18 : 24}
-                    fontWeight={400}
-                    color={color.textTitle}
-                    display="flex"
-                    flex={1}
+                  <Typography.Text
+                    style={{
+                      fontSize: windowWidth <= 425 ? 18 : 24,
+                      fontWeight: 400,
+                      color: color.textTitle,
+                    }}
                   >
                     TMI VoIP
-                  </Typography>
-                  <img src={WelcomeIcon} style={{ maxWidth: windowWidth <= 425 ? 150 : 200 }} />
-                </Box>
+                  </Typography.Text>
+                  <img
+                    src={WelcomeIcon}
+                    style={{ maxWidth: windowWidth <= 425 ? 150 : 200 }}
+                  />
+                </Flex>
                 {type === "web" ? (
-                  <IconButton
+                  <MinusOutlined
                     onClick={() => {
                       setIsOpen("login");
                       setOpenFloating(false);
                       props.props.setCloseCall();
                     }}
-                  >
-                    <RemoveIcon />
-                  </IconButton>
+                  />
                 ) : (
                   <></>
                 )}
-              </Box>
-            </Box>
-            <Box
-              sx={{
+              </Flex>
+            </Flex>
+            <Flex
+              vertical
+              style={{
                 // height: "495px",
                 padding: "20px",
                 backgroundColor: "white",
               }}
             >
-              <Typography className="mb-2">To start a call, please fill the form before</Typography>
-              <form
+              <Typography.Text style={{ marginBottom: 8 }}>
+                To start a call, please fill the form before
+              </Typography.Text>
+              <Form
                 // style={{ height: `80vh` }}
-                onSubmit={(e) => handleSubmit(e)}
+                form={newForm}
+                layout="vertical"
+                onFinish={(e) => handleSubmit(e)}
+                initialValues={{
+                  username: "",
+                  phone: "",
+                }}
               >
-                <Typography marginTop={2}>Full Name / Nama Lengkap</Typography>
-                <TextField
-                  value={form.name}
-                  onChange={(e) => handleInput(e)}
-                  // disabled={form.isLoadingSetupWebphone}
-                  fullWidth
-                  placeholder="Enter Full Name / Nama Lengkap"
-                  required
-                  color="info"
-                  id="form-username"
-                  // label="Name"
-                  size="small"
-                  margin="dense"
+                {/* <Typography marginTop={2}>Full Name / Nama Lengkap</Typography> */}
+                <Form.Item
+                  rules={[{ required: true }]}
                   name="username"
-                  sx={styling.TextField}
-                />
+                  label="Full Name / Nama Lengkap"
+                >
+                  <Input
+                    name="username"
+                    value={form.name}
+                    onChange={(e) => handleInput(e)}
+                    // disabled={form.isLoadingSetupWebphone}
+                    fullWidth
+                    placeholder="Enter Full Name / Nama Lengkap"
+                    // required
+                    color="info"
+                    id="form-username"
+                    // label="Name"
+                    // size="small"
+                    margin="dense"
+                    // sx={styling.TextField}
+                  />
+                </Form.Item>
 
                 {/* <Typography marginTop={1}>Email</Typography>
                 <TextField
@@ -405,33 +445,44 @@ export default function login(props) {
                   margin="dense"
                   sx={styling.TextField}
                 /> */}
-                <Typography marginTop={1}>Phone Number / Nomor Telepon</Typography>
-                <TextField
-                  value={form.phone}
-                  onChange={(e) => {
-                    setPhoneNumber(e.target.value);
-                    handleInput(e);
-                    validatePhoneNumber(e.target.value);
-                  }}
-                  error={!!errorPhoneNumber}
-                  helperText={errorPhoneNumber}
-                  fullWidth
-                  placeholder="Enter Phone Number / Nomor Telepon"
-                  required
-                  variant="outlined"
-                  color="info"
-                  id="form-phone"
-                  InputProps={{
-                    onInvalid: (e) => e.preventDefault(),
-                    pattern: ".{9,}", // Minimum 9 characters
-                  }}
-                  // label="Phone"
+                {/* <Typography marginTop={1}>
+                  Phone Number / Nomor Telepon
+                </Typography> */}
+                <Form.Item
+                  rules={[
+                    { required: true },
+                    { pattern: ".{9,}", message: "Minimum 9 character" },
+                  ]}
                   name="phone"
-                  size="small"
-                  margin="dense"
-                  type="number"
-                  sx={styling.TextField}
-                />
+                  label="Phone Number / Nomor Telepon"
+                >
+                  <Input
+                    name="phone"
+                    value={form.phone}
+                    onChange={(e) => {
+                      setPhoneNumber(e.target.value);
+                      handleInput(e);
+                      validatePhoneNumber(e.target.value);
+                    }}
+                    error={!!errorPhoneNumber}
+                    helperText={errorPhoneNumber}
+                    fullWidth
+                    placeholder="Enter Phone Number / Nomor Telepon"
+                    // required
+                    variant="outlined"
+                    color="info"
+                    id="form-phone"
+                    InputProps={{
+                      onInvalid: (e) => e.preventDefault(),
+                      pattern: ".{9,}", // Minimum 9 characters
+                    }}
+                    // label="Phone"
+                    // size="small"
+                    margin="dense"
+                    type="number"
+                    // sx={styling.TextField}
+                  />
+                </Form.Item>
 
                 {listingAdditionalField
                   ? listingAdditionalField &&
@@ -453,10 +504,14 @@ export default function login(props) {
                                     onChange={(event) => handleInput(event)}
                                     label={e.label}
                                     sx={{ width: "100%" }}
+                                    options={e?.option.map((v) => ({
+                                      label: v,
+                                      value: v,
+                                    }))}
                                   >
-                                    {e?.option.map((e) => {
+                                    {/* {e?.option.map((e) => {
                                       return <MenuItem value={e}>{e}</MenuItem>;
-                                    })}
+                                    })} */}
                                   </Select>
                                 </>
                               ) : (
@@ -465,7 +520,9 @@ export default function login(props) {
                                   onChange={(event) => handleInput(event)}
                                   // disabled={form.isLoadingSetupWebphone}
                                   fullWidth
-                                  multiline={e.type === "textarea" ? true : false}
+                                  multiline={
+                                    e.type === "textarea" ? true : false
+                                  }
                                   rows={e.type === "textarea" ? 3 : 1}
                                   placeholder={e.label}
                                   required={e.is_mandatory ? true : false}
@@ -482,7 +539,9 @@ export default function login(props) {
                             </>
                           ) : !e.is_mandatory && e.display_type === "show" ? (
                             <>
-                              <Typography marginTop={1}>{e.label}</Typography>
+                              <Typography.Text marginTop={1}>
+                                {e.label}
+                              </Typography.Text>
                               {e.type === "select" ? (
                                 <>
                                   <Select
@@ -495,10 +554,14 @@ export default function login(props) {
                                     onChange={(event) => handleInput(event)}
                                     label={e.label}
                                     sx={{ width: "100%" }}
+                                    options={e?.option.map((v) => ({
+                                      label: v,
+                                      value: v,
+                                    }))}
                                   >
-                                    {e?.option.map((e) => {
+                                    {/* {e?.option.map((e) => {
                                       return <MenuItem value={e}>{e}</MenuItem>;
-                                    })}
+                                    })} */}
                                   </Select>
                                 </>
                               ) : (
@@ -507,7 +570,9 @@ export default function login(props) {
                                   onChange={(event) => handleInput(event)}
                                   // disabled={form.isLoadingSetupWebphone}
                                   fullWidth
-                                  multiline={e.type === "textarea" ? true : false}
+                                  multiline={
+                                    e.type === "textarea" ? true : false
+                                  }
                                   rows={e.type === "textarea" ? 3 : 1}
                                   placeholder={e.label}
                                   // required={e.is_mandatory ? true : false}
@@ -537,19 +602,23 @@ export default function login(props) {
                   />
                 </Box> */}
 
-                <Box
-                  width="100%"
-                  display="flex"
-                  flexDirection="column"
-                  justifyContent="center"
-                  marginTop={2}
-                  bottom={5}
-                  // paddingY="12px"
+                <Flex
+                  vertical
+                  style={{
+                    width: "100%",
+                    marginTop: 2,
+                    bottom: 5,
+                    padding: "12px 0px",
+                  }}
                 >
-                  {msgError ? <Alert severity="error">{msgError}</Alert> : <></>}
+                  {msgError ? (
+                    <Alert severity="error">{msgError}</Alert>
+                  ) : (
+                    <></>
+                  )}
                   <Button
-                    type="submit"
-                    sx={{
+                    htmlType="submit"
+                    style={{
                       width: "100%",
                       borderRadius: "10px",
                       // marginTop: "1em",
@@ -559,14 +628,14 @@ export default function login(props) {
                     variant="contained"
                     // startIcon={<PhoneInTalkIcon />}
                     disabled={loading || !!errorPhoneNumber}
+                    loading={loading}
                   >
-                    {loading && <CircularProgress size={20} color="inherit" sx={{ marginX: "10px" }} />}
                     Start Call
                   </Button>
-                </Box>
-              </form>
-            </Box>
-          </Box>
+                </Flex>
+              </Form>
+            </Flex>
+          </Flex>
         ) : (
           <>
             <Welcome
@@ -582,8 +651,11 @@ export default function login(props) {
           <StartCall handleSubmitMobile={handleSubmitMobile} />
         </>
       )} */}
-      <TermsCond open={openModalAgree} onClose={() => setOpenModalAgree(false)} />
-    </Box>
+      <TermsCond
+        open={openModalAgree}
+        onClose={() => setOpenModalAgree(false)}
+      />
+    </Flex>
   );
 }
 
