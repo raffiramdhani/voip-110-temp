@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useMemo } from "react";
 import {
   Box,
-  Button,
+  // Button,
   Avatar,
-  Typography,
+  // Typography,
   TextField,
   Checkbox,
   Grid,
   CircularProgress,
   IconButton,
-  Alert,
-  Select,
+  // Alert,
+  // Select,
   MenuItem,
 } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -37,6 +37,17 @@ import { browserName, osName } from "react-device-detect";
 import axios from "axios";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useCallback } from "react";
+import {
+  Alert,
+  Button,
+  Col,
+  Flex,
+  Form,
+  Input,
+  Row,
+  Select,
+  Typography,
+} from "antd";
 
 const env = import.meta.env;
 
@@ -65,6 +76,8 @@ export default function login(props) {
   const url_params = new URL(url_string);
   const type = url_params.searchParams.get("type");
   // let captchaRef = React.useRef();
+  const { Text } = Typography;
+  const [newForm] = Form.useForm();
 
   const genID = uuidv4();
 
@@ -94,14 +107,17 @@ export default function login(props) {
       },
     };
     const res = await axios
-      .get(`${env.VITE_APP_EXTEN_URL}/additional-field-customer/widget/${env.VITE_APP_EXTEN_TENANT}`, config)
+      .get(
+        `${env.VITE_APP_EXTEN_URL}/additional-field-customer/widget/${env.VITE_APP_EXTEN_TENANT}`,
+        config
+      )
       .then((res) => setListingAdditionalField(res.data))
       .catch((err) => console.log(err));
     return res;
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     if (captcha) {
       setLoading(true);
       const data = await requestExtension();
@@ -168,7 +184,10 @@ export default function login(props) {
       redirect: "follow",
     };
 
-    const data = await fetch(`${env.VITE_APP_EXTEN_URL}/voip/transaction`, requestOptions)
+    const data = await fetch(
+      `${env.VITE_APP_EXTEN_URL}/voip/transaction`,
+      requestOptions
+    )
       .then((res) => console.log("Success"))
       .catch((err) => console.log(err));
     return data;
@@ -190,9 +209,15 @@ export default function login(props) {
     myHeaders.append("Authorization", `${env.VITE_APP_AUTHORIZATION}`);
     myHeaders.append("Content-Type", "application/json");
 
-    const encryptedParams = new URLSearchParams(window.location.search).get("key");
+    const encryptedParams = new URLSearchParams(window.location.search).get(
+      "key"
+    );
 
-    const params = decrypt(encryptedParams, env.VITE_VOIP_DECODE_IV, env.VITE_VOIP_DECODE_KEY);
+    const params = decrypt(
+      encryptedParams,
+      env.VITE_VOIP_DECODE_IV,
+      env.VITE_VOIP_DECODE_KEY
+    );
 
     var dataFromUrl = JSON.stringify({
       username: params?.user?.fullname,
@@ -285,19 +310,21 @@ export default function login(props) {
   }, []);
 
   return (
-    <Box>
+    <Flex>
       {/* {type === "web" ? ( */}
       <>
         {props.props.showCallPage && isOpen === "login" ? (
-          <Box
+          <Flex
+            style={{ width: "100%" }}
+            vertical
             // height="400px"
             // position="absolute"
             // width={`${type === "web" ? "25%" : "100%"}`}
             // height={`${type === "web" ? "70%" : "100%"}`}
-            bottom="8rem"
-            right="2rem"
-            display="flex"
-            flexDirection="column"
+            // bottom="8rem"
+            // right="2rem"
+            // display="flex"
+            // flexDirection="column"
             // boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
           >
             {/* <Box
@@ -339,76 +366,88 @@ export default function login(props) {
                 )}
               </Box>
             </Box> */}
-            <Grid container>
-              <Grid item xs={12} style={{ background: "#165581", display: "flex" }}>
-                <Box
-                  style={{
-                    width: "100px",
-                    height: "40px",
-                    padding: "7px 15px",
-                  }}
-                >
-                  <img src={BJBLogo} style={{ maxHeight: "100%", maxWidth: "100%" }} />
-                </Box>
-                <Typography
-                  variant="h6"
-                  style={{
-                    fontSize: "13px",
-                    color: "#fff",
-                    margin: "auto 16px auto auto",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontWeight: 600,
-                      color: "#FCCC0E",
-                    }}
-                  >
+            <Row
+              style={{
+                background: "#165581",
+                display: "flex",
+                padding: "8px 0px",
+              }}
+            >
+              <Col
+                style={{ width: "100px", height: "100%", padding: "7px 15px" }}
+              >
+                <img
+                  src={BJBLogo}
+                  style={{ maxHeight: "100%", maxWidth: "100%" }}
+                  alt="BJB Logo"
+                />
+              </Col>
+              <Col
+                flex="auto"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "flex-end",
+                  marginRight: "16px",
+                }}
+              >
+                <Text style={{ fontSize: "13px", color: "#fff" }}>
+                  <span style={{ fontWeight: 600, color: "#FCCC0E" }}>
                     bjb{" "}
                   </span>
                   Call
-                </Typography>
-              </Grid>
-            </Grid>
-            <Box
-              sx={{
+                </Text>
+              </Col>
+            </Row>
+            <Flex
+              vertical
+              style={{
                 // height: "495px",
                 padding: "20px",
                 backgroundColor: "white",
               }}
             >
-              <Typography
+              <Text
                 style={{
                   marginBottom: "25px",
                 }}
               >
                 Untuk memulai panggilan, silahkan isi form di bawah ini.
-              </Typography>
-              <form
+              </Text>
+              <Form
                 // style={{ height: `80vh` }}
-                onSubmit={(e) => handleSubmit(e)}
+                layout="vertical"
+                onFinish={(e) => handleSubmit(e)}
               >
-                <Typography marginTop={2} style={{ fontSize: "14px" }}>
+                {/* <Typography marginTop={2} style={{ fontSize: "14px" }}>
                   Nama Lengkap
-                </Typography>
-                <TextField
-                  value={form.name}
-                  onChange={(e) => handleInput(e)}
-                  // disabled={form.isLoadingSetupWebphone}
-                  fullWidth
-                  placeholder="Nama Lengkap"
-                  required
-                  color="info"
-                  id="form-username"
-                  // label="Name"
-                  size="small"
-                  margin="dense"
+                </Typography> */}
+                <Form.Item
                   name="username"
-                  sx={styling.TextField}
-                  inputProps={{
-                    style: { fontSize: 13 },
-                  }}
-                />
+                  rules={[
+                    { required: true, message: "Nama Lengkap is required" },
+                  ]}
+                  label="Nama Lengkap"
+                >
+                  <Input
+                    value={form.name}
+                    onChange={(e) => handleInput(e)}
+                    // disabled={form.isLoadingSetupWebphone}
+                    fullWidth
+                    placeholder="Nama Lengkap"
+                    // required
+                    color="info"
+                    id="form-username"
+                    // label="Name"
+                    // size="small"
+                    margin="dense"
+                    name="username"
+                    sx={styling.TextField}
+                    inputProps={{
+                      style: { fontSize: 13 },
+                    }}
+                  />
+                </Form.Item>
 
                 {/* <Typography marginTop={1}>Email</Typography> */}
                 {/* <TextField
@@ -428,42 +467,50 @@ export default function login(props) {
                   sx={styling.TextField}
                 /> */}
 
-                <Typography marginTop={1} style={{ fontSize: "14px" }}>
+                {/* <Typography marginTop={1} style={{ fontSize: "14px" }}>
                   Nomor Ponsel
-                </Typography>
-                <TextField
-                  value={form.phone}
-                  // onChange={(e) => {
-                  //   setPhoneNumber(e.target.value);
-                  //   handleInput(e);
-                  // }}
-                  onChange={(e) => {
-                    const regex = /^[0-9\b]+$/;
-                    if (e.target.value === "" || regex.test(e.target.value)) {
-                      setPhoneNumber(e.target.value);
-                      handleInput(e);
-                    }
-                  }}
-                  inputProps={{
-                    maxLength: 13,
-                    minLength: 9,
-                    style: {
-                      fontSize: 13,
-                    },
-                  }}
-                  fullWidth
-                  placeholder="Nomor Ponsel"
-                  required
-                  variant="outlined"
-                  color="info"
-                  id="form-phone"
-                  // label="Phone"
+                </Typography> */}
+                <Form.Item
                   name="phone"
-                  size="small"
-                  margin="dense"
-                  type="text"
-                  sx={styling.TextField}
-                />
+                  rules={[
+                    { required: true, message: "Nomor Ponsel is required" },
+                  ]}
+                  label="Nomor Ponsel"
+                >
+                  <Input
+                    value={form.phone}
+                    // onChange={(e) => {
+                    //   setPhoneNumber(e.target.value);
+                    //   handleInput(e);
+                    // }}
+                    onChange={(e) => {
+                      const regex = /^[0-9\b]+$/;
+                      if (e.target.value === "" || regex.test(e.target.value)) {
+                        setPhoneNumber(e.target.value);
+                        handleInput(e);
+                      }
+                    }}
+                    inputProps={{
+                      maxLength: 13,
+                      minLength: 9,
+                      style: {
+                        fontSize: 13,
+                      },
+                    }}
+                    fullWidth
+                    placeholder="Nomor Ponsel"
+                    // required
+                    variant="outlined"
+                    color="info"
+                    id="form-phone"
+                    // label="Phone"
+                    name="phone"
+                    // size="small"
+                    margin="dense"
+                    type="text"
+                    sx={styling.TextField}
+                  />
+                </Form.Item>
 
                 {listingAdditionalField
                   ? listingAdditionalField &&
@@ -472,7 +519,7 @@ export default function login(props) {
                         <>
                           {e.display_type === "show" && e.is_mandatory ? (
                             <>
-                              <Typography marginTop={1}>{e.label}</Typography>
+                              <Text marginTop={1}>{e.label}</Text>
                               {e.type === "select" ? (
                                 <>
                                   <Select
@@ -485,10 +532,14 @@ export default function login(props) {
                                     onChange={(event) => handleInput(event)}
                                     label={e.label}
                                     sx={{ width: "100%" }}
+                                    options={e?.option.map((v) => ({
+                                      label: v,
+                                      value: v,
+                                    }))}
                                   >
-                                    {e?.option.map((e) => {
+                                    {/* {e?.option.map((e) => {
                                       return <MenuItem value={e}>{e}</MenuItem>;
-                                    })}
+                                    })} */}
                                   </Select>
                                 </>
                               ) : (
@@ -497,7 +548,9 @@ export default function login(props) {
                                   onChange={(event) => handleInput(event)}
                                   // disabled={form.isLoadingSetupWebphone}
                                   fullWidth
-                                  multiline={e.type === "textarea" ? true : false}
+                                  multiline={
+                                    e.type === "textarea" ? true : false
+                                  }
                                   rows={e.type === "textarea" ? 3 : 1}
                                   placeholder={e.label}
                                   required={e.is_mandatory ? true : false}
@@ -514,7 +567,7 @@ export default function login(props) {
                             </>
                           ) : !e.is_mandatory && e.display_type === "show" ? (
                             <>
-                              <Typography marginTop={1}>{e.label}</Typography>
+                              <Text marginTop={1}>{e.label}</Text>
                               {e.type === "select" ? (
                                 <>
                                   <Select
@@ -527,10 +580,14 @@ export default function login(props) {
                                     onChange={(event) => handleInput(event)}
                                     label={e.label}
                                     sx={{ width: "100%" }}
+                                    options={e?.option.map((v) => ({
+                                      label: v,
+                                      value: v,
+                                    }))}
                                   >
-                                    {e?.option.map((e) => {
+                                    {/* {e?.option.map((e) => {
                                       return <MenuItem value={e}>{e}</MenuItem>;
-                                    })}
+                                    })} */}
                                   </Select>
                                 </>
                               ) : (
@@ -539,7 +596,9 @@ export default function login(props) {
                                   onChange={(event) => handleInput(event)}
                                   // disabled={form.isLoadingSetupWebphone}
                                   fullWidth
-                                  multiline={e.type === "textarea" ? true : false}
+                                  multiline={
+                                    e.type === "textarea" ? true : false
+                                  }
                                   rows={e.type === "textarea" ? 3 : 1}
                                   placeholder={e.label}
                                   // required={e.is_mandatory ? true : false}
@@ -568,19 +627,24 @@ export default function login(props) {
                     onChange={(e) => setCaptcha(e)}
                   />
                 </Box> */}
-                <Box
-                  width="100%"
-                  display="flex"
-                  flexDirection="column"
-                  justifyContent="center"
+                <Flex
+                  vertical
+                  // width="100%"
+                  // display="flex"
+                  // flexDirection="column"
+                  // justifyContent="center"
                   // marginTop={3}
                   bottom={5}
                   // paddingY="12px"
                 >
-                  {msgError ? <Alert severity="error">{msgError}</Alert> : <></>}
+                  {msgError ? (
+                    <Alert severity="error" message={msgError}></Alert>
+                  ) : (
+                    <></>
+                  )}
                   <Button
-                    type="submit"
-                    sx={{
+                    htmlType="submit"
+                    style={{
                       width: "100%",
                       borderRadius: "50px",
                       marginTop: "1em",
@@ -590,14 +654,21 @@ export default function login(props) {
                     variant="contained"
                     // startIcon={<PhoneInTalkIcon />}
                     disabled={loading}
+                    loading={loading}
                   >
-                    {loading && <CircularProgress size={20} color="inherit" sx={{ marginX: "10px" }} />}
+                    {/* {loading && (
+                      <CircularProgress
+                        size={20}
+                        color="inherit"
+                        sx={{ marginX: "10px" }}
+                      />
+                    )} */}
                     Mulai Panggilan
                   </Button>
-                </Box>
-              </form>
-            </Box>
-          </Box>
+                </Flex>
+              </Form>
+            </Flex>
+          </Flex>
         ) : (
           <>
             <Welcome
@@ -613,8 +684,11 @@ export default function login(props) {
           <StartCall handleSubmitMobile={handleSubmitMobile} />
         </>
       )} */}
-      <TermsCond open={openModalAgree} onClose={() => setOpenModalAgree(false)} />
-    </Box>
+      <TermsCond
+        open={openModalAgree}
+        onClose={() => setOpenModalAgree(false)}
+      />
+    </Flex>
   );
 }
 

@@ -6,7 +6,15 @@ import React, { useState, useEffect } from "react";
 // import BJBLogo from "../../assets/bjb-logo.png";
 import BJBLogo from "../../assets/bjb-logo.png";
 import useAuth from "@/store/openingStore";
-import { Box, Button, Grid, Typography, TextField, Checkbox } from "@mui/material";
+import {
+  Box,
+  // Button,
+  Grid,
+  // Typography,
+  TextField,
+  // Checkbox,
+} from "@mui/material";
+import { Col, Flex, Row, Typography, Button, Checkbox } from "antd";
 // import RemoveIcon from "@mui/icons-material/Remove";
 const env = import.meta.env;
 
@@ -57,6 +65,8 @@ const Welcome = (props) => {
   const url_string = window.location.href;
   const url_params = new URL(url_string);
   const type = url_params.searchParams.get("type");
+  const { Text } = Typography;
+
   // LISTEN HEIGHT WINDOW
   useEffect(() => {
     // window.addEventListener("message", (e) => console.log(e));
@@ -82,17 +92,19 @@ const Welcome = (props) => {
     "Dengan menggunakan Layanan Voip, Saya menyetujui kebijakan syarat dan ketentuan, serta informasi yang Saya berikan di sini adalah benar.";
   return (
     <>
-      <Box
+      <Flex
+        style={{ width: "100%" }}
+        vertical
         // position={`${type === "web" ? "absolute" : ""}`}
         // width={`${type === "web" ? "25%" : "100%"}`}
         // height={`${type === "web" ? "70%" : "100vh"}`}
         // position="absolute"
         // width={`${type === "web" ? "25%" : "100%"}`}
         // height={`${type === "web" ? "70%" : "100vh"}`}
-        bottom="8rem"
-        right="2rem"
-        display="flex"
-        flexDirection="column"
+        // bottom="8rem"
+        // right="2rem"
+        // display="flex"
+        // flexDirection="column"
         // boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
       >
         {/* <Box
@@ -147,54 +159,57 @@ const Welcome = (props) => {
             <Typography fontSize={12}>What can we help you today?</Typography>
           </Box> */}
         {/* </Box> */}
-        <Grid container>
-          <Grid item xs={12} style={{ background: "#165581", display: "flex" }}>
-            <Box
-              style={{
-                width: "100px",
-                height: "40px",
-                padding: "7px 15px",
-              }}
-            >
-              <img src={BJBLogo} style={{ maxHeight: "100%", maxWidth: "100%" }} />
-            </Box>
-            <Typography
-              variant="h6"
-              style={{
-                fontSize: "13px",
-                color: "#fff",
-                margin: "auto 16px auto auto",
-              }}
-            >
-              <span
-                style={{
-                  fontWeight: 600,
-                  color: "#FCCC0E",
-                }}
-              >
-                bjb{" "}
-              </span>
-              Call
-            </Typography>
-          </Grid>
-          {/* <Grid item xs={3} style={{ background: "#25A9E1" }}></Grid>
-          <Grid item xs={3} style={{ background: "#FECC07" }}></Grid> */}
-        </Grid>
-        <Box height={"359px"} backgroundColor="white" padding="55px 15px">
-          <Box
-            display="flex"
-            flexDirection="row"
-            alignItems="start"
-            border="1px solid #C4C4C4"
-            borderRadius="10px"
-            padding="10px"
+        <Row
+          style={{ background: "#165581", display: "flex", padding: "8px 0px" }}
+        >
+          <Col style={{ width: "100px", height: "100%", padding: "7px 15px" }}>
+            <img
+              src={BJBLogo}
+              style={{ maxHeight: "100%", maxWidth: "100%" }}
+              alt="BJB Logo"
+            />
+          </Col>
+          <Col
+            flex="auto"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
+              marginRight: "16px",
+            }}
           >
-            <Checkbox checked={agree} onChange={(e) => setAgree(e.target.checked)} label="label" />
-            <Box marginTop={1}>
-              <Typography fontSize="14px" marginBottom={2}>
+            <Text style={{ fontSize: "13px", color: "#fff" }}>
+              <span style={{ fontWeight: 600, color: "#FCCC0E" }}>bjb </span>
+              Call
+            </Text>
+          </Col>
+        </Row>
+        <Flex
+          vertical
+          style={{
+            height: "359px",
+            backgroundColor: "white",
+            padding: "55px 15px",
+          }}
+        >
+          <Flex
+            align="start"
+            style={{
+              border: "1px solid #C4C4C4",
+              borderRadius: "10px",
+              padding: "10px",
+            }}
+          >
+            <Checkbox
+              checked={agree}
+              onChange={(e) => setAgree(e.target.checked)}
+              style={{ marginRight: 8 }}
+            />
+            <Flex vertical marginTop={1}>
+              <Text fontSize="14px" marginBottom={2}>
                 {label}
-              </Typography>
-              <Typography
+              </Text>
+              <Text
                 color="#5A55D2"
                 style={{ textDecoration: "underline" }}
                 onClick={() => {
@@ -203,16 +218,21 @@ const Welcome = (props) => {
                 fontSize="14px"
               >
                 Syarat dan Ketentuan
-              </Typography>
-            </Box>
-          </Box>
-          <Box backgroundColor="white" padding="12px 15px">
+              </Text>
+            </Flex>
+          </Flex>
+          <Flex
+            style={{
+              backgroundColor: "white",
+              padding: "12px 15px",
+            }}
+          >
             <Button
-              sx={{
+              style={{
                 width: "100%",
                 borderRadius: "50px",
                 marginTop: "1em",
-                backgroundColor: `${color.main}`,
+                backgroundColor: !agree ? "#cccccc" : `${color.main}`,
                 color: "white",
               }}
               disabled={!agree}
@@ -223,9 +243,9 @@ const Welcome = (props) => {
             >
               Saya setuju
             </Button>
-          </Box>
-        </Box>
-      </Box>
+          </Flex>
+        </Flex>
+      </Flex>
     </>
   );
 };
