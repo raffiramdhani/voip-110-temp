@@ -612,7 +612,7 @@ export default function login(props) {
                   }}
                 >
                   {msgError ? (
-                    <Alert severity="error">{msgError}</Alert>
+                    <Alert severity="error" message={msgError}></Alert>
                   ) : (
                     <></>
                   )}
