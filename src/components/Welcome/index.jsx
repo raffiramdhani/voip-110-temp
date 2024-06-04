@@ -92,7 +92,7 @@ const Welcome = (props) => {
   const label =
     "By using this VOIP service, I agree to the  Terms & Condition Policy, and that the information I provide here is correct.";
   return (
-    <div>
+    <div style={{ width: "100%" }}>
       <div style={{ padding: "0px 15px", backgroundColor: color.main }}>
         <Row justify="space-between" align="middle">
           <Col flex="auto">
