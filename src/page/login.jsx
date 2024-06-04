@@ -425,7 +425,7 @@ export default function login(props) {
                 <Form.Item
                   name="username"
                   rules={[
-                    { required: true, message: "Nama Lengkap is required" },
+                    { required: true, message: "Nama Lengkap wajib diisi" },
                   ]}
                   label="Nama Lengkap"
                 >
@@ -473,7 +473,11 @@ export default function login(props) {
                 <Form.Item
                   name="phone"
                   rules={[
-                    { required: true, message: "Nomor Ponsel is required" },
+                    { required: true, message: "Nomor Ponsel wajib diisi" },
+                    {
+                      pattern: /^[0-9\b]+$/,
+                      message: "Nomor ponsel harus angka",
+                    },
                   ]}
                   label="Nomor Ponsel"
                 >
