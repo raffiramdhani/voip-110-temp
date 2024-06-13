@@ -5,6 +5,8 @@ import useRouteStore from '@/store/routeStore';
 import Pages from './page';
 import Button from './page/button';
 
+import { decrypt } from './utils/encrypt';
+
 export default function App() {
   const route = useRouteStore((state) => state);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);

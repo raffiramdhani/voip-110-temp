@@ -48,6 +48,7 @@ const env = import.meta.env;
 const genID = uuidv4();
 
 export default function phoneCall() {
+  console.log('hereherehere');
   const { setUser, user: userData } = useUserStore((state) => state);
   const [isLoading, setIsLoading] = React.useState(true);
   let SESSION_STATUS = Flashphoner.constants.SESSION_STATUS;
@@ -177,7 +178,124 @@ export default function phoneCall() {
 
     const token = new URLSearchParams(window.location.search).get('token');
 
-    if (token) {
+    const Querydata = new URLSearchParams(window.location.search).get('data');
+
+    console.log('data here', Querydata);
+
+    if (Querydata && !token) {
+      let getProfile;
+
+      const tempData = JSON.parse(
+        decrypt(
+          Querydata,
+          import.meta.env.VITE_APP_DECODE_IV,
+          import.meta.env.VITE_APP_DECODE_KEY
+        )
+      );
+
+      console.log('tempData', typeof tempData);
+
+      getProfile = {
+        data: {
+          ...tempData,
+        },
+        status: 200,
+      };
+
+      if (!getProfile?.status) {
+        notification.error({
+          message: 'Profile Not Found.',
+          placement: 'bottomRight',
+          duration: 5,
+        });
+      }
+
+      const { name, email, phone } = tempData;
+
+      console.log('phone', phone);
+
+      await profile.setProfile({
+        username: name,
+        email: email ?? 'testing@gmail.com',
+        phone: formatPhoneNumber(phone),
+      });
+      const user = {
+        username: name,
+        email: email ?? 'testing@gmail.com',
+        phone: formatPhoneNumber(phone),
+      };
+
+      const postData = {
+        name,
+        email: email ? email : 'testing@email.com',
+        phone: formatPhoneNumber(phone),
+      };
+
+      if (userData == null) {
+        setUser(postData);
+      }
+
+      const locationData = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${long}&format=json&accept-language=id`,
+        requestOptions
+      )
+        .then((res) => res.text())
+        .then((res) => JSON.parse(res));
+
+      console.log('locationData', locationData);
+
+      var dataFromUrl = JSON.stringify({
+        username: name,
+        email: email ?? 'testing@gmail.com',
+        phone: formatPhoneNumber(phone),
+        token: env.VITE_APP_EXTEN_TOKEN,
+        type: env.VITE_APP_EXTEN_TYPE,
+        call_id: genID.slice(0, 8),
+        timestamp: new Date(),
+        location: {
+          latitude: lat,
+          longitude: long,
+        },
+        kabupaten: getLocationDetail(locationData?.address),
+      });
+
+      setKabupaten(getLocationDetail(locationData?.address));
+
+      var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: dataFromUrl,
+        redirect: 'follow',
+      };
+
+      const data = await fetch(
+        `${env.VITE_APP_EXTEN_URL}/voip/req_extention/${env.VITE_APP_EXTEN_TENANT}`,
+        requestOptions
+      )
+        .then((res) => res.text())
+        .then((res) => {
+          const decryptText = decrypt(res);
+
+          if (decryptText) {
+            const decrypted = JSON.parse(decryptText);
+            // console.log('decrypted>>>', decrypted);
+            return {
+              token: decrypted.token,
+              exten: decrypted.exten,
+              secret: decrypted.secret,
+              callto: decrypted.callto,
+              sip: decrypted.sip,
+              rtc: decrypted.rtc,
+              api: decrypted.api,
+            };
+          }
+        })
+        .catch((err) => console.log('ERROR ==>>', err));
+
+      return { ...data, ...user };
+    }
+
+    if (token && !Querydata) {
       let getProfile;
 
       if (userData == null) {
@@ -252,24 +370,6 @@ export default function phoneCall() {
 
       setKabupaten(getLocationDetail(locationData?.address));
 
-      // var raw = JSON.stringify({
-      //   menu: params?.menu_id,
-      //   is_postlogin: params?.user?.email ? 1 : 0,
-      //   name: params?.user?.fullname,
-      //   username: name,
-      //   email: email ?? 'testing@gmail.com',
-      //   phone: phone ? `+${phone}` : '+6281244444444',
-      //   token: env.VITE_APP_EXTEN_TOKEN,
-      //   type: env.VITE_APP_EXTEN_TYPE,
-      //   call_id: genID.slice(0, 8),
-      //   vdn: params?.vdn,
-      //   timestamp: new Date(),
-      //   location: {
-      //     latitude: lat,
-      //     longitude: long,
-      //   },
-      // });
-
       var requestOptions = {
         method: 'POST',
         headers: myHeaders,
@@ -304,9 +404,6 @@ export default function phoneCall() {
       return { ...data, ...user };
     }
   };
-
-  // console.log('profile.profile', profile.profile);
-  // console.log('profile.profile()', profile.profile);
 
   const postTransaction = async (value) => {
     const { username, email, phone, ...rest } = value;
@@ -361,8 +458,9 @@ export default function phoneCall() {
 
   useEffect(() => {
     const token = new URLSearchParams(window.location.search).get('token');
+    const data = new URLSearchParams(window.location.search).get('data');
 
-    if (token) {
+    if (token || DataView) {
       const geolocationAPI = navigator.geolocation;
       if (!geolocationAPI) {
         notification.error({

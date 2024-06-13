@@ -75,6 +75,9 @@ const WelcomeOnboard = (props) => {
 
   const token = new URLSearchParams(window.location.search).get('token');
 
+  const data = new URLSearchParams(window.location.search).get('data');
+  console.log('data', data);
+
   const type = url_params.searchParams.get('type');
   // LISTEN HEIGHT WINDOW
   useEffect(() => {
@@ -207,7 +210,7 @@ const WelcomeOnboard = (props) => {
               }}
               disabled={!agree}
               variant="contained"
-              onClick={() => (token ? props.openCall() : handleClick())}
+              onClick={() => (token || data ? props.openCall() : handleClick())}
             >
               Saya Setuju
             </Button>
