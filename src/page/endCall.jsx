@@ -1,12 +1,13 @@
 import React from "react";
 import { Grid, Typography } from "@mui/material";
+import BottomSheet from "@/components/BottomSheet";
 
 export default function endCall() {
-  React.useEffect(() => {
-    setTimeout(() => {
-      window.location.reload();
-    }, 5000);
-  });
+  // React.useEffect(() => {
+  //   setTimeout(() => {
+  //     window.location.reload();
+  //   }, 5000);
+  // });
   return (
     <Grid
       container
@@ -15,7 +16,8 @@ export default function endCall() {
       alignItems="center"
       sx={{ minHeight: "100vh", backgroundColor: "white" }}
     >
-      <Typography>Terima kasih telah menghubungi kami.</Typography>
+      <BottomSheet open={true} />
+      {/* <Typography>Terima kasih telah menghubungi kami.</Typography> */}
     </Grid>
   );
 }
