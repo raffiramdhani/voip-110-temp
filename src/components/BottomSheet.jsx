@@ -26,7 +26,7 @@ const StyledRating = styled(Rating)(({ theme }) => ({
   },
 }));
 
-const BottomSheet = ({ open }) => {
+const BottomSheet = ({ open, displayRemark }) => {
   const { t, i18n } = useTranslation();
   const profile = useProfileStore((state) => state);
   const [score, setScore] = React.useState(null);
@@ -171,43 +171,47 @@ const BottomSheet = ({ open }) => {
             flexDirection: "column",
           }}
         >
-          <Typography
-            sx={{
-              // marginY: "24px",
-              // marginX: "32px",
-              margin: "10px 0px",
-              textAlign: "center",
-              fontSize: "14px",
-              lineHeight: "20px",
-              fontWeight: "normal",
-            }}
-          >
-            {score > 2 && score !== null
-              ? t("rating.impression")
-              : t("rating.suggestion")}
-          </Typography>
-          <TextField
-            id="outlined-multiline-static"
-            multiline
-            rows={3}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderRadius: "18px",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#00BFB2",
-                  borderWidth: "2px",
-                },
-              },
-              marginTop: "5px",
-              width: "80%",
-            }}
-            onChange={(e) => setRatingReview(e.target.value)}
-            value={rating_review}
-            placeholder={t("rating.inputPlaceholder")}
-            inputProps={{ maxLength: 200 }}
-          />
+          {displayRemark ? (
+            <>
+              <Typography
+                sx={{
+                  // marginY: "24px",
+                  // marginX: "32px",
+                  margin: "10px 0px",
+                  textAlign: "center",
+                  fontSize: "14px",
+                  lineHeight: "20px",
+                  fontWeight: "normal",
+                }}
+              >
+                {score > 2 && score !== null
+                  ? t("rating.impression")
+                  : t("rating.suggestion")}
+              </Typography>
+              <TextField
+                id="outlined-multiline-static"
+                multiline
+                rows={3}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderRadius: "18px",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#00BFB2",
+                      borderWidth: "2px",
+                    },
+                  },
+                  marginTop: "5px",
+                  width: "80%",
+                }}
+                onChange={(e) => setRatingReview(e.target.value)}
+                value={rating_review}
+                placeholder={t("rating.inputPlaceholder")}
+                inputProps={{ maxLength: 200 }}
+              />
+            </>
+          ) : null}
           <Box
             sx={{
               width: "80%",

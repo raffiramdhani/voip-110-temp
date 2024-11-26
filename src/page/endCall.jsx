@@ -16,7 +16,7 @@ export default function endCall() {
       alignItems="center"
       sx={{ minHeight: "100vh", backgroundColor: "white" }}
     >
-      <BottomSheet open={true} />
+      <BottomSheet open={true} displayRemark={false} />
       {/* <Typography>Terima kasih telah menghubungi kami.</Typography> */}
     </Grid>
   );
