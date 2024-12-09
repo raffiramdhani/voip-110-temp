@@ -10,8 +10,10 @@ i18next.use(initReactI18next).init({
           headline: {
             "Prioritas-Perbankan": "Prioritas Perbankan",
             "Prioritas-Hasanah": "Prioritas Hasanah Card",
+            "Prioritas-Byond": "Prioritas BYOND by BSI",
             "Umum-Perbankan": "Layanan Umum Perbankan",
             "Umum-Hasanah": "Layanan Umum Hasanah Card",
+            "Umum-Byond": "Layanan Umum BYOND by BSI",
           },
           descOne: {
             "Sedang Menghubungi": "Sedang menghubungi...",
@@ -41,8 +43,10 @@ i18next.use(initReactI18next).init({
           headline: {
             "Prioritas-Perbankan": "Priority Banking",
             "Prioritas-Hasanah": "Hasanah Card Priority",
+            "Prioritas-Byond": "BYOND by BSI Priority",
             "Umum-Perbankan": "General Banking Services",
             "Umum-Hasanah": "Hasanah Card General Services",
+            "Umum-Byond": "BYOND by BSI General Services",
           },
           descOne: {
             "Sedang Menghubungi": "Reaching Out",

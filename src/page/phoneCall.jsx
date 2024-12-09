@@ -15,7 +15,7 @@ import EndCall from "../assets/end-call.png";
 import Keypad from "../components/Keypad";
 import useRouteStore from "@/store/routeStore";
 import SpeakerIcon from "@mui/icons-material/VolumeUp";
-import LogoLayanan from "../assets/logo-layanan.png";
+import LogoLayanan from "../assets/logo-layanan_new.png";
 import LogoPrioritas from "../assets/logo-prioritas.png";
 import ButtonLoudSpeakerDisabled from "../assets/button-loud-speaker-disabled.svg";
 import ButtonLoudSpeakerActive from "../assets/button-loud-speaker-active.svg";
@@ -410,7 +410,7 @@ export default function phoneCall() {
               height="100%"
               sx={{
                 background:
-                  "linear-gradient(0deg, #001489 0%, #0047BB 69.00%, #0047BB 100%)",
+                  "linear-gradient(0deg, #00898B 0%, #CCAD41 69.00%, #F0B334 100%)",
                 overflowY: "hidden",
               }}
             >
@@ -432,7 +432,7 @@ export default function phoneCall() {
                   flexDirection="column"
                   sx={{
                     background:
-                      "linear-gradient(0deg, #001489 0%, #0047BB 69.00%, #0047BB 100%)",
+                      "linear-gradient(0deg, #F0B334 0%, #CCAD41 25%, #719D62 35%, #00898B 50%, #00898B 100%)",
                   }}
                 >
                   <Typography
