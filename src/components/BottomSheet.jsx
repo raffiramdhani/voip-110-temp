@@ -232,7 +232,7 @@ const BottomSheet = ({ open, displayRemark }) => {
               backgroundColor: "#00BFB2",
               borderRadius: "50px",
             }}
-            disabled={score === null && rating_review.length === 0}
+            disabled={score === null || !rating_review.length}
             onClick={handleSubmitReview}
             // disabled={rating_review?.length === 200}
           >
