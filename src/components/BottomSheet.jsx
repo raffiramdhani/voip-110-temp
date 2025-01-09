@@ -18,6 +18,7 @@ import useProfileStore from "@/store/profileStore";
 import CloseIcon from "@mui/icons-material/Close";
 import StarActive from "@/assets/star-active.svg";
 import StarInactive from "@/assets/star-inactive.svg";
+import useRouteStore from "@/store/routeStore";
 
 const env = import.meta.env;
 const StyledRating = styled(Rating)(({ theme }) => ({
@@ -28,6 +29,7 @@ const StyledRating = styled(Rating)(({ theme }) => ({
 
 const BottomSheet = ({ open, displayRemark }) => {
   const { t, i18n } = useTranslation();
+  const route = useRouteStore((state) => state);
   const profile = useProfileStore((state) => state);
   const [score, setScore] = React.useState(null);
   const [rating_review, setRatingReview] = React.useState("");
