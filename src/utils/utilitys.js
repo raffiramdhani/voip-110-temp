@@ -46,7 +46,7 @@ const haversine = (
 export const getKabupatenFromCoords = async (latitude, longitude) => {
   const sheet = read(
     await (
-      await fetch("../../polres_queue_kabupaten_latlong.xlsx")
+      await fetch("/polres_queue_kabupaten_latlong.xlsx")
     ).arrayBuffer(),
     { type: "buffer" }
   );
