@@ -256,10 +256,10 @@ export default function phoneCall() {
           latitude: lat,
           longitude: long,
         },
-        kabupaten: getLocationDetail(locationData?.address),
+        kabupaten: await getLocationDetail(locationData),
       });
 
-      setKabupaten(getLocationDetail(locationData?.address));
+      setKabupaten(await getLocationDetail(locationData));
 
       var requestOptions = {
         method: 'POST',
@@ -365,10 +365,10 @@ export default function phoneCall() {
           latitude: lat,
           longitude: long,
         },
-        kabupaten: getLocationDetail(locationData?.address),
+        kabupaten: await getLocationDetail(locationData),
       });
 
-      setKabupaten(getLocationDetail(locationData?.address));
+      setKabupaten(await getLocationDetail(locationData));
 
       var requestOptions = {
         method: 'POST',

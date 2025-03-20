@@ -1,3 +1,5 @@
+import { read, utils } from "xlsx";
+
 export function formatPhoneNumber(phoneNumber) {
   // Check if the number already starts with '+62'
   if (phoneNumber.startsWith("+62")) {
@@ -24,10 +26,64 @@ export function formatPhoneNumber(phoneNumber) {
   }
 }
 
-export function getLocationDetail(address) {
-  if (address?.county) {
-    return address?.county?.toLowerCase();
+const haversine = (
+  { longitude: lonA, latitude: latA },
+  { longitude: lonB, latitude: latB }
+) => {
+  const { PI, sin, cos, atan2 } = Math,
+    r = PI / 180,
+    R = 6371,
+    deltaLat = (latB - latA) * r,
+    deltaLon = (lonB - lonA) * r,
+    a =
+      sin(deltaLat / 2) ** 2 +
+      cos(cos(latB * r) * latA * r) * sin(deltaLon / 2) ** 2,
+    c = 2 * atan2(a ** 0.5, (1 - a) ** 0.5),
+    d = R * c;
+  return d;
+};
+
+export const getKabupatenFromCoords = async (latitude, longitude) => {
+  const sheet = read(
+    await (
+      await fetch("../../polres_queue_kabupaten_latlong.xlsx")
+    ).arrayBuffer(),
+    { type: "buffer" }
+  );
+  const data = utils
+    .sheet_to_json(sheet.Sheets[sheet.SheetNames[0]], {
+      header: 1,
+    })
+    .slice(1)
+    .map((item) => {
+      const kabupaten = item[2],
+        latitude = Number(item[3]),
+        longitude = Number(item[4]);
+      return { kabupaten, latitude, longitude };
+    })
+    .reduce(
+      (r, o) => {
+        const distance = haversine({ latitude, longitude }, o);
+        console.log(o.kabupaten, distance);
+        if (distance < r.minDistance || !r.closest) {
+          r.closest = o;
+          r.minDistance = distance;
+        }
+        return r;
+      },
+      { closest: null, minDistance: null }
+    );
+  return data;
+};
+
+export async function getLocationDetail(locationData) {
+  if (locationData?.address?.county) {
+    return locationData?.address?.county?.toLowerCase();
   } else {
-    return "Location detail not available";
+    const data = await getKabupatenFromCoords(
+      Number(locationData?.lat),
+      Number(locationData?.lon)
+    );
+    return data.closest.kabupaten;
   }
 }
