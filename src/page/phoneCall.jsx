@@ -214,21 +214,24 @@ export default function phoneCall() {
 
       console.log('phone', phone);
 
-      await profile.setProfile({
-        username: name,
-        email: email ?? 'testing@gmail.com',
-        phone: formatPhoneNumber(phone),
-      });
       const user = {
         username: name,
         email: email ?? 'testing@gmail.com',
         phone: formatPhoneNumber(phone),
+        ticket_id: tempData?.ticket_id || null,
+        agent_id: tempData?.agent_id || null,
+        kode_polres: tempData?.kode_polres || null,
       };
+
+      await profile.setProfile(user);
 
       const postData = {
         name,
         email: email ? email : 'testing@email.com',
         phone: formatPhoneNumber(phone),
+        ticket_id: tempData?.ticket_id || null,
+        agent_id: tempData?.agent_id || null,
+        kode_polres: tempData?.kode_polres || null,
       };
 
       if (userData == null) {
@@ -248,6 +251,9 @@ export default function phoneCall() {
         username: name,
         email: email ?? 'testing@gmail.com',
         phone: formatPhoneNumber(phone),
+        ticket_id: tempData?.ticket_id || null,
+        agent_id: tempData?.agent_id || null,
+        kode_polres: tempData?.kode_polres || null,
         token: env.VITE_APP_EXTEN_TOKEN,
         type: env.VITE_APP_EXTEN_TYPE,
         call_id: genID.slice(0, 8),
